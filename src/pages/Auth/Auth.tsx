@@ -19,6 +19,7 @@ const Auth: FunctionComponent<{ type?: string }> = ({ type }): ReactElement => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    // comment
     // If user is on /login but not trying to log in as
     // admin/institution/student, redirect to auth to prevent
     // sending req to e.g. /random-user
