@@ -48,5 +48,5 @@ $ npm start
 ### Writing and checking docs
 
 - Used [typedoc](https://typedoc.org/)
-- Already written docs and be checked at docs/index.html  
+- Already written docs and be checked at docs/index.html
 - After adding new one run: `npm run docs`
