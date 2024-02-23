@@ -26,6 +26,32 @@ export const institutionsListHLC = (navigate) => {
   };
 };
 
+export const templatesListHLC = (navigate) => {
+  return {
+    logoLink: ADMIN_HEADING_LOGOLINK,
+    links: ADMIN_HEADING_LINKS,
+    title: "Templates",
+    button: (
+      <Button
+        label="Create Templates"
+        icon="add"
+        type="button"
+        clickFn={() => navigate("create")}
+        kind="primary"
+      />
+    ),
+  };
+};
+
+//ANCHOR - templatesFormHLC
+export const templatesFormHLC = (title: string) => {
+  return {
+    logoLink: ADMIN_HEADING_LOGOLINK,
+    links: ADMIN_HEADING_LINKS,
+    title,
+  };
+};
+
 //ANCHOR - institutionsFormHLC
 export const institutionsFormHLC = (title: string) => {
   return {

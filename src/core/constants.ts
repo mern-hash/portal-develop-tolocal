@@ -61,6 +61,10 @@ export const ADMIN_HEADING_LINKS = [
     text: "Integrations",
     path: "/admin/integrations",
   },
+  {
+    text: "Template",
+    path: "/admin/template",
+  },
 ];
 export const INSTITUTION_HEADING_LINKS = [
   {

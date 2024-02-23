@@ -33,6 +33,39 @@ const institutionsHeaderData: ITableHeaderItem[] = [
   },
 ];
 
+const templateHeaderData: ITableHeaderItem[] = [
+  {
+    header: "Name",
+    key: "name",
+    isSortable: false,
+  },
+  {
+    header: "Date Created",
+    key: "createdAt",
+    isSortable: true,
+  },
+  // {
+  //   header: "Admin email",
+  //   key: "adminEmail",
+  //   isSortable: false,
+  // },
+  {
+    header: "No if institutions",
+    key: "userCount",
+    isSortable: false,
+  },
+  {
+    header: "No of issuance",
+    key: "credentialCount",
+    isSortable: true,
+  },
+  {
+    header: "# of verifications",
+    key: "verificationCount",
+    isSortable: false,
+  },
+];
+
 const integrationsHeaderData: ITableHeaderItem[] = [
   {
     header: "Name",
@@ -90,4 +123,9 @@ const studentsHeaderData = [
   },
 ];
 
-export { institutionsHeaderData, integrationsHeaderData, studentsHeaderData };
+export {
+  institutionsHeaderData,
+  integrationsHeaderData,
+  studentsHeaderData,
+  templateHeaderData,
+};

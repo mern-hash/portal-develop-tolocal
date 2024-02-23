@@ -25,6 +25,8 @@ import IntegrationsList from "@/pages/Integrations/IntegrationsList";
 import Credential from "@/pages/Credential";
 
 import * as Sentry from "@sentry/react";
+import TemplateList from "@/pages/Template/TemplateList";
+import TemplatesForm from "@/pages/Template/TemplateForm";
 
 const sentryCreateBrowserRouter =
   Sentry.wrapCreateBrowserRouter(createBrowserRouter);
@@ -76,6 +78,11 @@ const router = sentryCreateBrowserRouter([
       },
       { path: "integrations", element: <IntegrationsList /> },
       { path: "integrations/create", element: <IntegrationsForm /> },
+      { path: "template", element: <TemplateList /> },
+      {
+        path: "template/create",
+        element: <TemplatesForm />,
+      },
     ],
   },
 
