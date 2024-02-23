@@ -1,0 +1,75 @@
+@use "@carbon/react/scss/breakpoint" as *;
+@use "@carbon/react/scss/colors" as *;
+@use "@carbon/react/scss/type" as *;
+@use "@carbon/react/scss/spacing" as *;
+
+.institution-dashboard {
+  max-width: 90vw;
+  width: 90vw;
+  padding: 0;
+  gap: 24px;
+
+  @include breakpoint-between(md, lg) {
+    width: 800px;
+  }
+
+  @include breakpoint(lg) {
+    width: 1126px;
+
+    &.cds--css-grid {
+      grid-template-columns: repeat(15, minmax(0, 1fr));
+    }
+  }
+
+  &__card {
+    padding: 16px 16px 24px;
+    background-color: $white;
+    margin: 0;
+
+    &__title {
+      @include type-style("productive-heading-03");
+      margin-bottom: $spacing-05;
+    }
+
+    svg {
+      margin: $spacing-03 0;
+    }
+
+    &__number {
+      @include type-style("productive-heading-07");
+      margin-top: $spacing-05;
+    }
+  }
+
+  &--empty {
+    margin-top: -28px;
+    text-align: center;
+  }
+
+  &__heading {
+    margin-top: $spacing-03;
+  }
+  &__desc {
+    margin-top: $spacing-03;
+    margin-bottom: $spacing-07;
+  }
+}
+
+.institution-students {
+  &__error {
+    max-width: 633px;
+  }
+
+  &__loader {
+    height: 100%;
+    display: flex;
+    align-items: center;
+  }
+
+  &__bulk {
+    &__error {
+      max-height: 170px;
+      overflow: auto;
+    }
+  }
+}

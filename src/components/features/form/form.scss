@@ -1,0 +1,58 @@
+@use "@carbon/react/scss/breakpoint" as *;
+@use "@carbon/react/scss/spacing" as *;
+
+.form {
+  .cds--date-picker--single {
+    width: 100%;
+    .cds--date-picker-container {
+      width: 100%;
+    }
+    .cds--date-picker__input {
+      width: 100% !important;
+    }
+  }
+
+  .cds--text-input,
+  .cds--date-picker__input {
+    &::placeholder {
+      color: #a8a8a8;
+    }
+  }
+
+  &__button {
+    margin-right: $spacing-06;
+  }
+
+  &__stack {
+    width: 90vw;
+    grid-template-columns: 100%;
+    grid-column-gap: 32px;
+
+    @include breakpoint(md) {
+      width: 633px;
+      grid-template-columns: repeat(auto-fill, 300px);
+    }
+  }
+
+  &__row {
+    @include breakpoint(md) {
+      grid-column: span 2;
+    }
+
+    &__buttons {
+      display: flex;
+      button {
+        margin-right: $spacing-06;
+        padding-top: 14px;
+        padding-bottom: 14px;
+      }
+    }
+  }
+}
+
+.cds--form {
+  .cds--inline-notification {
+    margin-bottom: 56px;
+    margin-top: -32px;
+  }
+}

@@ -1,0 +1,40 @@
+@use "@carbon/react/scss/breakpoint" as *;
+@use "@carbon/react/scss/colors" as *;
+
+.header-tabs {
+  border-top: 1px solid $gray-80;
+
+  &__tablist {
+    margin: 0 auto;
+    height: 100%;
+    max-width: 90vw;
+
+    @include breakpoint(md) {
+      max-width: 632px;
+    }
+
+    .cds--tabs__nav-item {
+      display: flex;
+      align-items: center;
+      width: 160px;
+      height: 48px;
+      padding: 15px 16px;
+      border-top: 2px solid transparent;
+
+      &:focus {
+        outline: none;
+      }
+
+      &:hover {
+        background: $gray-100-hover;
+        color: $gray-10;
+      }
+    }
+
+    .cds--tabs__nav-item--selected {
+      background-color: $gray-80;
+      border-top: 2px solid $certie-blue;
+      border-bottom: none;
+    }
+  }
+}
