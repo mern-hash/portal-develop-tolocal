@@ -173,3 +173,213 @@ export const institutionFormFields = (
     },
   ];
 };
+
+export const templateFormFields = (
+  register,
+  errors,
+  watchers
+): FormFieldsData[] => {
+  return [
+    {
+      type: "text",
+      id: "name",
+      label: "Template Name",
+      placeholder: "University Degree, State Identity...",
+      validations: {
+        required: "Required field",
+        minLength: {
+          value: 3,
+          message: errorMessages.min_length(3),
+        },
+        maxLength: {
+          value: 500,
+          message: errorMessages.max_length(500),
+        },
+      },
+      errors: invalidInput(errors, "name"),
+    },
+    {
+      type: "text",
+      id: "desceription",
+      label: "Template Description",
+      placeholder: "Describe what this template is all about...",
+      validations: {
+        maxLength: {
+          value: 2000,
+          message: errorMessages.max_length(2000),
+        },
+      },
+      errors: invalidInput(errors, "desceription"),
+    },
+    {
+      type: "select",
+      id: "attributeType",
+      label: "Attribute Type",
+      placeholder: "Select Attribute Type",
+      validations: {
+        required: "Required field",
+      },
+      errors: invalidInput(errors, "attributeType"),
+      items: [],
+      register,
+      watch: watchers,
+    },
+  ];
+};
+
+export const customeFormFields = (
+  register,
+  errors,
+  watchers,
+  index
+): FormFieldsData[] => {
+  return [
+    {
+      type: "text",
+      id: "name",
+      label: "Atribute Name",
+      placeholder: "University Degree, State Identity...",
+      validations: {
+        required: "Required field",
+        minLength: {
+          value: 3,
+          message: errorMessages.min_length(3),
+        },
+        maxLength: {
+          value: 500,
+          message: errorMessages.max_length(500),
+        },
+      },
+      errors: invalidInput(errors, "name"),
+    },
+
+    {
+      type: "text",
+      id: "desceription",
+      label: "Atribute Description",
+      placeholder: "Describe what this attribute is all about...",
+      validations: {
+        maxLength: {
+          value: 2000,
+          message: errorMessages.max_length(2000),
+        },
+      },
+      errors: invalidInput(errors, "desceription"),
+    },
+    {
+      type: "select",
+      id: "attributeType",
+      label: "Attribute Type",
+      placeholder: "Select Attribute Type",
+      validations: {
+        required: "Required field",
+      },
+      errors: invalidInput(errors, "attributeType"),
+      items: [],
+      register,
+      watch: watchers,
+    },
+    {
+      type: "checkbox",
+      id: "require" + index,
+      label: "Require",
+      placeholder: "Require",
+      errors: invalidInput(errors, "Require"),
+    },
+    {
+      type: "text",
+      id: "id",
+      label: "Field unique Name(Without Spase)",
+      placeholder: "Field unique Name(Without Spase)",
+      validations: {
+        required: "Required field",
+        minLength: {
+          value: 2,
+          message: errorMessages.min_length(2),
+        },
+        maxLength: {
+          value: 15,
+          message: errorMessages.max_length(15),
+        },
+        pattern: {
+          value: /^[^\d\s!@#$%^&*(),.?":{}|<>]*$/,
+          message:
+            "Input must not contain spaces, numbers, or special characters.",
+        },
+      },
+      errors: invalidInput(errors, "id"),
+    },
+  ];
+};
+
+class FormBuilderForCustom {
+  register: any;
+  errors: any;
+  watchers: any;
+  formFields: any;
+  constructor(register, errors, watchers) {
+    this.register = register;
+    this.errors = errors;
+    this.watchers = watchers;
+    this.formFields = [
+      {
+        type: "text",
+        id: "name",
+        label: "Atribute Name",
+        placeholder: "University Degree, State Identity...",
+        validations: {
+          required: "Required field",
+          minLength: {
+            value: 3,
+            message: "Minimum length required is 3",
+          },
+          maxLength: {
+            value: 500,
+            message: "Maximum length allowed is 500",
+          },
+        },
+        errors: invalidInput(this.errors, "name"),
+      },
+      {
+        type: "text",
+        id: "description",
+        label: "Template Description",
+        placeholder: "Describe what this template is all about...",
+        validations: {
+          maxLength: {
+            value: 2000,
+            message: "Maximum length allowed is 2000",
+          },
+        },
+        errors: invalidInput(this.errors, "description"),
+      },
+      {
+        type: "select",
+        id: "attributeType",
+        label: "Attribute Type",
+        placeholder: "Select Attribute Type",
+        validations: {
+          required: "Required field",
+        },
+        errors: invalidInput(this.errors, "attributeType"),
+        items: [],
+        register: this.register,
+        watch: this.watchers,
+      },
+    ];
+  }
+
+  modifyFormFieldValue(index, fieldKey, newValue) {
+    if (index < 0 || index >= this.formFields.length) {
+      throw new Error("Invalid index");
+    }
+
+    const modifiedFormFields = [...this.formFields];
+    if (modifiedFormFields[index].hasOwnProperty(fieldKey)) {
+      modifiedFormFields[index][fieldKey] = newValue;
+    } else {
+      throw new Error("Invalid field key");
+    }
+    return modifiedFormFields;
+  }
+}

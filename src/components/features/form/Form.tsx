@@ -134,7 +134,7 @@ const Form: FunctionComponent<IFormComponent> = ({
       ? evt.relatedTarget.click()
       : trigger(id);
   };
-
+  console.log(formFields);
   return (
     <CForm onSubmit={(evt) => submitForm(evt)} className="form">
       {errorNotification}

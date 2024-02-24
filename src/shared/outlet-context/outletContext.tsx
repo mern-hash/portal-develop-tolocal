@@ -33,7 +33,7 @@ export const templatesListHLC = (navigate) => {
     title: "Templates",
     button: (
       <Button
-        label="Create Templates"
+        label="Build a temnplate"
         icon="add"
         type="button"
         clickFn={() => navigate("create")}

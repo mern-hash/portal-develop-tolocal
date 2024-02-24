@@ -82,6 +82,20 @@ export interface IInstitutionForm {
   website: string | null;
 }
 
+export interface TemplateForm {
+  desceription: string | null;
+  attributeType: string;
+  name: string;
+}
+
+export interface CustomFormType {
+  desceription: string | null;
+  attributeType: string;
+  id: string;
+  name: string;
+  require: Boolean;
+}
+
 // Students
 export interface IFormSchemaField {
   id: string;

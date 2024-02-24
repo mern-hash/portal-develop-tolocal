@@ -1,48 +1,40 @@
 // Core
-import {
-  FunctionComponent,
-  ReactElement,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import { FunctionComponent, ReactElement, useEffect, useState } from "react";
 import { useParams, useNavigate, useOutletContext } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { Helmet } from "react-helmet-async";
 // Api
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import {
-  createInstitution,
-  editInstitution,
-  getSingleInstitution,
-} from "@/api/institutions/institutions";
+import { useQueryClient } from "@tanstack/react-query";
+
 // Components
-import { Form } from "@/components/features";
-import { ToastNotification } from "@/components/ui";
-import { Loading } from "carbon-components-react";
+import { Button } from "@/components/ui";
 // Util
-import { IButton, IInstitutionForm } from "@/shared/types";
+import { IButton, IFormTextInput } from "@/shared/types";
 import { ContextTypes, ContextData } from "@/shared/types/ContextTypes";
-import { forCreatingEntry } from "@/shared/query-setup/forCreatingEntry";
-import { institutionFormFields } from "@/shared/form-fields/formFields";
-import {
-  ADMIN_HEADING_LINKS,
-  ADMIN_HEADING_LOGOLINK,
-  LOCATION_ARRAY,
-  city,
-  country,
-  logo,
-} from "@/core/constants";
-import { forEditingEntry } from "@/shared/query-setup/forEditingEntry";
-import { errorMessages } from "@/shared/errorText";
+import { templateFormFields } from "@/shared/form-fields/formFields";
+import { ADMIN_HEADING_LINKS, ADMIN_HEADING_LOGOLINK } from "@/core/constants";
+
+import { Form as CForm, Stack } from "carbon-components-react";
+import FormTextField from "@/components/features/form/form-fields/FormTextField";
+import { TemplateForm } from "@/shared/types/IForm";
+import CustomForm from "@/components/ui/customForm/CustomForm";
+
+const blankCustomTemplate = {
+  attributeType: "",
+  name: "",
+  desceription: "",
+  require: false,
+  id: "",
+  handleSubmit: () => {},
+};
 
 const TemplatesForm: FunctionComponent = (): ReactElement => {
   // Fetched data, used to compare freshly edited input fields to see which
   // one needs to get patched
-  const [defaultEditData, setDefaultEditData] = useState<IInstitutionForm>();
+  const [customFieldArr, setCustomFieldArr] = useState<any>([]);
+
   const navigate = useNavigate();
   const { id } = useParams();
-  const queryClient = useQueryClient();
 
   const {
     register,
@@ -52,7 +44,7 @@ const TemplatesForm: FunctionComponent = (): ReactElement => {
     setError,
     watch,
     trigger,
-  } = useForm<IInstitutionForm>({
+  } = useForm<TemplateForm>({
     mode: "onTouched",
     defaultValues: {},
   });
@@ -70,137 +62,20 @@ const TemplatesForm: FunctionComponent = (): ReactElement => {
     });
   };
 
-  const renderErrorNotification = () => {
-    if (!(isSubmitted && !!Object.keys(errors).length)) return null;
-
-    if (
-      isSubmitted &&
-      createInstitutionEntry.status === "idle" &&
-      editInstitutionEntry.status === "idle"
-    )
-      return (
-        <ToastNotification
-          title="Error"
-          type="inline"
-          kind="error"
-          subtitle={
-            errors["message"]?.message || errorMessages.required_notification
-          }
-          full
-        />
-      );
-
-    return null;
-  };
-
-  /**
-   * API
-   * @singleInstitution - fetch single institution
-   * @createInstitutionEntry - create new institution (empty form by default)
-   * @editInstitutionEntry - patch update existing institution (first fetch singleInstitution
-   * or use fetched data from table)
-   */
-  const singleInstitution = useQuery(
-    ["singleInstitution", { id }],
-    getSingleInstitution,
-    {
-      enabled: !!id,
-      refetchOnWindowFocus: false,
-    }
-  );
-  const createInstitutionEntry = useMutation(
-    (data: FormData) => createInstitution(data),
-    {
-      ...forCreatingEntry({
-        navigate: () => navigate("/admin/institutions"),
-        updateContext,
-        entity: "Institution",
-        setError,
-        invalidate: () => queryClient.invalidateQueries(["allInstitutions"]),
-      }),
-    }
-  );
-  const editInstitutionEntry = useMutation(
-    (data: FormData) => editInstitution(id, data),
-    {
-      ...forEditingEntry({
-        updateContext,
-        navigate: () => navigate("/admin/institutions"),
-        entity: "Institution",
-        setError,
-        invalidate: () =>
-          queryClient.invalidateQueries(["singleInstitution", { id }]),
-      }),
-    }
-  );
-  const loading = useMemo(
-    () => createInstitutionEntry.isLoading || editInstitutionEntry.isLoading,
-    [createInstitutionEntry, editInstitutionEntry]
-  );
-
-  const setFormDefaultValues = (data: IInstitutionForm) => {
-    setDefaultEditData(data);
-    // Maps over data entries and set each of them as form's defaultValue
-    Object.entries(data).forEach(([name, value]: any) => setValue(name, value));
-    updateHeadingContext(`Edit ${data.name}`);
-  };
-
   useEffect(() => {
-    window.scrollTo(0, 0);
-    // If there is ID in url -> fetch institution data and set values
-    // as form default and set heading to "Edit __"
-    if (id && singleInstitution.data) {
-      setFormDefaultValues(singleInstitution.data);
-      return;
-    }
-
     updateHeadingContext("Build a template");
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [singleInstitution.data]);
+  }, []);
 
-  useEffect(() => {
-    trigger("logo");
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [watch("logo")]);
+  const onSubmit = async (data) => {
+    console.log(data);
+    console.log(
+      await customFieldArr[0].handleSubmit((data) => {
+        console.log(data);
+      })
+    );
 
-  const onSubmit = (data) => {
-    if (loading || !isValid) return;
-
-    const formData = new FormData();
-
-    if (id) {
-      for (let key in data) {
-        // Seding empty logo as empty string removes uploaded image from base
-        if (key === "logo") {
-          formData.append(key, data[key]);
-        }
-        // TODO: fix once BE enables not upading all 3 values
-        if (LOCATION_ARRAY.includes(key)) {
-          // this also means that it will be deleted and readded 3 times...
-          LOCATION_ARRAY.forEach((i) => {
-            formData.delete(i);
-            formData.append(i, data[i]);
-          });
-        }
-        // react-hook-form automatically assigns empty string on touch
-        // and instead of sending nothing, or nulls, it sends empty strings which
-        // results in validation error from backend...
-        if (
-          defaultEditData![key] !== data[key] &&
-          key !== "logo" &&
-          !LOCATION_ARRAY.includes(key)
-        ) {
-          formData.append(key, data[key]);
-        }
-      }
-      return editInstitutionEntry.mutate(formData);
-    }
-
-    for (let key in data) {
-      // same story as above
-      if (data[key]) formData.append(key, data[key]);
-    }
-    return createInstitutionEntry.mutate(formData);
+    return;
   };
 
   const formButtons: IButton[] = [
@@ -208,7 +83,7 @@ const TemplatesForm: FunctionComponent = (): ReactElement => {
       label: "Cancel",
       type: "button",
       kind: "secondary",
-      clickFn: () => navigate("/admin/institutions"),
+      clickFn: () => navigate("/admin/template"),
       aria_label: "cancel",
     },
     {
@@ -220,13 +95,62 @@ const TemplatesForm: FunctionComponent = (): ReactElement => {
     },
   ];
 
+  const cancelForm = (evt, id) => {
+    evt.relatedTarget?.getAttribute("aria-label") === "cancel"
+      ? evt.relatedTarget.click()
+      : trigger(id);
+  };
+
   return (
     <>
       <Helmet>
         <title>{id ? "Update" : "Create"}</title>
       </Helmet>
-      {loading && <Loading />}
-      
+
+      <CForm onSubmit={handleSubmit(onSubmit)} className="form">
+        <Stack gap={7} className="form__stack">
+          <FormTextField
+            register={register}
+            data={
+              templateFormFields(register, errors, watch)[0] as IFormTextInput
+            }
+            cancelForm={cancelForm}
+          />
+          <FormTextField
+            register={register}
+            data={
+              templateFormFields(register, errors, watch)[1] as IFormTextInput
+            }
+            cancelForm={cancelForm}
+          />
+          <div style={{ display: "flex", flexDirection: "column" }}>
+            {customFieldArr &&
+              customFieldArr.map((item, i) => (
+                <CustomForm
+                  key={i}
+                  setCustomFieldArr={setCustomFieldArr}
+                  indexOfField={i}
+                  tamplate={item}
+                />
+              ))}
+
+            <Button
+              clickFn={() => {
+                setCustomFieldArr([...customFieldArr, blankCustomTemplate]);
+              }}
+              label="Add field"
+              type="button"
+              aria_label="add-button"
+              kind="secondary"
+            />
+          </div>
+          <div className="form__row form__row__buttons">
+            {formButtons.map((button: IButton, i: number) => (
+              <Button key={i} {...button} />
+            ))}
+          </div>
+        </Stack>
+      </CForm>
     </>
   );
 };
