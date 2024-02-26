@@ -14,8 +14,14 @@ const FormSelectField: FunctionComponent<{
 
   if (id === "country") return <SelectCountry key={id} {...locationProps} />;
   if (id === "city") return <SelectCity key={id} {...locationProps} />;
-  if (id === "attributeType") {
-    return <SelectAtributeType key={id} {...locationProps} />;
+  if (id.includes("attributeType")) {
+    return (
+      <SelectAtributeType
+        key={id}
+        {...locationProps}
+        validations={validations}
+      />
+    );
   }
 
   return (

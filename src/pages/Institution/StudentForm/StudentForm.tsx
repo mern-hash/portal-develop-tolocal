@@ -20,6 +20,7 @@ import { Loading } from "carbon-components-react";
 //ANCHOR - Util
 import { formatSchema } from "@/shared/form-fields/formSchemaFormat";
 import {
+  addTemplate,
   studentFormFields,
   studentFormImage,
 } from "@/shared/form-fields/studentFormFields";
@@ -318,10 +319,11 @@ const StudentForm: FunctionComponent = () => {
     if (studentsSchema?.data) {
       return [
         ...studentFormFields(errors),
-        ...formatSchema(studentsSchema.data, errors),
+        // ...formatSchema(studentsSchema.data, errors),
         studentFormImage({
           photo: watchers.photo,
         }),
+        addTemplate,
       ];
     }
     return [];

@@ -2,7 +2,7 @@
 import { FunctionComponent } from "react";
 import "./form.scss";
 // Carbon
-import { Form as CForm, Stack } from "carbon-components-react";
+import { Form as CForm, Stack, FormItem } from "carbon-components-react";
 import { Button } from "@/components/ui";
 // Util
 import {
@@ -134,7 +134,7 @@ const Form: FunctionComponent<IFormComponent> = ({
       ? evt.relatedTarget.click()
       : trigger(id);
   };
-  console.log(formFields);
+
   return (
     <CForm onSubmit={(evt) => submitForm(evt)} className="form">
       {errorNotification}
@@ -184,6 +184,18 @@ const Form: FunctionComponent<IFormComponent> = ({
                   setError={setError}
                   clearErrors={clearErrors}
                 />
+              );
+            case "addTemplate":
+              return (
+                <FormItem className="file-input" key={i}>
+                  <p className="cds--file--label">{row.label}</p>
+                  {true ? (
+                    <p className="file-input__description cds--label--description">
+                      {row.placeholder}
+                    </p>
+                  ) : undefined}
+                  <button type="button">Add new credential</button>
+                </FormItem>
               );
             default:
               return undefined;

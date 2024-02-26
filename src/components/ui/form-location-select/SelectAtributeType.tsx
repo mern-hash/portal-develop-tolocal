@@ -7,11 +7,15 @@ import { LocationContext } from "@/shared/context/LocationContext";
 
 const attributeData = [
   { name: "text", value: "text" },
+  { name: "number", value: "number" },
+  { name: "checkbox", value: "checkbox" },
   { name: "file-image", value: "file-image" },
   { name: "file-csv", value: "file-csv" },
   { name: "select", value: "select" },
   { name: "password", value: "password" },
-  { name: "timestamp", value: "timestamp" },
+  { name: "time", value: "time" },
+  { name: "date", value: "date" },
+  { name: "date-time", value: "dateTime" },
 ];
 
 const SelectAtributeType: FunctionComponent<{
@@ -19,7 +23,8 @@ const SelectAtributeType: FunctionComponent<{
   register: UseFormRegister<any>;
   errors: { message: string; ref: JSX.Element; type: string } | undefined;
   watch?: any;
-}> = ({ id, register, errors, watch }) => {
+  validations: any;
+}> = ({ id, register, errors, watch, validations }) => {
   const { attributeType } = watch;
 
   const [selectedValue, setSelectedValue] = useState<string>("");
@@ -33,9 +38,7 @@ const SelectAtributeType: FunctionComponent<{
       id={id}
       value={selectedValue}
       labelText={`Select Attribute Type`}
-      {...register(id, {
-        required: "Required field",
-      })}
+      {...register(id, validations)}
       {...errors}
     >
       <SelectItem disabled hidden value="" text="Select Atribute" />

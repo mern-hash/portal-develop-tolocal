@@ -1,10 +1,8 @@
 // Core
-import { FunctionComponent, ReactElement, useEffect, useState } from "react";
+import { FunctionComponent, ReactElement, useEffect } from "react";
 import { useParams, useNavigate, useOutletContext } from "react-router-dom";
-import { useForm } from "react-hook-form";
+import { useFieldArray, useForm } from "react-hook-form";
 import { Helmet } from "react-helmet-async";
-// Api
-import { useQueryClient } from "@tanstack/react-query";
 
 // Components
 import { Button } from "@/components/ui";
@@ -19,19 +17,39 @@ import FormTextField from "@/components/features/form/form-fields/FormTextField"
 import { TemplateForm } from "@/shared/types/IForm";
 import CustomForm from "@/components/ui/customForm/CustomForm";
 
+function findDuplicateIds(arr) {
+  const idMap = new Map();
+
+  arr.forEach((element, index) => {
+    const idKey = element.id;
+    if (!idMap.has(idKey)) {
+      idMap.set(idKey, [index]);
+    } else {
+      idMap.get(idKey).push(index);
+    }
+  });
+
+  const duplicates: any[] = [];
+  idMap.forEach((indices, id) => {
+    if (indices.length > 1) {
+      duplicates.push({ indices });
+    }
+  });
+
+  return duplicates;
+}
+
 const blankCustomTemplate = {
   attributeType: "",
   name: "",
-  desceription: "",
+  description: "",
   require: false,
   id: "",
-  handleSubmit: () => {},
 };
 
 const TemplatesForm: FunctionComponent = (): ReactElement => {
   // Fetched data, used to compare freshly edited input fields to see which
   // one needs to get patched
-  const [customFieldArr, setCustomFieldArr] = useState<any>([]);
 
   const navigate = useNavigate();
   const { id } = useParams();
@@ -39,14 +57,19 @@ const TemplatesForm: FunctionComponent = (): ReactElement => {
   const {
     register,
     handleSubmit,
-    formState: { isValid, errors, isSubmitted },
-    setValue,
+    formState: { errors },
     setError,
     watch,
     trigger,
+    control,
   } = useForm<TemplateForm>({
-    mode: "onTouched",
+    mode: "onBlur",
     defaultValues: {},
+  });
+  // setError("attributeType");
+  const { fields, append, remove } = useFieldArray({
+    control, // control props comes from useForm (optional: if you are using FormContext)
+    name: "customField", // unique name for your Field Array
   });
   // <Outlet /> context to update HeaderLayout data
   const { updateContext } = useOutletContext<{
@@ -68,13 +91,18 @@ const TemplatesForm: FunctionComponent = (): ReactElement => {
   }, []);
 
   const onSubmit = async (data) => {
-    console.log(data);
-    console.log(
-      await customFieldArr[0].handleSubmit((data) => {
-        console.log(data);
-      })
-    );
-
+    const duplicateId = findDuplicateIds(data.customField);
+    if (duplicateId.length > 0) {
+      duplicateId.forEach(({ indices }) => {
+        indices.forEach((element) => {
+          setError(`customField.${element}.id`, {
+            type: "custom",
+            message: "All field should have unique name!",
+          });
+        });
+      });
+      return;
+    }
     return;
   };
 
@@ -100,7 +128,7 @@ const TemplatesForm: FunctionComponent = (): ReactElement => {
       ? evt.relatedTarget.click()
       : trigger(id);
   };
-
+  console.log(errors);
   return (
     <>
       <Helmet>
@@ -124,19 +152,22 @@ const TemplatesForm: FunctionComponent = (): ReactElement => {
             cancelForm={cancelForm}
           />
           <div style={{ display: "flex", flexDirection: "column" }}>
-            {customFieldArr &&
-              customFieldArr.map((item, i) => (
-                <CustomForm
-                  key={i}
-                  setCustomFieldArr={setCustomFieldArr}
-                  indexOfField={i}
-                  tamplate={item}
-                />
-              ))}
+            {fields.map((item, i) => (
+              <CustomForm
+                key={item.id}
+                indexOfField={i}
+                remove={remove}
+                register={register}
+                cancelForm={cancelForm}
+                watch={watch}
+                errors={errors?.customField && errors?.customField[i]}
+                setError={setError}
+              />
+            ))}
 
             <Button
               clickFn={() => {
-                setCustomFieldArr([...customFieldArr, blankCustomTemplate]);
+                append(blankCustomTemplate);
               }}
               label="Add field"
               type="button"

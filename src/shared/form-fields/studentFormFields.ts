@@ -66,3 +66,10 @@ export const studentFormImage = (watchers) => ({
   placeholder: "Drag and drop files here or click to upload",
   previewFile: watchers.photo,
 });
+
+export const addTemplate = {
+  type: "addTemplate",
+  id: "addTemplate",
+  label: "Issued Credentials",
+  placeholder: "Here you can find all issued credentials for this student",
+};

@@ -83,13 +83,20 @@ export interface IInstitutionForm {
 }
 
 export interface TemplateForm {
-  desceription: string | null;
-  attributeType: string;
+  description: string | null;
   name: string;
+  customField: {
+    attributeType: string;
+    name: string;
+    description: string;
+    require: boolean;
+    id: string;
+    selectOption?: string;
+  }[];
 }
 
 export interface CustomFormType {
-  desceription: string | null;
+  description: string | null;
   attributeType: string;
   id: string;
   name: string;
