@@ -286,7 +286,7 @@ export const customFormFields = (
     {
       type: "checkbox",
       id: `customField.${index}.require`,
-      label: "Require",
+      label: "Required",
       placeholder: "Require",
       errors: invalidInput(errors, "Require"),
     },

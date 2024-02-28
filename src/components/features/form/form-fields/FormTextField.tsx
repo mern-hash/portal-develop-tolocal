@@ -7,13 +7,14 @@ const FormTextField: FunctionComponent<{
   register: UseFormRegister<any>;
   data: IFormTextInput;
   cancelForm: (e, id) => void;
-}> = ({ register, data, cancelForm }): ReactElement => {
+  classNameCustom?: string;
+}> = ({ register, data, cancelForm, classNameCustom }): ReactElement => {
   const { id, label, placeholder, validations, errors, readonly } = data;
 
   return (
     <TextInput
       id={id}
-      className="form__input"
+      className={`form__input ${classNameCustom && classNameCustom}`}
       labelText={label}
       placeholder={placeholder}
       readOnly={readonly}

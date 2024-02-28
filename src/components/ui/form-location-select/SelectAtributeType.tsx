@@ -40,6 +40,7 @@ const SelectAtributeType: FunctionComponent<{
       labelText={`Select Attribute Type`}
       {...register(id, validations)}
       {...errors}
+      className="template-form__select-secound-half"
     >
       <SelectItem disabled hidden value="" text="Select Atribute" />
       {attributeData?.map((c, i) => (

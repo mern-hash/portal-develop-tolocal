@@ -195,7 +195,7 @@ const TemplatesForm: FunctionComponent = (): ReactElement => {
                 clickFn={() => {
                   append(blankCustomTemplate);
                 }}
-                label="Add field"
+                label="Add Field"
                 type="button"
                 aria_label="add-button"
                 kind="secondary"

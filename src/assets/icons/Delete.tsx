@@ -1,9 +1,9 @@
 import * as React from "react";
-const Delete = () => (
+const Delete = ({ classNameCustom }) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     viewBox="0 0 32 32"
-    className="template-form__DeleteSvg"
+    className={classNameCustom}
   >
     <path d="M12 12H14V24H12z" />
     <path d="M18 12H20V24H18z" />
