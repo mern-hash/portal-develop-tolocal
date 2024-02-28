@@ -21,6 +21,7 @@ import { Loading } from "carbon-components-react";
 import { formatSchema } from "@/shared/form-fields/formSchemaFormat";
 import {
   addTemplate,
+  credentialsList,
   studentFormFields,
   studentFormImage,
 } from "@/shared/form-fields/studentFormFields";
@@ -324,6 +325,13 @@ const StudentForm: FunctionComponent = () => {
           photo: watchers.photo,
         }),
         addTemplate,
+        {
+          ...credentialsList,
+          data: [
+            { name: "-", details: "-" },
+            { name: "test1", details: "testing1" },
+          ],
+        },
       ];
     }
     return [];
@@ -350,14 +358,7 @@ const StudentForm: FunctionComponent = () => {
           clearErrors={clearErrors}
         />
       )}
-      {id && (
-        <div>
-          <div>
-            <p>Credential Name</p>
-            <p>Credential details</p>
-          </div>
-        </div>
-      )}
+      {id && <div></div>}
     </>
   );
 };

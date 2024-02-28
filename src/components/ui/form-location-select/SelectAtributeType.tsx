@@ -1,9 +1,6 @@
-import { FunctionComponent, useContext, useEffect, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { FunctionComponent, useEffect, useState } from "react";
 import { UseFormRegister } from "react-hook-form";
-import { getCountries } from "@/api";
 import { Select, SelectItem } from "carbon-components-react";
-import { LocationContext } from "@/shared/context/LocationContext";
 
 const attributeData = [
   { name: "text", value: "text" },

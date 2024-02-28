@@ -73,3 +73,8 @@ export const addTemplate = {
   label: "Issued Credentials",
   placeholder: "Here you can find all issued credentials for this student",
 };
+
+export const credentialsList = {
+  type: "credentialsList",
+  id: "credentialsList",
+};

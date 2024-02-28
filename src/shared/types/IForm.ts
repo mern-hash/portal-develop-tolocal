@@ -39,6 +39,12 @@ export interface IFormSelectInput {
   watch: any;
 }
 
+export interface IListCredentials {
+  type: string;
+  id: string;
+  data: { name: string; details: string }[];
+}
+
 export type IFormFieldsData =
   | IFormImageFile
   | IFormTextInput

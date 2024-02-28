@@ -28,10 +28,7 @@ import { ContextTypes, ContextData } from "@/shared/types/ContextTypes";
 import { IInstitutionTableData, ITableDefaults } from "@/shared/types";
 import { deleteMsg, pluralize } from "@/shared/util";
 import { Sponge } from "@/assets/icons";
-import {
-  institutionsListHLC,
-  templatesListHLC,
-} from "@/shared/outlet-context/outletContext";
+import { templatesListHLC } from "@/shared/outlet-context/outletContext";
 //ANCHOR - Constants
 import {
   TABLE_ORDER,

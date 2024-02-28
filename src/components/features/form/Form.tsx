@@ -1,5 +1,5 @@
 // Core
-import { FunctionComponent } from "react";
+import { FunctionComponent, SyntheticEvent } from "react";
 import "./form.scss";
 // Carbon
 import { Form as CForm, Stack, FormItem } from "carbon-components-react";
@@ -18,6 +18,8 @@ import FormTextField from "./form-fields/FormTextField";
 import FormFileField from "./form-fields/FormFileField";
 import FormSelectField from "./form-fields/FormSelectField";
 import FormPasswordField from "./form-fields/FormPasswordField";
+import ListItems from "@/components/newComponets/ListItems";
+import { IListCredentials } from "@/shared/types/IForm";
 
 /**
  * @description Form component that renders passed array of fields (objects)
@@ -129,14 +131,25 @@ const Form: FunctionComponent<IFormComponent> = ({
     return onSubmit();
   };
 
-  const cancelForm = (evt, id) => {
+  const cancelForm = (
+    evt: {
+      relatedTarget: {
+        getAttribute: (arg0: string) => string;
+        click: () => any;
+      };
+    },
+    id: string | string[] | readonly string[] | undefined
+  ) => {
     evt.relatedTarget?.getAttribute("aria-label") === "cancel"
       ? evt.relatedTarget.click()
       : trigger(id);
   };
 
   return (
-    <CForm onSubmit={(evt) => submitForm(evt)} className="form">
+    <CForm
+      onSubmit={(evt: SyntheticEvent<Element, Event>) => submitForm(evt)}
+      className="form"
+    >
       {errorNotification}
 
       <Stack gap={7} className="form__stack">
@@ -187,15 +200,35 @@ const Form: FunctionComponent<IFormComponent> = ({
               );
             case "addTemplate":
               return (
-                <FormItem className="file-input" key={i}>
-                  <p className="cds--file--label">{row.label}</p>
-                  {true ? (
-                    <p className="file-input__description cds--label--description">
-                      {row.placeholder}
-                    </p>
-                  ) : undefined}
-                  <button type="button">Add new credential</button>
-                </FormItem>
+                <div className="form__row">
+                  <FormItem className="file-input" key={i}>
+                    <p className="cds--file--label">{row?.label}</p>
+                    {true ? (
+                      <p className="file-input__description cds--label--description">
+                        {row.placeholder}
+                      </p>
+                    ) : undefined}
+                    <button type="button">Add new credential</button>
+                  </FormItem>
+                </div>
+              );
+            case "credentialsList":
+              const { data } = row as unknown as IListCredentials;
+              return (
+                <div className="form__row">
+                  {data.map(
+                    (
+                      list: { name: string; details: string },
+                      index: number
+                    ) => (
+                      <ListItems
+                        name={list.name}
+                        details={list.details}
+                        key={index}
+                      />
+                    )
+                  )}
+                </div>
               );
             default:
               return undefined;

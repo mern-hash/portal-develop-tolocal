@@ -1,103 +1,87 @@
 //SECTION - Imports
 //ANCHOR - Core
-import { FunctionComponent, useEffect, useMemo, useState } from "react";
+import { FunctionComponent, useEffect, useState } from "react";
 import { useOutletContext, useParams, useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { useForm } from "react-hook-form";
-import { isValid as validateDate, format } from "date-fns";
 //ANCHOR - Api
-import { useMutation, useQuery, QueryClient } from "@tanstack/react-query";
-import {
-  createStudent,
-  editStudent,
-  getSingleStudent,
-  getStudentsSchema,
-} from "@/api";
+import { useQuery } from "@tanstack/react-query";
+import { getSingleStudent } from "@/api";
 //ANCHOR - Components
-import { Form } from "@/components/features";
-import { ToastNotification } from "@/components/ui";
-import { Loading } from "carbon-components-react";
+import { Button } from "@/components/ui";
 //ANCHOR - Util
-import { formatSchema } from "@/shared/form-fields/formSchemaFormat";
-import {
-  addTemplate,
-  studentFormFields,
-  studentFormImage,
-} from "@/shared/form-fields/studentFormFields";
+
 import { studentFormHLC } from "@/shared/outlet-context/outletContext";
-import { confirmModal } from "@/shared/table-data/tableMethods";
-import { formatDateWithoutTimezone } from "@/shared/util";
+
 //ANCHOR - Types
-import { IButton, IFormTextInput, IStudentForm } from "@/shared/types";
+import { IButton, IFormTextInput } from "@/shared/types";
 import { ContextData, ContextTypes } from "@/shared/types/ContextTypes";
-import { forCreatingEntry } from "@/shared/query-setup/forCreatingEntry";
-import { forEditingEntry } from "@/shared/query-setup/forEditingEntry";
-import { errorMessages } from "@/shared/errorText";
-import {
-  ADD_STUDENT_BUTTON_TEXT,
-  SAVE_CHANGES,
-  UPDATE_USER_MSG,
-} from "@/core/constants";
-import { Form as CForm, Stack, FormItem } from "carbon-components-react";
+
+import { errorMessages, invalidInput } from "@/shared/errorText";
+import { ADD_STUDENT_BUTTON_TEXT, SAVE_CHANGES } from "@/core/constants";
+import { Form as CForm, Stack } from "carbon-components-react";
 import FormTextField from "@/components/features/form/form-fields/FormTextField";
 import FormLabel from "@/components/ui/FormLabel/FormLabel";
 import { Search } from "@carbon/react";
-import FormForCredentials from "@/components/features/form/FormForCredentials";
 import { ICredentialForm } from "@/shared/types/IForm";
+import ListItems from "@/components/newComponets/ListItems";
 
 //!SECTION
+const dropdownItems = [
+  { name: "John Doe", email: "johndoe@example.com" },
+  { name: "Jane Smith", email: "janesmith@example.com" },
+  { name: "Alex Johnson", email: "alexj@example.com" },
+];
 
+function filterItems(
+  items,
+  searchString
+): {
+  name: string;
+  email: string;
+}[] {
+  const lowerCaseSearchString = searchString.toLowerCase();
+
+  return items.filter((item) => {
+    return (
+      item.name.toLowerCase().includes(lowerCaseSearchString) ||
+      item.email.toLowerCase().includes(lowerCaseSearchString)
+    );
+  });
+}
 const CredentialForm: FunctionComponent = () => {
   const { updateContext } = useOutletContext<{
     updateContext: (state: string, data: ContextData) => void;
   }>();
-
-  const [defaultEditData, setDefaultEditData] = useState<IStudentForm>();
-  const [reqCredentialData, setReqCredentialData] = useState<any[]>();
-  const [toastErrorMessage, setToastErrorMessage] = useState<string>();
+  const [showDropdown, setShowDropdown] = useState({
+    student: false,
+    template: false,
+  });
+  const [studentList, setStudentList] = useState<
+    {
+      name: string;
+      email: string;
+    }[]
+  >([]);
+  const [templateList, setTemplateList] = useState<
+    {
+      name: string;
+      email: string;
+    }[]
+  >([]);
 
   const { id } = useParams();
   const navigate = useNavigate();
-  const queryClient = new QueryClient();
 
   //ANCHOR - renderErrorNotification()
-  const renderErrorNotification = () => {
-    if (toastErrorMessage) {
-      return (
-        <ToastNotification
-          title="Error"
-          type="inline"
-          kind="error"
-          subtitle={toastErrorMessage}
-          full
-        />
-      );
-    }
-
-    if (!(isSubmitted && !!Object.keys(errors).length) || isValid) return null;
-
-    return (
-      <ToastNotification
-        title="Error"
-        type="inline"
-        kind="error"
-        subtitle={errorMessages.required_notification}
-        full
-      />
-    );
-  };
 
   //ANCHOR - RHF Setup
   const {
     register,
     handleSubmit,
-    formState: { isValid, errors, isSubmitted, isDirty },
-    setValue,
-    setError,
-    clearErrors,
+    formState: { errors },
     watch,
     trigger,
-    getValues,
   } = useForm<ICredentialForm>({
     mode: "onTouched",
     defaultValues: {},
@@ -149,7 +133,7 @@ const CredentialForm: FunctionComponent = () => {
       label: "Cancel",
       type: "button",
       kind: "secondary",
-      clickFn: () => navigate("/institution/students"),
+      clickFn: () => navigate("/institution/credentials"),
       aria_label: "cancel",
     },
     {
@@ -166,6 +150,33 @@ const CredentialForm: FunctionComponent = () => {
       // },
     },
   ];
+  const handleBlurForStudent = () => {
+    // Hides the dropdown when the user stops interacting with the input
+    setShowDropdown((prev) => ({ ...prev, student: false }));
+  };
+
+  const handleBlurForTemplate = () => {
+    // Hides the dropdown when the user stops interacting with the input
+    setShowDropdown((prev) => ({ ...prev, template: false }));
+  };
+
+  useEffect(() => {
+    if (watch("studentName").length > 0) {
+      const filtered = filterItems(dropdownItems, watch("studentName"));
+      setStudentList(filtered);
+      setShowDropdown((prev) => ({ ...prev, student: true }));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [watch("studentName")]);
+
+  useEffect(() => {
+    if (watch("templateName").length > 0) {
+      const filtered = filterItems(dropdownItems, watch("templateName"));
+      setTemplateList(filtered);
+      setShowDropdown((prev) => ({ ...prev, template: true }));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [watch("templateName")]);
 
   return (
     <>
@@ -173,44 +184,18 @@ const CredentialForm: FunctionComponent = () => {
         <title>{id ? "Edit Credential" : "Add Credential"}</title>
       </Helmet>
       {/* {loading && <Loading />} */}
-      {/* {!studentsSchema.isLoading && (
-        <Form
-          errorNotification={renderErrorNotification()}
-          formButtons={formButtons}
-          formFields={configFormFields(errors, {
-            photo: watch("photo"),
-          })}
-          onSubmit={handleSubmit(onSubmit, onError)}
-          register={register}
-          setValue={setValue}
-          trigger={trigger}
-          setError={setError}
-          clearErrors={clearErrors}
-        />
-      )} */}
-      <FormForCredentials
-        formButtons={formButtons}
-        onSubmit={onSubmit}
-        register={register}
-        trigger={trigger}
-        formFields={[]}
-      />
-      <CForm onSubmit={() => {}} className="form">
+
+      <CForm onSubmit={handleSubmit(onSubmit)} className="form">
         <Stack gap={1} className="form__stack">
           <div className="form__row">
-            <FormLabel
-              label="Link to a student"
-              description="Search and select the student you want this credential to be linked to"
-            />
-
             <FormTextField
               register={register}
               data={
                 {
                   type: "text",
-                  id: "firstName",
-                  label: "First name",
-                  placeholder: "Type in first name",
+                  id: "name",
+                  label: "Credential name",
+                  placeholder: "How would you like to name this credential",
                   validations: {
                     required: errorMessages.required,
                     maxLength: {
@@ -222,13 +207,51 @@ const CredentialForm: FunctionComponent = () => {
                       message: "",
                     },
                   },
-                  errors: "",
+                  errors: invalidInput(errors, "name"),
                   isClaim: true,
                 } as unknown as IFormTextInput
               }
               cancelForm={cancelForm}
             />
-            <Search labelText="" />
+            <FormLabel
+              label="Link to a student"
+              description="Search and select the student you want this credential to be linked to"
+            />
+            <Search
+              labelText=""
+              {...register("studentName")}
+              onClear={() => {}}
+              placeholder="Search for student name or email"
+              onBlur={handleBlurForStudent}
+            />
+            {showDropdown.student &&
+              studentList.map((item, index) => (
+                <ListItems
+                  key={index}
+                  details={item?.email}
+                  name={item?.name}
+                />
+              ))}
+            <FormLabel
+              label="Link to a template"
+              description="Search and select the template you want this credential to be linked to"
+            />
+            <Search
+              labelText="dfsdf"
+              {...register("templateName")}
+              onClear={() => {}}
+              placeholder="Search for template name"
+              onBlur={handleBlurForTemplate}
+            />
+            {showDropdown.template &&
+              templateList.map((item, index) => (
+                <ListItems key={index} details={""} name={item?.name} />
+              ))}
+          </div>
+          <div className="form__row form__row__buttons">
+            {formButtons.map((button: IButton, i: number) => (
+              <Button key={i} {...button} />
+            ))}
           </div>
         </Stack>
       </CForm>
