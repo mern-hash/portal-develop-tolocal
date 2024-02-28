@@ -75,6 +75,10 @@ export const INSTITUTION_HEADING_LINKS = [
     text: "Students",
     path: "/institution/students",
   },
+  {
+    text: "Credentials",
+    path: "/institution/credentials",
+  },
 ];
 
 // FILES

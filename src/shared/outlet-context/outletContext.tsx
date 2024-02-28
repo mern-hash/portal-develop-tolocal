@@ -137,6 +137,32 @@ export const institutionStudentsHLC = (navigate) => {
   };
 };
 
+//ANCHOR - institutionStudentsHLC
+export const institutionCredentialsHLC = (navigate) => {
+  return {
+    links: INSTITUTION_HEADING_LINKS,
+    logoLink: INSTUTION_HEADING_LOGOLINK,
+    title: "Credentials",
+    button: (
+      <HeaderButton
+        id="add-student"
+        buttonText={ADD_STUDENTS_DROPDOWN_TEXT}
+        iconType="add"
+        items={[
+          {
+            text: "Manually",
+            onClick: () => navigate("create"),
+          },
+          {
+            text: "Bulk upload",
+            onClick: () => navigate("bulk"),
+          },
+        ]}
+      />
+    ),
+  };
+};
+
 //ANCHOR - studentFormHLC
 export const studentFormHLC = (title) => {
   return {

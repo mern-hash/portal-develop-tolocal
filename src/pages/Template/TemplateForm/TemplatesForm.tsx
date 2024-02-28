@@ -3,7 +3,6 @@ import { FunctionComponent, ReactElement, useEffect } from "react";
 import { useParams, useNavigate, useOutletContext } from "react-router-dom";
 import { useFieldArray, useForm } from "react-hook-form";
 import { Helmet } from "react-helmet-async";
-
 // Components
 import { Button } from "@/components/ui";
 // Util
@@ -11,11 +10,11 @@ import { IButton, IFormTextInput } from "@/shared/types";
 import { ContextTypes, ContextData } from "@/shared/types/ContextTypes";
 import { templateFormFields } from "@/shared/form-fields/formFields";
 import { ADMIN_HEADING_LINKS, ADMIN_HEADING_LOGOLINK } from "@/core/constants";
-
 import { Form as CForm, Stack } from "carbon-components-react";
 import FormTextField from "@/components/features/form/form-fields/FormTextField";
 import { TemplateForm } from "@/shared/types/IForm";
 import CustomForm from "@/components/ui/customForm/CustomForm";
+import "./templateform.scss";
 
 function findDuplicateIds(arr) {
   const idMap = new Map();
@@ -134,8 +133,78 @@ const TemplatesForm: FunctionComponent = (): ReactElement => {
       <Helmet>
         <title>{id ? "Update" : "Create"}</title>
       </Helmet>
-
       <CForm onSubmit={handleSubmit(onSubmit)} className="form">
+        <div className="template-form__wrapper">
+          <div className="template-form__left-content">
+            <h6>Template name</h6>
+            <p>
+              The template name is used to derive the "type" field in the
+              credential. It is visible to everyone who views the credential.
+            </p>
+          </div>
+          <Stack gap={7} className="form__stack template-form__stack">
+            <FormTextField
+              register={register}
+              data={
+                templateFormFields(register, errors, watch)[0] as IFormTextInput
+              }
+              cancelForm={cancelForm}
+            />
+          </Stack>
+        </div>
+        <div className="template-form__wrapper">
+          <div className="template-form__left-content">
+            <h6>Template description</h6>
+            <p>
+              Describe the template purpose. This is optional but recommended..
+            </p>
+          </div>
+          <Stack gap={7} className="form__stack template-form__stack">
+            <FormTextField
+              register={register}
+              data={
+                templateFormFields(register, errors, watch)[1] as IFormTextInput
+              }
+              cancelForm={cancelForm}
+            />
+          </Stack>
+        </div>
+        <div className="template-form__wrapper">
+          <div className="template-form__left-content">
+            <h6>Template attributes</h6>
+            <p>Define the attributes you want on the credential.</p>
+          </div>
+          <Stack
+            gap={7}
+            className="form__stack template-form__stack-attributes"
+          >
+            {fields.map((item, i) => (
+              <CustomForm
+                key={item.id}
+                indexOfField={i}
+                remove={remove}
+                register={register}
+                cancelForm={cancelForm}
+                watch={watch}
+                errors={errors?.customField && errors?.customField[i]}
+                setError={setError}
+              />
+            ))}
+            <div className="template-form__Addfield-btnwrapper">
+              <Button
+                clickFn={() => {
+                  append(blankCustomTemplate);
+                }}
+                label="Add field"
+                type="button"
+                aria_label="add-button"
+                kind="secondary"
+              />
+            </div>
+          </Stack>
+        </div>
+      </CForm>
+      {/* <CForm onSubmit={handleSubmit(onSubmit)} className="form">
         <Stack gap={7} className="form__stack">
           <FormTextField
             register={register}
@@ -164,7 +233,6 @@ const TemplatesForm: FunctionComponent = (): ReactElement => {
                 setError={setError}
               />
             ))}
-
             <Button
               clickFn={() => {
                 append(blankCustomTemplate);
@@ -181,7 +249,7 @@ const TemplatesForm: FunctionComponent = (): ReactElement => {
             ))}
           </div>
         </Stack>
-      </CForm>
+      </CForm> */}
     </>
   );
 };

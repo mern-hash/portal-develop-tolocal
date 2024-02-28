@@ -1,0 +1,52 @@
+@use "@carbon/react/scss/breakpoint" as *;
+@use "@carbon/react/scss/colors" as *;
+@use "@carbon/react/scss/type" as *;
+@use "@carbon/react/scss/spacing" as *;
+
+.template-form {
+  &__wrapper {
+    display: flex;
+      align-content: flex-start;
+      justify-content: flex-start;
+      gap: 15px;
+      border-bottom: 1px solid #d3d3d3;
+      padding-top: 15px;
+      padding-bottom: 15px;
+  }
+  &__left-content{
+    width: 300px;
+    & h6{
+      text-align: left;
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 18px;
+      letter-spacing: 0.1599999964237213px;
+      color: #161616;
+    }
+        & p {
+          text-align: left;
+          font-size: 14px;
+          font-weight: 400;
+          line-height: 18px;
+          letter-spacing: 0.16px;
+          color: #525252;
+          margin-top: 5px;
+        }
+  }
+&__stack{
+  grid-template-columns: 100%;
+}
+  &__stack-attributes{
+    display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-start;
+      align-items: center;
+  }
+  &__Addfield-btnwrapper{
+    width: 100%;
+  }
+  &__DeleteSvg{
+    width: 20px;
+      height: 22px;
+  }
+}

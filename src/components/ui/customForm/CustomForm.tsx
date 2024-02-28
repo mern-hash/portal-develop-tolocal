@@ -9,6 +9,7 @@ import { IFormSelectInput, IFormTextInput } from "@/shared/types";
 import { CustomFormType } from "@/shared/types/IForm";
 import { Button } from "@/components/ui";
 import FormCheck from "@/components/features/form/form-fields/FormCheck";
+import Delete from "@/assets/icons/Delete";
 
 const CustomForm = ({
   indexOfField,
@@ -27,67 +28,8 @@ const CustomForm = ({
   }, [watch(`customField.${indexOfField}.attributeType`)]);
 
   return (
-    <Stack gap={7} className="form__stack">
-      <FormTextField
-        register={register}
-        data={
-          customFormFields(
-            register,
-            errors,
-            watch,
-            indexOfField
-          )[0] as IFormTextInput
-        }
-        cancelForm={cancelForm}
-      />
-      <FormTextField
-        register={register}
-        data={
-          customFormFields(
-            register,
-            errors,
-            watch,
-            indexOfField
-          )[4] as IFormTextInput
-        }
-        cancelForm={cancelForm}
-      />
-
-      <FormSelectField
-        register={register}
-        data={
-          customFormFields(
-            register,
-            errors,
-            {
-              attributeType: watch(`customField.${indexOfField}.attributeType`),
-            },
-            indexOfField
-          )[2] as IFormSelectInput
-        }
-      />
-
-      <Button
-        clickFn={deleteFunc}
-        label=""
-        aria_label="delete"
-        kind="secondary"
-        icon="add"
-        type="button"
-      />
-      <FormTextField
-        register={register}
-        data={
-          customFormFields(
-            register,
-            errors,
-            watch,
-            indexOfField
-          )[1] as IFormTextInput
-        }
-        cancelForm={cancelForm}
-      />
-      {watch(`customField.${indexOfField}.attributeType`) === "select" && (
+    <>
+      <div>
         <FormTextField
           register={register}
           data={
@@ -96,16 +38,80 @@ const CustomForm = ({
               errors,
               watch,
               indexOfField
-            )[5] as IFormTextInput
+            )[0] as IFormTextInput
           }
           cancelForm={cancelForm}
         />
-      )}
-      <FormCheck
-        register={register}
-        data={customFormFields(register, errors, watch, indexOfField)[3]}
-      />
-    </Stack>
+        <FormSelectField
+          register={register}
+          data={
+            customFormFields(
+              register,
+              errors,
+              {
+                attributeType: watch(
+                  `customField.${indexOfField}.attributeType`
+                ),
+              },
+              indexOfField
+            )[2] as IFormSelectInput
+          }
+        />
+
+        <FormTextField
+          register={register}
+          data={
+            customFormFields(
+              register,
+              errors,
+              watch,
+              indexOfField
+            )[4] as IFormTextInput
+          }
+          cancelForm={cancelForm}
+        />
+
+        {/* <Button
+        clickFn={deleteFunc}
+        label=""
+        aria_label="delete"
+        kind="secondary"
+        icon="add"
+        type="button"
+      /> */}
+        <FormTextField
+          register={register}
+          data={
+            customFormFields(
+              register,
+              errors,
+              watch,
+              indexOfField
+            )[1] as IFormTextInput
+          }
+          cancelForm={cancelForm}
+        />
+        {watch(`customField.${indexOfField}.attributeType`) === "select" && (
+          <FormTextField
+            register={register}
+            data={
+              customFormFields(
+                register,
+                errors,
+                watch,
+                indexOfField
+              )[5] as IFormTextInput
+            }
+            cancelForm={cancelForm}
+          />
+        )}
+        <FormCheck
+          register={register}
+          data={customFormFields(register, errors, watch, indexOfField)[3]}
+        />
+      </div>
+      <Delete />
+    </>
   );
 };
 

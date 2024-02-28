@@ -123,4 +123,10 @@ export interface IStudentForm {
   fields: any;
 }
 
+export interface ICredentialForm {
+  name: string;
+  templateName: string;
+  studentName: string;
+}
+
 export type TFieldID = keyof IInstitutionForm | keyof IStudentForm;

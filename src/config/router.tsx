@@ -27,6 +27,8 @@ import Credential from "@/pages/Credential";
 import * as Sentry from "@sentry/react";
 import TemplateList from "@/pages/Template/TemplateList";
 import TemplatesForm from "@/pages/Template/TemplateForm";
+import InstitutionCredentials from "@/pages/Institution/InstitutionCredentials";
+import CredentialForm from "@/pages/Institution/CredentialForm";
 
 const sentryCreateBrowserRouter =
   Sentry.wrapCreateBrowserRouter(createBrowserRouter);
@@ -113,6 +115,14 @@ const router = sentryCreateBrowserRouter([
       {
         path: "students/bulk",
         element: <StudentBulk />,
+      },
+      {
+        path: "credentials",
+        element: <InstitutionCredentials />,
+      },
+      {
+        path: "credentials/create",
+        element: <CredentialForm />,
       },
     ],
   },

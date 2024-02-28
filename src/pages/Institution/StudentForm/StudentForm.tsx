@@ -319,7 +319,7 @@ const StudentForm: FunctionComponent = () => {
     if (studentsSchema?.data) {
       return [
         ...studentFormFields(errors),
-        // ...formatSchema(studentsSchema.data, errors),
+        ...formatSchema(studentsSchema.data, errors),
         studentFormImage({
           photo: watchers.photo,
         }),
@@ -349,6 +349,14 @@ const StudentForm: FunctionComponent = () => {
           setError={setError}
           clearErrors={clearErrors}
         />
+      )}
+      {id && (
+        <div>
+          <div>
+            <p>Credential Name</p>
+            <p>Credential details</p>
+          </div>
+        </div>
       )}
     </>
   );
