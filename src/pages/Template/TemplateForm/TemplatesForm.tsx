@@ -15,6 +15,7 @@ import FormTextField from "@/components/features/form/form-fields/FormTextField"
 import { TemplateForm } from "@/shared/types/IForm";
 import CustomForm from "@/components/ui/customForm/CustomForm";
 import "./templateform.scss";
+import FormTextAreaField from "@/components/features/form/form-fields/FormTextAreaField";
 
 function findDuplicateIds(arr) {
   const idMap = new Map();
@@ -114,7 +115,7 @@ const TemplatesForm: FunctionComponent = (): ReactElement => {
       aria_label: "cancel",
     },
     {
-      label: id ? "Save changes" : "Create institution",
+      label: id ? "Save changes" : "Build a Template",
       type: "submit",
       kind: "primary",
       icon: id ? undefined : "add",
@@ -127,7 +128,7 @@ const TemplatesForm: FunctionComponent = (): ReactElement => {
       ? evt.relatedTarget.click()
       : trigger(id);
   };
-  console.log(errors);
+
   return (
     <>
       <Helmet>
@@ -160,12 +161,13 @@ const TemplatesForm: FunctionComponent = (): ReactElement => {
             </p>
           </div>
           <Stack gap={7} className="form__stack template-form__stack">
-            <FormTextField
+            <FormTextAreaField
               register={register}
               data={
                 templateFormFields(register, errors, watch)[1] as IFormTextInput
               }
               cancelForm={cancelForm}
+              classNameCustom="template-form__input-full-width template-form__input-textarea-style"
             />
           </Stack>
         </div>
@@ -187,7 +189,6 @@ const TemplatesForm: FunctionComponent = (): ReactElement => {
                 cancelForm={cancelForm}
                 watch={watch}
                 errors={errors?.customField && errors?.customField[i]}
-                setError={setError}
               />
             ))}
             <div className="template-form__Addfield-btnwrapper">
@@ -203,53 +204,12 @@ const TemplatesForm: FunctionComponent = (): ReactElement => {
             </div>
           </Stack>
         </div>
+        <div className="form__row form__row__buttons template-form__build-cancel-btn-wrapper">
+          {formButtons.map((button: IButton, i: number) => (
+            <Button key={i} {...button} />
+          ))}
+        </div>
       </CForm>
-      {/* <CForm onSubmit={handleSubmit(onSubmit)} className="form">
-        <Stack gap={7} className="form__stack">
-          <FormTextField
-            register={register}
-            data={
-              templateFormFields(register, errors, watch)[0] as IFormTextInput
-            }
-            cancelForm={cancelForm}
-          />
-          <FormTextField
-            register={register}
-            data={
-              templateFormFields(register, errors, watch)[1] as IFormTextInput
-            }
-            cancelForm={cancelForm}
-          />
-          <div style={{ display: "flex", flexDirection: "column" }}>
-            {fields.map((item, i) => (
-              <CustomForm
-                key={item.id}
-                indexOfField={i}
-                remove={remove}
-                register={register}
-                cancelForm={cancelForm}
-                watch={watch}
-                errors={errors?.customField && errors?.customField[i]}
-                setError={setError}
-              />
-            ))}
-            <Button
-              clickFn={() => {
-                append(blankCustomTemplate);
-              }}
-              label="Add field"
-              type="button"
-              aria_label="add-button"
-              kind="secondary"
-            />
-          </div>
-          <div className="form__row form__row__buttons">
-            {formButtons.map((button: IButton, i: number) => (
-              <Button key={i} {...button} />
-            ))}
-          </div>
-        </Stack>
-      </CForm> */}
     </>
   );
 };

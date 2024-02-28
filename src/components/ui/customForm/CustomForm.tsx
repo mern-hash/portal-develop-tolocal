@@ -1,16 +1,25 @@
 import FormTextField from "@/components/features/form/form-fields/FormTextField";
-import { invalidInput } from "@/shared/errorText";
-import React, { useEffect } from "react";
-import { useForm } from "react-hook-form";
-import { Form as CForm, Stack } from "carbon-components-react";
 import FormSelectField from "@/components/features/form/form-fields/FormSelectField";
 import { customFormFields } from "@/shared/form-fields/formFields";
 import { IFormSelectInput, IFormTextInput } from "@/shared/types";
-import { CustomFormType } from "@/shared/types/IForm";
-import { Button } from "@/components/ui";
 import FormCheck from "@/components/features/form/form-fields/FormCheck";
 import Delete from "@/assets/icons/Delete";
-import { TextArea } from "@carbon/react";
+import FormTextAreaField from "@/components/features/form/form-fields/FormTextAreaField";
+import {
+  UseFieldArrayRemove,
+  UseFormRegister,
+  UseFormWatch,
+} from "react-hook-form";
+import { TemplateForm } from "@/shared/types/IForm";
+
+type Props = {
+  indexOfField: number;
+  register: UseFormRegister<TemplateForm>;
+  cancelForm: (evt: any, id: any) => void;
+  remove: UseFieldArrayRemove;
+  watch: UseFormWatch<TemplateForm>;
+  errors: any;
+};
 
 const CustomForm = ({
   indexOfField,
@@ -19,20 +28,9 @@ const CustomForm = ({
   remove,
   watch,
   errors,
-}: any) => {
+}: Props) => {
   const deleteFunc = () => {
     remove(indexOfField);
-  };
-
-  useEffect(() => {
-    console.log(watch(`customField.${indexOfField}.attributeType`));
-  }, [watch(`customField.${indexOfField}.attributeType`)]);
-
-  const textareaProps = {
-    labelText: "Attribute Description",
-    placeholder: "Describe what this attribute is all about...",
-    id: "test5",
-    rows: 4,
   };
 
   return (
@@ -80,7 +78,8 @@ const CustomForm = ({
             cancelForm={cancelForm}
             classNameCustom="template-form__input-full-width"
           />
-          {/* <FormTextField
+          <FormTextAreaField
+            classNameCustom="template-form__input-full-width template-form__input-textarea-style"
             register={register}
             data={
               customFormFields(
@@ -91,12 +90,8 @@ const CustomForm = ({
               )[1] as IFormTextInput
             }
             cancelForm={cancelForm}
-            classNameCustom="template-form__input-full-width"
-          /> */}
-          <TextArea
-            {...textareaProps}
-            className="template-form__input-full-width template-form__input-textarea-style"
           />
+
           {watch(`customField.${indexOfField}.attributeType`) === "select" && (
             <FormTextField
               register={register}
@@ -118,7 +113,10 @@ const CustomForm = ({
             classNameCustom="template-form__Requird-check"
           />
         </div>
-        <Delete classNameCustom="template-form__DeleteSvg" />
+        <Delete
+          classNameCustom="template-form__DeleteSvg"
+          clickFunc={deleteFunc}
+        />
       </div>
     </>
   );

@@ -12,9 +12,16 @@
     border-bottom: 1px solid #d3d3d3;
     padding-top: 15px;
     padding-bottom: 15px;
+
+    @media screen and (max-width: 820px) {
+      flex-direction: column;
+    }
   }
   &__left-content {
     width: 300px;
+    @media screen and (max-width: 280px) {
+      width: 240px;
+    }
     & h6 {
       text-align: left;
       font-size: 14px;
@@ -55,8 +62,14 @@
       line-height: 1;
       height: auto;
       --cds-layout-size-height-local: 1;
-      &:hover {
+      &:hover,
+      &:active {
         background-color: transparent;
+        color: #0f62fe;
+      }
+      &:focus {
+        border-color: transparent;
+        box-shadow: none;
         color: #0f62fe;
       }
     }
@@ -86,9 +99,15 @@
   }
   &__input-first-half {
     width: calc(70% - 7.5px);
+    @media screen and (max-width: 820px) {
+      width: 100%;
+    }
   }
   &__select-secound-half {
     width: calc(30% - 7.5px);
+    @media screen and (max-width: 820px) {
+      width: 100%;
+    }
   }
   &__input-full-width {
     width: 100%;
@@ -106,6 +125,14 @@
       line-height: 18px;
       letter-spacing: 0.1599999964237213px;
       color: #161616;
+    }
+  }
+  &__build-cancel-btn-wrapper {
+    margin-top: 30px;
+    & button {
+      &:last-of-type {
+        margin-right: 0;
+      }
     }
   }
 }
