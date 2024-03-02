@@ -46,6 +46,7 @@ const Button: FunctionComponent<IButton> = ({
   icon,
   full,
   aria_label,
+  size,
 }): ReactElement => {
   const getIcon = () => {
     if (icon === "arrow") return ArrowRight;
@@ -61,6 +62,7 @@ const Button: FunctionComponent<IButton> = ({
       data-testid="button"
       aria-label={aria_label ? aria_label : "button"}
       kind={kind}
+      size={size || "lg"}
     >
       {label}
     </CButton>

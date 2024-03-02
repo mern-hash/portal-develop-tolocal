@@ -65,19 +65,7 @@ const CustomForm = ({
               )[2] as IFormSelectInput
             }
           />
-          <FormTextField
-            register={register}
-            data={
-              customFormFields(
-                register,
-                errors,
-                watch,
-                indexOfField
-              )[4] as IFormTextInput
-            }
-            cancelForm={cancelForm}
-            classNameCustom="template-form__input-full-width"
-          />
+
           <FormTextAreaField
             classNameCustom="template-form__input-full-width template-form__input-textarea-style"
             register={register}
@@ -101,17 +89,22 @@ const CustomForm = ({
                   errors,
                   watch,
                   indexOfField
-                )[5] as IFormTextInput
+                )[3] as IFormTextInput
               }
               cancelForm={cancelForm}
               classNameCustom="template-form__input-full-width"
             />
           )}
-          <FormCheck
-            register={register}
-            data={customFormFields(register, errors, watch, indexOfField)[3]}
-            classNameCustom="template-form__Requird-check"
-          />
+          {Array.from({ length: 6 }, (_, index) => index + 4).map((item) => (
+            <FormCheck
+              register={register}
+              data={
+                customFormFields(register, errors, watch, indexOfField)[item]
+              }
+              classNameCustom="template-form__Requird-check"
+              key={item}
+            />
+          ))}
         </div>
         <Delete
           classNameCustom="template-form__DeleteSvg"

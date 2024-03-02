@@ -17,34 +17,16 @@ import CustomForm from "@/components/ui/customForm/CustomForm";
 import "./templateform.scss";
 import FormTextAreaField from "@/components/features/form/form-fields/FormTextAreaField";
 
-function findDuplicateIds(arr) {
-  const idMap = new Map();
-
-  arr.forEach((element, index) => {
-    const idKey = element.id;
-    if (!idMap.has(idKey)) {
-      idMap.set(idKey, [index]);
-    } else {
-      idMap.get(idKey).push(index);
-    }
-  });
-
-  const duplicates: any[] = [];
-  idMap.forEach((indices, id) => {
-    if (indices.length > 1) {
-      duplicates.push({ indices });
-    }
-  });
-
-  return duplicates;
-}
-
 const blankCustomTemplate = {
   attributeType: "",
   name: "",
   description: "",
   require: false,
-  id: "",
+  isClaim: false,
+  isSearchable: false,
+  isSortable: false,
+  isFilterable: false,
+  inTable: false,
 };
 
 const TemplatesForm: FunctionComponent = (): ReactElement => {
@@ -91,19 +73,7 @@ const TemplatesForm: FunctionComponent = (): ReactElement => {
   }, []);
 
   const onSubmit = async (data) => {
-    const duplicateId = findDuplicateIds(data.customField);
-    if (duplicateId.length > 0) {
-      duplicateId.forEach(({ indices }) => {
-        indices.forEach((element) => {
-          setError(`customField.${element}.id`, {
-            type: "custom",
-            message: "All field should have unique name!",
-          });
-        });
-      });
-      return;
-    }
-    return;
+    console.log(data);
   };
 
   const formButtons: IButton[] = [

@@ -13,6 +13,7 @@ const attributeData = [
   { name: "time", value: "time" },
   { name: "date", value: "date" },
   { name: "date-time", value: "dateTime" },
+  { name: "list", value: "list" },
 ];
 
 const SelectAtributeType: FunctionComponent<{
@@ -34,7 +35,7 @@ const SelectAtributeType: FunctionComponent<{
     <Select
       id={id}
       value={selectedValue}
-      labelText={`Select Attribute Type`}
+      labelText={`Attribute Type`}
       {...register(id, validations)}
       {...errors}
       className="template-form__select-secound-half"

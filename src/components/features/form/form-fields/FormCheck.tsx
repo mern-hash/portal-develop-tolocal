@@ -11,12 +11,11 @@ function FormCheck({
   classNameCustom?: any;
 }) {
   const { id, label } = data;
-
   return (
     <Checkbox
       id={id}
       labelText={label}
-      {...register("require")}
+      {...register(id)}
       className={classNameCustom}
     />
   );

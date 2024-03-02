@@ -283,36 +283,7 @@ export const customFormFields = (
       register,
       watch: watchers,
     },
-    {
-      type: "checkbox",
-      id: `customField.${index}.require`,
-      label: "Required",
-      placeholder: "Require",
-      errors: invalidInput(errors, "Require"),
-    },
-    {
-      type: "text",
-      id: `customField.${index}.id`,
-      label: "Field unique Name(Without Spase)",
-      placeholder: "Field unique Name(Without Spase)",
-      validations: {
-        required: "Required field",
-        minLength: {
-          value: 2,
-          message: errorMessages.min_length(2),
-        },
-        maxLength: {
-          value: 15,
-          message: errorMessages.max_length(15),
-        },
-        pattern: {
-          value: /^[^\d\s!@#$%^&*(),.?":{}|<>]*$/,
-          message:
-            "Input must not contain spaces, numbers, or special characters.",
-        },
-      },
-      errors: invalidInput(errors, "id"),
-    },
+
     {
       type: "text",
       id: `customField.${index}.selectOption`,
@@ -326,6 +297,49 @@ export const customFormFields = (
         },
       },
       errors: invalidInput(errors, "selectOption"),
+    },
+
+    {
+      type: "checkbox",
+      id: `customField.${index}.require`,
+      label: "Required",
+      placeholder: "Require",
+      errors: invalidInput(errors, "Require"),
+    },
+    {
+      type: "checkbox",
+      id: `customField.${index}.isClaim`,
+      label: "isClaim",
+      placeholder: "isClaim",
+      errors: invalidInput(errors, "isClaim"),
+    },
+    {
+      type: "checkbox",
+      id: `customField.${index}.isSearchable`,
+      label: "isSearchable",
+      placeholder: "isSearchable",
+      errors: invalidInput(errors, "isSearchable"),
+    },
+    {
+      type: "checkbox",
+      id: `customField.${index}.isSortable`,
+      label: "isSortable",
+      placeholder: "isSortable",
+      errors: invalidInput(errors, "isSortable"),
+    },
+    {
+      type: "checkbox",
+      id: `customField.${index}.isFilterable`,
+      label: "isFilterable",
+      placeholder: "isFilterable",
+      errors: invalidInput(errors, "isFilterable"),
+    },
+    {
+      type: "checkbox",
+      id: `customField.${index}.inTable`,
+      label: "inTable",
+      placeholder: "inTable",
+      errors: invalidInput(errors, "inTable"),
     },
   ];
 };

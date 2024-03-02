@@ -1,10 +1,10 @@
 import { Loading, ContainedListItem } from "carbon-components-react";
 
-const ListItems = ({ name, details }) => {
+const ListItems = ({ name, details }: { name: string; details?: string }) => {
   return (
     <ContainedListItem>
       <span>{name}</span>
-      <span>{details}</span>
+      {details && <span>{details}</span>}
     </ContainedListItem>
   );
 };

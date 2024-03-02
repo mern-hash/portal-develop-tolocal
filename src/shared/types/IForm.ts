@@ -73,6 +73,15 @@ export interface IFormComponent {
   clearErrors?: any;
 }
 
+export interface IFormCredentialsComponent {
+  formButtons: IButton[];
+  //TODO: update types once form schema is finished
+  formFields: any;
+  onSubmit: () => void;
+  register: UseFormRegister<any>;
+  trigger: UseFormTrigger<any>;
+}
+
 // Institutions
 export interface IInstitutionForm {
   address1: string;
@@ -96,8 +105,12 @@ export interface TemplateForm {
     name: string;
     description: string;
     require: boolean;
-    id: string;
     selectOption?: string;
+    isClaim: boolean;
+    isSearchable: boolean;
+    isSortable: boolean;
+    isFilterable: boolean;
+    inTable: boolean;
   }[];
 }
 

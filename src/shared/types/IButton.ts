@@ -11,6 +11,7 @@ enum Types {
 enum Kinds {
   primary,
   secondary,
+  tertiary,
 }
 
 interface IButton {
@@ -22,6 +23,7 @@ interface IButton {
   icon?: keyof typeof Icons;
   kind?: keyof typeof Kinds;
   aria_label?: string;
+  size?: string;
 }
 
 export default IButton;

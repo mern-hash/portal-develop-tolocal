@@ -358,7 +358,6 @@ const StudentForm: FunctionComponent = () => {
           clearErrors={clearErrors}
         />
       )}
-      {id && <div></div>}
     </>
   );
 };

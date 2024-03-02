@@ -2,7 +2,12 @@
 import { FunctionComponent, SyntheticEvent } from "react";
 import "./form.scss";
 // Carbon
-import { Form as CForm, Stack, FormItem } from "carbon-components-react";
+import {
+  Form as CForm,
+  Stack,
+  FormItem,
+  ContainedList,
+} from "carbon-components-react";
 import { Button } from "@/components/ui";
 // Util
 import {
@@ -130,7 +135,7 @@ const Form: FunctionComponent<IFormComponent> = ({
     evt.preventDefault();
     return onSubmit();
   };
-
+  //
   const cancelForm = (
     evt: {
       relatedTarget: {
@@ -200,7 +205,7 @@ const Form: FunctionComponent<IFormComponent> = ({
               );
             case "addTemplate":
               return (
-                <div className="form__row">
+                <div className="form__row form__issued-credentials-head">
                   <FormItem className="file-input" key={i}>
                     <p className="cds--file--label">{row?.label}</p>
                     {true ? (
@@ -208,26 +213,36 @@ const Form: FunctionComponent<IFormComponent> = ({
                         {row.placeholder}
                       </p>
                     ) : undefined}
-                    <button type="button">Add new credential</button>
+                    {/* <button type="button">Add new credential</button> */}
                   </FormItem>
+                  <Button
+                    kind="tertiary"
+                    label="Add new credential"
+                    clickFn={() => {}}
+                    icon="add"
+                    type="button"
+                    size="sm"
+                  />
                 </div>
               );
             case "credentialsList":
               const { data } = row as unknown as IListCredentials;
               return (
                 <div className="form__row">
-                  {data.map(
-                    (
-                      list: { name: string; details: string },
-                      index: number
-                    ) => (
-                      <ListItems
-                        name={list.name}
-                        details={list.details}
-                        key={index}
-                      />
-                    )
-                  )}
+                  <ContainedList className="form__search-list-wrapper">
+                    {data.map(
+                      (
+                        list: { name: string; details: string },
+                        index: number
+                      ) => (
+                        <ListItems
+                          name={list.name}
+                          details={list.details}
+                          key={index}
+                        />
+                      )
+                    )}
+                  </ContainedList>
                 </div>
               );
             default:
