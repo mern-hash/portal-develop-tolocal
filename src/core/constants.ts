@@ -63,7 +63,11 @@ export const ADMIN_HEADING_LINKS = [
   },
   {
     text: "Template",
-    path: "/admin/template",
+    path: "/admin/templates",
+  },
+  {
+    text: "Fields",
+    path: "/admin/fields",
   },
 ];
 export const INSTITUTION_HEADING_LINKS = [

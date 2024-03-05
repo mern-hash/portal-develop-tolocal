@@ -22,9 +22,10 @@ const SelectAtributeType: FunctionComponent<{
   errors: { message: string; ref: JSX.Element; type: string } | undefined;
   watch?: any;
   validations: any;
-}> = ({ id, register, errors, watch, validations }) => {
+  label: string;
+  classNameCustom?: string;
+}> = ({ id, register, errors, watch, validations, label, classNameCustom }) => {
   const { attributeType } = watch;
-
   const [selectedValue, setSelectedValue] = useState<string>("");
 
   useEffect(() => {
@@ -35,10 +36,10 @@ const SelectAtributeType: FunctionComponent<{
     <Select
       id={id}
       value={selectedValue}
-      labelText={`Attribute Type`}
+      labelText={label}
       {...register(id, validations)}
       {...errors}
-      className="template-form__select-secound-half"
+      className={classNameCustom}
     >
       <SelectItem disabled hidden value="" text="Select Atribute" />
       {attributeData?.map((c, i) => (

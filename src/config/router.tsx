@@ -29,6 +29,8 @@ import TemplateList from "@/pages/Template/TemplateList";
 import TemplatesForm from "@/pages/Template/TemplateForm";
 import InstitutionCredentials from "@/pages/Institution/InstitutionCredentials";
 import CredentialForm from "@/pages/Institution/CredentialForm";
+import FieldsForm from "@/pages/Fields/FieldsForm";
+import FieldList from "@/pages/Fields/FieldList";
 
 const sentryCreateBrowserRouter =
   Sentry.wrapCreateBrowserRouter(createBrowserRouter);
@@ -80,10 +82,16 @@ const router = sentryCreateBrowserRouter([
       },
       { path: "integrations", element: <IntegrationsList /> },
       { path: "integrations/create", element: <IntegrationsForm /> },
-      { path: "template", element: <TemplateList /> },
+      { path: "templates", element: <TemplateList /> },
       {
-        path: "template/create",
+        path: "templates/create",
         element: <TemplatesForm />,
+      },
+      { path: "fields", element: <FieldList /> },
+
+      {
+        path: "fields/create",
+        element: <FieldsForm />,
       },
     ],
   },

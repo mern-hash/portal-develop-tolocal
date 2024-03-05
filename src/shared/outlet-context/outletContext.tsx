@@ -33,7 +33,24 @@ export const templatesListHLC = (navigate) => {
     title: "Templates",
     button: (
       <Button
-        label="Build a temnplate"
+        label="Build a template"
+        icon="add"
+        type="button"
+        clickFn={() => navigate("create")}
+        kind="primary"
+      />
+    ),
+  };
+};
+
+export const formListHLC = (navigate) => {
+  return {
+    logoLink: ADMIN_HEADING_LOGOLINK,
+    links: ADMIN_HEADING_LINKS,
+    title: "Fields",
+    button: (
+      <Button
+        label="Build a Fields"
         icon="add"
         type="button"
         clickFn={() => navigate("create")}

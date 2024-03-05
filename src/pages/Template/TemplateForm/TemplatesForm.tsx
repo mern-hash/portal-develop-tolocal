@@ -16,6 +16,9 @@ import { TemplateForm } from "@/shared/types/IForm";
 import CustomForm from "@/components/ui/customForm/CustomForm";
 import "./templateform.scss";
 import FormTextAreaField from "@/components/features/form/form-fields/FormTextAreaField";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { createTemplate } from "@/api/template/template";
+import { forCreatingEntry } from "@/shared/query-setup/forCreatingEntry";
 
 const blankCustomTemplate = {
   attributeType: "",
@@ -53,6 +56,7 @@ const TemplatesForm: FunctionComponent = (): ReactElement => {
     control, // control props comes from useForm (optional: if you are using FormContext)
     name: "customField", // unique name for your Field Array
   });
+  const queryClient = useQueryClient();
   // <Outlet /> context to update HeaderLayout data
   const { updateContext } = useOutletContext<{
     updateContext: (state: string, data: ContextData) => void;
@@ -67,13 +71,39 @@ const TemplatesForm: FunctionComponent = (): ReactElement => {
     });
   };
 
+  const createTemplateEntry = useMutation(
+    (data: FormData) => createTemplate(data),
+    {
+      ...forCreatingEntry({
+        navigate: () => navigate("/admin/template"),
+        updateContext,
+        entity: "UserSchema",
+        setError,
+        invalidate: () => queryClient.invalidateQueries(["alltemplates"]),
+      }),
+    }
+  );
+
   useEffect(() => {
     updateHeadingContext("Build a template");
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const onSubmit = async (data) => {
-    console.log(data);
+    const formData = new FormData();
+    formData.append("name", data.name);
+    formData.append("description", data.description);
+
+    data.customField.map((field, index) => {
+      for (let key in field) {
+        if (field.hasOwnProperty(key)) {
+          formData.append(`fields[${index}][${key}]`, field[key]);
+        }
+      }
+    });
+    const createTemplate = createTemplateEntry.mutate(formData);
+    console.log("createTemplate", createTemplate);
+    return createTemplate;
   };
 
   const formButtons: IButton[] = [

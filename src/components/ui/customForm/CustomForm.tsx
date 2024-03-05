@@ -64,6 +64,7 @@ const CustomForm = ({
                 indexOfField
               )[2] as IFormSelectInput
             }
+            classNameCustom="template-form__select-secound-half"
           />
 
           <FormTextAreaField

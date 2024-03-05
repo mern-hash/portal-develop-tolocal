@@ -1,0 +1,78 @@
+@use "@carbon/react/scss/breakpoint" as *;
+@use "@carbon/react/scss/spacing" as *;
+
+.field-form{
+  &__main-wrapper{
+    border: 1px dashed #8d8d8d;
+  }
+  &__wrapper{
+    padding: 18px 20px 18px 20px;
+    // border-bottom: 1px dashed #8d8d8d;
+  }
+  &__wrapper-list{
+    padding: 0px 20px 18px 20px;
+  }
+  &__inner-input-list-warpper{
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-start;
+    padding-top: 18px;
+    &:first-of-type{
+      padding-top: 0;
+    }
+    & input{
+      outline: 2px solid transparent;
+    }
+  }
+  &__stack {
+    grid-template-columns: 100%;
+    grid-column-gap: 0px;
+    row-gap: 14px;
+  }
+  &__DeleteSvg{
+    width: 20px;
+    height: 23px;
+    margin-right: 0px;
+    margin-left: 16px;
+    margin-bottom: 9px;
+  }
+  &__divider-hr{
+    border-bottom: 1px dashed #8d8d8d;
+  }
+    &__Addfield-btnwrapper {
+      width: 100%;
+      align-self: center;
+  
+      & button {
+        background-color: transparent;
+        color: #0f62fe;
+        text-decoration: underline;
+        padding: 10px 0 10px 17px;
+        line-height: 1;
+        height: auto;
+        --cds-layout-size-height-local: 1;
+  
+        &:hover,
+        &:active {
+          background-color: transparent;
+          color: #0f62fe;
+        }
+  
+        &:focus {
+          border-color: transparent;
+          box-shadow: none;
+          color: #0f62fe;
+        }
+      }
+    }
+        &__build-cancel-btn-wrapper {
+          margin-top: 30px;
+    
+          & button {
+            &:last-of-type {
+              margin-right: 0;
+            }
+          }
+        }
+  
+}

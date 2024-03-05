@@ -114,6 +114,13 @@ export interface TemplateForm {
   }[];
 }
 
+export interface FieldForm {
+  value?: string;
+  name: string;
+  attributeType: string;
+  valueList?: { value: string }[];
+}
+
 export interface CustomFormType {
   description: string | null;
   attributeType: string;

@@ -7,6 +7,8 @@ import {
 } from "../validations";
 import { isValidPhoneNumber } from "react-phone-number-input";
 import { errorMessages } from "../errorText";
+import { UseFormRegister } from "react-hook-form";
+import { FieldForm } from "../types/IForm";
 
 type FormFieldsData = IFormImageFile | IFormTextInput | IFormSelectInput;
 
@@ -223,6 +225,83 @@ export const templateFormFields = (
       items: [],
       register,
       watch: watchers,
+    },
+  ];
+};
+
+export const fieldFormFields = (
+  errors: any,
+  register?: UseFormRegister<FieldForm>,
+  watchers?: any,
+  index?: number
+): FormFieldsData[] => {
+  return [
+    {
+      type: "text",
+      id: "name",
+      label: "Field Name",
+      placeholder: "How would you like to name this field",
+      validations: {
+        required: "Required field",
+        minLength: {
+          value: 2,
+          message: errorMessages.min_length(2),
+        },
+        maxLength: {
+          value: 500,
+          message: errorMessages.max_length(500),
+        },
+      },
+      errors: invalidInput(errors, "name"),
+    },
+    {
+      type: "select",
+      id: "attributeType",
+      label: "Field Type",
+      placeholder: "Select Field Type",
+      validations: {
+        required: "Required field",
+      },
+      errors: invalidInput(errors, "attributeType"),
+      items: [],
+      register,
+      watch: watchers,
+    },
+    {
+      type: "text",
+      id: "value",
+      label: "Value",
+      placeholder: "Field type value",
+      validations: {
+        required: "Required field",
+        minLength: {
+          value: 2,
+          message: errorMessages.min_length(2),
+        },
+        maxLength: {
+          value: 500,
+          message: errorMessages.max_length(500),
+        },
+      },
+      errors: invalidInput(errors, "value"),
+    },
+    {
+      type: "text",
+      id: `valueList.${index}.value`,
+      label: "Value",
+      placeholder: "Field type value",
+      validations: {
+        required: "Required field",
+        minLength: {
+          value: 2,
+          message: errorMessages.min_length(2),
+        },
+        maxLength: {
+          value: 500,
+          message: errorMessages.max_length(500),
+        },
+      },
+      errors: invalidInput(errors, `valueList`, index, "value"),
     },
   ];
 };

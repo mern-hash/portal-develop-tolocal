@@ -7,7 +7,8 @@ import SelectAtributeType from "@/components/ui/form-location-select/SelectAtrib
 const FormSelectField: FunctionComponent<{
   register: UseFormRegister<any>;
   data: IFormSelectInput;
-}> = ({ register, data }): ReactElement => {
+  classNameCustom?: string;
+}> = ({ register, data, classNameCustom }): ReactElement => {
   const { id, label, placeholder, validations, errors, items, watch } =
     data as IFormSelectInput;
   const locationProps = { id, register, errors, watch };
@@ -20,6 +21,8 @@ const FormSelectField: FunctionComponent<{
         key={id}
         {...locationProps}
         validations={validations}
+        label={label}
+        classNameCustom={classNameCustom}
       />
     );
   }

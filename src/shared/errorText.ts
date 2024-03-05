@@ -6,7 +6,9 @@ export const invalidInput = (
     ref: JSX.Element;
     type: string;
   }>,
-  id: string
+  id: string,
+  index?: number,
+  subId?: string
 ) => {
   if (id.includes("fields")) {
     return {
@@ -14,7 +16,24 @@ export const invalidInput = (
       invalidText: errors && errors["fields"]?.[id.split(".")[1]]?.message,
     };
   }
-
+  if (index !== undefined) {
+    if (
+      errors &&
+      Array.isArray(errors[id]) &&
+      !!errors[id][index] &&
+      !!errors[id][index][subId]
+    ) {
+      return {
+        invalid: !!errors[id][index][subId],
+        invalidText: errors[id][index][subId]?.message,
+      };
+    } else {
+      return {
+        invalid: false,
+        invalidText: null,
+      };
+    }
+  }
   return {
     invalid: errors && !!errors[id],
     invalidText: errors && errors[id]?.message,
