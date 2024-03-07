@@ -45,7 +45,7 @@ const CustomForm = ({
                 errors,
                 watch,
                 indexOfField
-              )[0] as IFormTextInput
+              )[10] as IFormTextInput
             }
             cancelForm={cancelForm}
             classNameCustom="template-form__input-first-half"
@@ -66,9 +66,20 @@ const CustomForm = ({
             }
             classNameCustom="template-form__select-secound-half"
           />
-
-          <FormTextAreaField
-            classNameCustom="template-form__input-full-width template-form__input-textarea-style"
+          <FormTextField
+            register={register}
+            data={
+              customFormFields(
+                register,
+                errors,
+                watch,
+                indexOfField
+              )[0] as IFormTextInput
+            }
+            cancelForm={cancelForm}
+            classNameCustom="template-form__input-fifty"
+          />
+          <FormTextField
             register={register}
             data={
               customFormFields(
@@ -79,6 +90,7 @@ const CustomForm = ({
               )[1] as IFormTextInput
             }
             cancelForm={cancelForm}
+            classNameCustom="template-form__input-fifty"
           />
 
           {watch(`customField.${indexOfField}.attributeType`) === "select" && (

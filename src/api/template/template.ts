@@ -13,3 +13,19 @@ export const createTemplate = async (templateData: FormData) => {
   );
   return data;
 };
+
+export const fetchTemplate = async ({ queryKey }) => {
+  const [, { page, pageSize, orderBy, order, term, from, to }] = queryKey;
+  const { data } = await httpService.get(`/admin/user-schemas`, {
+    params: {
+      orderBy,
+      order,
+      page,
+      pageSize,
+      term,
+      from,
+      to,
+    },
+  });
+  return data;
+};

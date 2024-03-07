@@ -100,10 +100,12 @@ export interface IInstitutionForm {
 export interface TemplateForm {
   description: string | null;
   name: string;
+  institute: string;
   customField: {
     attributeType: string;
     name: string;
-    description: string;
+    placeholder: string;
+    label: string;
     require: boolean;
     selectOption?: string;
     isClaim: boolean;

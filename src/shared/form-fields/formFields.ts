@@ -316,8 +316,8 @@ export const customFormFields = (
     {
       type: "text",
       id: `customField.${index}.name`,
-      label: "Atribute Name",
-      placeholder: "University Degree, State Identity...",
+      label: "Name",
+      placeholder: "How would you like to name this attribute",
       validations: {
         required: "Required field",
         minLength: {
@@ -334,21 +334,26 @@ export const customFormFields = (
 
     {
       type: "text",
-      id: `customField.${index}.description`,
-      label: "Atribute Description",
-      placeholder: "Describe what this attribute is all about...",
+      id: `customField.${index}.placeholder`,
+      label: "Placeholder",
+      placeholder: "How would you like to name this attribute",
       validations: {
+        required: "Required field",
+        minLength: {
+          value: 2,
+          message: errorMessages.min_length(2),
+        },
         maxLength: {
           value: 2000,
           message: errorMessages.max_length(2000),
         },
       },
-      errors: invalidInput(errors, "description"),
+      errors: invalidInput(errors, "placeholder"),
     },
     {
       type: "select",
       id: `customField.${index}.attributeType`,
-      label: "Attribute Type",
+      label: "Type",
       placeholder: "Select Attribute Type",
       validations: {
         required: "Required field",
@@ -419,6 +424,24 @@ export const customFormFields = (
       label: "inTable",
       placeholder: "inTable",
       errors: invalidInput(errors, "inTable"),
+    },
+    {
+      type: "text",
+      id: `customField.${index}.label`,
+      label: "Label",
+      placeholder: "How would you like to name this attribute",
+      validations: {
+        required: "Required field",
+        minLength: {
+          value: 2,
+          message: errorMessages.min_length(2),
+        },
+        maxLength: {
+          value: 500,
+          message: errorMessages.max_length(500),
+        },
+      },
+      errors: invalidInput(errors, "label"),
     },
   ];
 };

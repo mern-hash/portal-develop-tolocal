@@ -3,17 +3,12 @@ import { UseFormRegister } from "react-hook-form";
 import { Select, SelectItem } from "carbon-components-react";
 
 const attributeData = [
-  { name: "text", value: "text" },
-  { name: "number", value: "number" },
-  { name: "checkbox", value: "checkbox" },
-  { name: "file-image", value: "file-image" },
-  { name: "file-csv", value: "file-csv" },
-  { name: "select", value: "select" },
-  { name: "password", value: "password" },
-  { name: "time", value: "time" },
-  { name: "date", value: "date" },
-  { name: "date-time", value: "dateTime" },
-  { name: "list", value: "list" },
+  { name: "Text", value: "text" },
+  { name: "Number", value: "number" },
+  { name: "Checkbox", value: "checkbox" },
+  { name: "Dropdown ", value: "dropdown" },
+  { name: "Date", value: "date" },
+  { name: "List ", value: "list" },
 ];
 
 const SelectAtributeType: FunctionComponent<{

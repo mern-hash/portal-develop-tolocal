@@ -1,5 +1,5 @@
 // Core
-import { FunctionComponent, ReactElement, useEffect } from "react";
+import { FunctionComponent, ReactElement, useEffect, useState } from "react";
 import { useParams, useNavigate, useOutletContext } from "react-router-dom";
 import { useFieldArray, useForm } from "react-hook-form";
 import { Helmet } from "react-helmet-async";
@@ -10,20 +10,26 @@ import { IButton, IFormTextInput } from "@/shared/types";
 import { ContextTypes, ContextData } from "@/shared/types/ContextTypes";
 import { templateFormFields } from "@/shared/form-fields/formFields";
 import { ADMIN_HEADING_LINKS, ADMIN_HEADING_LOGOLINK } from "@/core/constants";
-import { Form as CForm, Stack } from "carbon-components-react";
+import { Form as CForm, Stack, ContainedList } from "carbon-components-react";
 import FormTextField from "@/components/features/form/form-fields/FormTextField";
 import { TemplateForm } from "@/shared/types/IForm";
 import CustomForm from "@/components/ui/customForm/CustomForm";
 import "./templateform.scss";
 import FormTextAreaField from "@/components/features/form/form-fields/FormTextAreaField";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createTemplate } from "@/api/template/template";
 import { forCreatingEntry } from "@/shared/query-setup/forCreatingEntry";
+import FormLabel from "@/components/ui/FormLabel/FormLabel";
+import { Search } from "@carbon/react";
+import { getInstitutions } from "@/api";
+import ListItems from "@/components/newComponets/ListItems";
+import { debounceEvent } from "@/shared/util";
 
 const blankCustomTemplate = {
   attributeType: "",
   name: "",
-  description: "",
+  placeholder: "",
+  label: "",
   require: false,
   isClaim: false,
   isSearchable: false,
@@ -38,7 +44,8 @@ const TemplatesForm: FunctionComponent = (): ReactElement => {
 
   const navigate = useNavigate();
   const { id } = useParams();
-
+  const [institution, setInstitution] = useState(null);
+  const [showDropdown, setShowDropdown] = useState(false);
   const {
     register,
     handleSubmit,
@@ -47,6 +54,7 @@ const TemplatesForm: FunctionComponent = (): ReactElement => {
     watch,
     trigger,
     control,
+    setValue,
   } = useForm<TemplateForm>({
     mode: "onBlur",
     defaultValues: {},
@@ -70,6 +78,18 @@ const TemplatesForm: FunctionComponent = (): ReactElement => {
       title,
     });
   };
+
+  const onSearchChange = debounceEvent((e) => {
+    setValue("institute", e.target.value);
+  }, 500);
+
+  const searchInstitution = useQuery(
+    ["institutions", { term: watch("institute") }],
+    getInstitutions,
+    {
+      enabled: watch("institute")?.length > 0,
+    }
+  );
 
   const createTemplateEntry = useMutation(
     (data: FormData) => createTemplate(data),
@@ -102,7 +122,7 @@ const TemplatesForm: FunctionComponent = (): ReactElement => {
       }
     });
     const createTemplate = createTemplateEntry.mutate(formData);
-    console.log("createTemplate", createTemplate);
+
     return createTemplate;
   };
 
@@ -128,6 +148,23 @@ const TemplatesForm: FunctionComponent = (): ReactElement => {
       ? evt.relatedTarget.click()
       : trigger(id);
   };
+
+  const onChangeInstitute = (item: any) => {
+    setInstitution(item);
+    setValue("institute", item?.name);
+  };
+
+  const onBlur = () => {
+    setTimeout(() => {
+      setShowDropdown(false);
+    }, 200);
+  };
+
+  useEffect(() => {
+    watch("institute") &&
+      watch("institute").length > 0 &&
+      setShowDropdown(true);
+  }, [watch("institute")]);
 
   return (
     <>
@@ -173,6 +210,45 @@ const TemplatesForm: FunctionComponent = (): ReactElement => {
         </div>
         <div className="template-form__wrapper">
           <div className="template-form__left-content">
+            <h6>Template institution</h6>
+            <p>
+              The template institution is used to link this template with the
+              institution you specify.
+            </p>
+          </div>
+          <Stack gap={7} className="form__stack template-form__stack">
+            <div className="CredentialForm__search-wrapper">
+              <FormLabel label={""} description={"Template Institution"} />
+              <div className="CredentialForm__search-input-wrapper">
+                <Search
+                  labelText={"Institute"}
+                  {...register("institute")}
+                  placeholder={"Search for institution"}
+                  onBlur={onBlur}
+                  onChange={onSearchChange}
+                />
+                {showDropdown && searchInstitution?.data?.data && (
+                  <ContainedList className="search-list-wrapper" label="">
+                    {searchInstitution?.data?.data?.length > 0 ? (
+                      searchInstitution?.data?.data?.map((item) => (
+                        <ListItems
+                          key={item?.id}
+                          name={item?.name}
+                          onClickFunc={onChangeInstitute}
+                          item={item}
+                        />
+                      ))
+                    ) : (
+                      <ListItems name={"No data found"} />
+                    )}
+                  </ContainedList>
+                )}
+              </div>
+            </div>
+          </Stack>
+        </div>
+        <div className="template-form__wrapper">
+          <div className="template-form__left-content">
             <h6>Template attributes</h6>
             <p>Define the attributes you want on the credential.</p>
           </div>
@@ -204,6 +280,7 @@ const TemplatesForm: FunctionComponent = (): ReactElement => {
             </div>
           </Stack>
         </div>
+
         <div className="form__row form__row__buttons template-form__build-cancel-btn-wrapper">
           {formButtons.map((button: IButton, i: number) => (
             <Button key={i} {...button} />
