@@ -21,7 +21,7 @@ export const forGettingTableData = ({
   onSuccess: ({ pages }: any) => {
     // Sets fetched data in state, to prevent table flashing while fetching next page, and keep
     // displaying stored data during allInstitutions.isLoading/isFetching
-    setItemsFetched(pages[0].data);
+    setItemsFetched(pages[0]);
   },
   onError: () => {
     toastNotification({

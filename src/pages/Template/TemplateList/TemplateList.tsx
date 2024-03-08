@@ -37,6 +37,7 @@ import {
 } from "@/core/constants";
 import { forGettingTableData } from "@/shared/query-setup/forGettingTableData";
 import { forDeletingTableData } from "@/shared/query-setup/forDeletingTableData";
+import { fetchTemplate } from "@/api/template/template";
 //!SECTION
 
 /**
@@ -74,15 +75,15 @@ const TemplateList: FunctionComponent = (): ReactElement => {
    * ANCHOR get all
    * Fetch all institutions data based on tableInfo params (page, size, order etc.)
    */
-  const allInstitutions = useInfiniteQuery(
+  const allTemplates = useInfiniteQuery(
     [
-      "institutions",
+      "templates",
       {
         ...tableInfo,
         term: tableInfo.term ? tableInfo.term : undefined,
       },
     ],
-    getInstitutions,
+    fetchTemplate,
     {
       ...forGettingTableData({
         setItemsFetched,
@@ -179,18 +180,18 @@ const TemplateList: FunctionComponent = (): ReactElement => {
   //ANCHOR - items list
   const renderFetchedInstitutions = () => {
     // if loading and some items already fetched (visible), display them
-    return allInstitutions.isLoading
+    return allTemplates.isLoading
       ? itemsFetched.length
         ? itemsFetched
         : []
       : // else, display new ones
-        allInstitutions.data?.pages[0].data;
+        allTemplates.data?.pages[0].data;
   };
 
   //ANCHOR - isEmptyPage
   const isEmptyPage = (): boolean =>
     // If there is no new fetched data
-    !allInstitutions.data?.pages[0].data.length &&
+    !allTemplates.data?.pages[0].data.length &&
     // There is no previously fetched data (sorting works better with this)
     !itemsFetched.length &&
     // Wasn't searched for anything (empty search req should display
@@ -203,10 +204,10 @@ const TemplateList: FunctionComponent = (): ReactElement => {
    * ANCHOR error
    * Render page
    */
-  if (allInstitutions.isError) return <ErrorPage title="Institutions" />;
+  if (allTemplates.isError) return <ErrorPage title="Institutions" />;
 
   //ANCHOR - loading
-  if (initialFetch && allInstitutions.isLoading)
+  if (initialFetch && allTemplates.isLoading)
     return <Loading withOverlay={false} />;
 
   //ANCHOR - empty
@@ -260,8 +261,10 @@ const TemplateList: FunctionComponent = (): ReactElement => {
         sortBy={(term: string, direction: string) =>
           onSortTable({ term, direction, tableInfo, setTableInfo })
         }
-        tableColumnActions={tableCTA}
-        nameNavigate={(val) => navigate(`edit/${val}`)}
+        // tableColumnActions={tableCTA}
+        nameNavigate={(val) => {
+          // navigate(`edit/${val}`)
+        }}
       />
       <Pagination
         totalItems={itemCount || 0}

@@ -1,7 +1,6 @@
 import { httpService } from "../http";
 
 export const createTemplate = async (templateData: FormData) => {
-  console.log("templateData", templateData);
   const { data } = await httpService.post(
     `/institution/schemas`,
     templateData,
@@ -16,7 +15,7 @@ export const createTemplate = async (templateData: FormData) => {
 
 export const fetchTemplate = async ({ queryKey }) => {
   const [, { page, pageSize, orderBy, order, term, from, to }] = queryKey;
-  const { data } = await httpService.get(`/admin/user-schemas`, {
+  const { data } = await httpService.get(`/data/user-schema`, {
     params: {
       orderBy,
       order,

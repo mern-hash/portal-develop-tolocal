@@ -1,42 +1,43 @@
 //SECTION - Imports
 //ANCHOR - Core
 import { FunctionComponent, ReactElement, useEffect, useState } from "react";
-import { useNavigate, useOutletContext } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
+import { useNavigate, useOutletContext } from "react-router-dom";
 //ANCHOR - Carbon
-import { Loading, Pagination } from "carbon-components-react";
 import { Edit, TrashCan } from "@carbon/icons-react";
+import { Loading, Pagination } from "carbon-components-react";
 //ANCHOR - Api
+import { deleteInstitutions } from "@/api";
 import {
   useInfiniteQuery,
   useMutation,
   useQueryClient,
 } from "@tanstack/react-query";
-import { deleteInstitutions, getInstitutions } from "@/api";
 //ANCHOR - Components
-import { Button } from "@/components/ui";
 import { EmptyPage, ErrorPage, Table } from "@/components/features";
+import { Button } from "@/components/ui";
 //ANCHOR - Table stuff
+import { fieldHeaderData } from "@/shared/table-data/tableHeaders";
 import {
-  deleteModal,
   configDateForFilter,
+  deleteModal,
   onSortTable,
 } from "@/shared/table-data/tableMethods";
-import { templateHeaderData } from "@/shared/table-data/tableHeaders";
 //ANCHOR - Util
-import { ContextTypes, ContextData } from "@/shared/types/ContextTypes";
-import { IInstitutionTableData, ITableDefaults } from "@/shared/types";
-import { deleteMsg, pluralize } from "@/shared/util";
 import { Sponge } from "@/assets/icons";
-import { templatesListHLC } from "@/shared/outlet-context/outletContext";
+import { fieldsListHLC } from "@/shared/outlet-context/outletContext";
+import { IInstitutionTableData, ITableDefaults } from "@/shared/types";
+import { ContextData, ContextTypes } from "@/shared/types/ContextTypes";
+import { deleteMsg, pluralize } from "@/shared/util";
 //ANCHOR - Constants
+import { fetchFields } from "@/api/fields/fields";
 import {
   TABLE_ORDER,
   TABLE_ORDER_BY,
   TABLE_PAGE_SIZES,
 } from "@/core/constants";
-import { forGettingTableData } from "@/shared/query-setup/forGettingTableData";
 import { forDeletingTableData } from "@/shared/query-setup/forDeletingTableData";
+import { forGettingTableData } from "@/shared/query-setup/forGettingTableData";
 //!SECTION
 
 /**
@@ -65,7 +66,7 @@ const FieldList: FunctionComponent = (): ReactElement => {
 
   //ANCHOR - useEffect outlet
   useEffect(() => {
-    updateContext(ContextTypes.HLC, templatesListHLC(navigate));
+    updateContext(ContextTypes.HLC, fieldsListHLC(navigate));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -76,13 +77,13 @@ const FieldList: FunctionComponent = (): ReactElement => {
    */
   const allInstitutions = useInfiniteQuery(
     [
-      "institutions",
+      "fields",
       {
         ...tableInfo,
         term: tableInfo.term ? tableInfo.term : undefined,
       },
     ],
-    getInstitutions,
+    fetchFields,
     {
       ...forGettingTableData({
         setItemsFetched,
@@ -126,13 +127,13 @@ const FieldList: FunctionComponent = (): ReactElement => {
    * Modal pop-up for batch selected items, to delete multiple table rows at once
    */
   const batchSelectionAction = (data: IInstitutionTableData[]) => {
-    setDeletedItemsCount(data.length);
+    setDeletedItemsCount(data?.length);
     deleteModal(
       updateContext,
-      pluralize(data, `Delete ${data.length} item`),
+      pluralize(data, `Delete ${data?.length} item`),
       `${pluralize(
         data,
-        `Are you sure you want to delete ${data.length} item`
+        `Are you sure you want to delete ${data?.length} item`
       )}?`,
       () => deleteInstitutionEntry.mutate(data)
     );
@@ -180,19 +181,19 @@ const FieldList: FunctionComponent = (): ReactElement => {
   const renderFetchedInstitutions = () => {
     // if loading and some items already fetched (visible), display them
     return allInstitutions.isLoading
-      ? itemsFetched.length
+      ? itemsFetched?.length
         ? itemsFetched
         : []
       : // else, display new ones
-        allInstitutions.data?.pages[0].data;
+        allInstitutions.data?.pages[0][0]?.data;
   };
-
   //ANCHOR - isEmptyPage
   const isEmptyPage = (): boolean =>
     // If there is no new fetched data
-    !allInstitutions.data?.pages[0].data.length &&
+
+    !allInstitutions.data?.pages[0][0]?.data?.length &&
     // There is no previously fetched data (sorting works better with this)
-    !itemsFetched.length &&
+    !itemsFetched?.length &&
     // Wasn't searched for anything (empty search req should display
     // "Create new institution" page)
     !tableInfo.term &&
@@ -203,15 +204,14 @@ const FieldList: FunctionComponent = (): ReactElement => {
    * ANCHOR error
    * Render page
    */
-  if (allInstitutions.isError) return <ErrorPage title="Institutions" />;
+  if (allInstitutions.isError) return <ErrorPage title="Fields" />;
 
   //ANCHOR - loading
   if (initialFetch && allInstitutions.isLoading)
     return <Loading withOverlay={false} />;
-
   //ANCHOR - empty
   // If there isn't data and there isn't search term or date filter
-  if (isEmptyPage())
+  if (allInstitutions.data?.pages[0][0]?.data?.length < 1 || isEmptyPage())
     return (
       <>
         <Helmet>
@@ -250,7 +250,7 @@ const FieldList: FunctionComponent = (): ReactElement => {
             label_to: "Date created to",
           },
         ]}
-        headerData={templateHeaderData}
+        headerData={fieldHeaderData}
         initialFetch={initialFetch}
         onFilterByDate={onFilterByDate}
         onSearch={(searchTerm) => {
@@ -260,8 +260,10 @@ const FieldList: FunctionComponent = (): ReactElement => {
         sortBy={(term: string, direction: string) =>
           onSortTable({ term, direction, tableInfo, setTableInfo })
         }
-        tableColumnActions={tableCTA}
-        nameNavigate={(val) => navigate(`edit/${val}`)}
+        // tableColumnActions={tableCTA}
+        nameNavigate={(val) => {
+          // navigate(`edit/${val}`)
+        }}
       />
       <Pagination
         totalItems={itemCount || 0}

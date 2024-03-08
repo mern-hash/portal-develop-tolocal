@@ -50,18 +50,36 @@ const templateHeaderData: ITableHeaderItem[] = [
   //   isSortable: false,
   // },
   {
-    header: "No if institutions",
-    key: "userCount",
+    header: "Description",
+    key: "description",
+    isSortable: false,
+  },
+  // {
+  //   header: "No of issuance",
+  //   key: "credentialCount",
+  //   isSortable: true,
+  // },
+  // {
+  //   header: "# of verifications",
+  //   key: "verificationCount",
+  //   isSortable: false,
+  // },
+];
+
+const fieldHeaderData: ITableHeaderItem[] = [
+  {
+    header: "Name",
+    key: "name",
     isSortable: false,
   },
   {
-    header: "No of issuance",
-    key: "credentialCount",
+    header: "Date Created",
+    key: "createdAt",
     isSortable: true,
   },
   {
-    header: "# of verifications",
-    key: "verificationCount",
+    header: "Value",
+    key: "value",
     isSortable: false,
   },
 ];
@@ -128,4 +146,5 @@ export {
   integrationsHeaderData,
   studentsHeaderData,
   templateHeaderData,
+  fieldHeaderData,
 };

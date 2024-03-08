@@ -43,6 +43,23 @@ export const templatesListHLC = (navigate) => {
   };
 };
 
+export const fieldsListHLC = (navigate) => {
+  return {
+    logoLink: ADMIN_HEADING_LOGOLINK,
+    links: ADMIN_HEADING_LINKS,
+    title: "Fields",
+    button: (
+      <Button
+        label="Build a field"
+        icon="add"
+        type="button"
+        clickFn={() => navigate("create")}
+        kind="primary"
+      />
+    ),
+  };
+};
+
 export const formListHLC = (navigate) => {
   return {
     logoLink: ADMIN_HEADING_LOGOLINK,

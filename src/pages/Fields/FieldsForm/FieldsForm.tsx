@@ -1,21 +1,25 @@
 // Core
 import { FunctionComponent, ReactElement, useEffect } from "react";
-import { useParams, useNavigate, useOutletContext } from "react-router-dom";
-import { useFieldArray, useForm } from "react-hook-form";
 import { Helmet } from "react-helmet-async";
+import { useFieldArray, useForm } from "react-hook-form";
+import { useNavigate, useOutletContext, useParams } from "react-router-dom";
 // Components
 import { Button } from "@/components/ui";
 // Util
-import { IButton, IFormTextInput } from "@/shared/types";
-import { ContextTypes, ContextData } from "@/shared/types/ContextTypes";
-import { fieldFormFields } from "@/shared/form-fields/formFields";
-import { ADMIN_HEADING_LINKS, ADMIN_HEADING_LOGOLINK } from "@/core/constants";
-import { Form as CForm, Stack } from "carbon-components-react";
-import FormTextField from "@/components/features/form/form-fields/FormTextField";
-import { FieldForm, IFormSelectInput } from "@/shared/types/IForm";
-import FormSelectField from "@/components/features/form/form-fields/FormSelectField";
 import Delete from "@/assets/icons/Delete";
+import FormSelectField from "@/components/features/form/form-fields/FormSelectField";
+import FormTextField from "@/components/features/form/form-fields/FormTextField";
+import { ADMIN_HEADING_LINKS, ADMIN_HEADING_LOGOLINK } from "@/core/constants";
+import { fieldFormFields } from "@/shared/form-fields/formFields";
+import { IButton, IFormTextInput } from "@/shared/types";
+import { ContextData, ContextTypes } from "@/shared/types/ContextTypes";
+import { FieldForm, IFormSelectInput } from "@/shared/types/IForm";
+import { Form as CForm, Stack } from "carbon-components-react";
 import "./fieldsform.scss";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { createTemplate } from "@/api/template/template";
+import { forCreatingEntry } from "@/shared/query-setup/forCreatingEntry";
+import { createFields } from "@/api/fields/fields";
 
 const TemplatesForm: FunctionComponent = (): ReactElement => {
   // Fetched data, used to compare freshly edited input fields to see which
@@ -23,6 +27,7 @@ const TemplatesForm: FunctionComponent = (): ReactElement => {
 
   const navigate = useNavigate();
   const { id } = useParams();
+  const queryClient = useQueryClient();
 
   const {
     register,
@@ -46,6 +51,19 @@ const TemplatesForm: FunctionComponent = (): ReactElement => {
     updateContext: (state: string, data: ContextData) => void;
   }>();
 
+  const createFieldEntry = useMutation(
+    (data: FieldForm) => createFields(data),
+    {
+      ...forCreatingEntry({
+        navigate: () => navigate("/admin/fields"),
+        updateContext,
+        entity: "fields",
+        setError,
+        invalidate: () => queryClient.invalidateQueries(["fields"]),
+      }),
+    }
+  );
+
   // Initial heading setup
   const updateHeadingContext = (title: string) => {
     updateContext(ContextTypes.HLC, {
@@ -61,7 +79,7 @@ const TemplatesForm: FunctionComponent = (): ReactElement => {
   }, []);
 
   const onSubmit = async (data) => {
-    console.log(data);
+    createFieldEntry.mutate(data);
   };
 
   const formButtons: IButton[] = [
