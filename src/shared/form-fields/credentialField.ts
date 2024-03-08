@@ -1,6 +1,11 @@
 import { errorMessages, invalidInput } from "../errorText";
 
-export const credentialFormField = (errors, searchFields): any[] => {
+export const credentialFormField = (
+  errors,
+  searchFields,
+  handleSet,
+  onSearchChange
+): any[] => {
   return [
     {
       type: "text",
@@ -33,8 +38,10 @@ export const credentialFormField = (errors, searchFields): any[] => {
       },
       errors: invalidInput(errors, "description"),
       onBlur: searchFields.onBlur,
-      list: searchFields.list.studentList,
+      list: searchFields.list.studentData,
       showDropdown: searchFields.showDropdown.studentName,
+      onClick: handleSet,
+      onSearchChange,
     },
     {
       type: "search",
@@ -50,6 +57,8 @@ export const credentialFormField = (errors, searchFields): any[] => {
       onBlur: searchFields.onBlur,
       list: searchFields.list.templateList,
       showDropdown: searchFields.showDropdown.templateName,
+      onClick: handleSet,
+      onSearchChange,
     },
   ];
 };

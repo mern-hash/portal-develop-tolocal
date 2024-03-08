@@ -56,13 +56,29 @@ const FormForCredentials: FunctionComponent<IFormCredentialsComponent> = ({
                         {...register(row.id)}
                         placeholder={row.placeholder}
                         onBlur={() => row.onBlur(row.id)}
+                        onChange={(e) => {
+                          row?.onSearchChange?.(e, row.id);
+                        }}
                       />
-                      <ContainedList className="search-list-wrapper">
-                        {row.showDropdown &&
-                          row.list.map((item, index) => (
-                            <ListItems key={index} name={item?.name} />
-                          ))}
-                      </ContainedList>
+                      {row.showDropdown && row.list && (
+                        <ContainedList className="search-list-wrapper">
+                          {row.showDropdown && row.list.length > 0 ? (
+                            row.list.map((item, index) => (
+                              <ListItems
+                                key={index}
+                                name={item?.name}
+                                onClickFunc={(item) => {
+                                  console.log("object");
+                                  row?.onClick?.(row.id, item);
+                                }}
+                                item={item}
+                              />
+                            ))
+                          ) : (
+                            <ListItems name="data not found" />
+                          )}
+                        </ContainedList>
+                      )}
                     </div>
                   </div>
                 );

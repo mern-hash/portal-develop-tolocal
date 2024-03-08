@@ -1,12 +1,13 @@
 //SECTION - Imports
 //ANCHOR - Core
 import { FunctionComponent, useEffect, useState } from "react";
-import { useOutletContext, useParams, useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { useForm } from "react-hook-form";
+import { useNavigate, useOutletContext, useParams } from "react-router-dom";
+
 //ANCHOR - Api
+import { getSingleStudent, getStudents } from "@/api";
 import { useQuery } from "@tanstack/react-query";
-import { getSingleStudent } from "@/api";
 //ANCHOR - Components
 //ANCHOR - Util
 
@@ -18,10 +19,11 @@ import { ContextData, ContextTypes } from "@/shared/types/ContextTypes";
 
 import { ADD_STUDENT_BUTTON_TEXT, SAVE_CHANGES } from "@/core/constants";
 
-import { ICredentialForm } from "@/shared/types/IForm";
-import "./CredentialForm.scss";
-import { credentialFormField } from "@/shared/form-fields/credentialField";
 import FormForCredentials from "@/components/features/form/FormForCredentials";
+import { credentialFormField } from "@/shared/form-fields/credentialField";
+import { ICredentialForm } from "@/shared/types/IForm";
+import { debounceEvent } from "@/shared/util";
+import "./CredentialForm.scss";
 
 //!SECTION
 const dropdownItems = [
@@ -54,12 +56,7 @@ const CredentialForm: FunctionComponent = () => {
     studentName: false,
     templateName: false,
   });
-  const [studentList, setStudentList] = useState<
-    {
-      name: string;
-      email: string;
-    }[]
-  >([]);
+
   const [templateList, setTemplateList] = useState<
     {
       name: string;
@@ -79,6 +76,7 @@ const CredentialForm: FunctionComponent = () => {
     formState: { errors },
     watch,
     trigger,
+    setValue,
   } = useForm<ICredentialForm>({
     mode: "onTouched",
     defaultValues: {},
@@ -93,10 +91,14 @@ const CredentialForm: FunctionComponent = () => {
 
   //SECTION - API
   //ANCHOR - getSingleStudent
-  const singleStudent = useQuery(["singleStudent", { id }], getSingleStudent, {
+  const singleStudent = useQuery(["Student", { id }], getSingleStudent, {
     enabled: !!id,
     refetchOnWindowFocus: false,
   });
+
+  const onSearchChange = debounceEvent((e, id) => {
+    setValue(id, e.target.value);
+  }, 500);
 
   //ANCHOR - useEffect setup
   useEffect(() => {
@@ -143,14 +145,25 @@ const CredentialForm: FunctionComponent = () => {
   ];
   const handleBlur = (key) => {
     // Hides the dropdown when the user stops interacting with the input
+    setTimeout(() => {
+      setShowDropdown((prev) => ({ ...prev, [key]: false }));
+    }, 300);
+  };
 
-    setShowDropdown((prev) => ({ ...prev, [key]: false }));
+  const searchStudents = useQuery(
+    ["allStudents", { term: watch("studentName") }],
+    getStudents,
+    {
+      enabled: watch("studentName")?.length > 0,
+    }
+  );
+
+  const handleSet = (id, item) => {
+    setValue(id, item?.name);
   };
 
   useEffect(() => {
     if (watch("studentName") && watch("studentName").length > 0) {
-      const filtered = filterItems(dropdownItems, watch("studentName"));
-      setStudentList(filtered);
       setShowDropdown((prev) => ({ ...prev, studentName: true }));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -173,11 +186,16 @@ const CredentialForm: FunctionComponent = () => {
       {/* {loading && <Loading />} */}
       <FormForCredentials
         trigger={trigger}
-        formFields={credentialFormField(errors, {
-          onBlur: handleBlur,
-          list: { studentList, templateList },
-          showDropdown,
-        })}
+        formFields={credentialFormField(
+          errors,
+          {
+            onBlur: handleBlur,
+            list: { studentData: searchStudents?.data?.data, templateList },
+            showDropdown,
+          },
+          handleSet,
+          onSearchChange
+        )}
         onSubmit={onSubmit}
         register={register}
         formButtons={formButtons}

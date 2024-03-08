@@ -1,29 +1,29 @@
 // Core
 import { FunctionComponent, ReactElement, useEffect, useState } from "react";
-import { useParams, useNavigate, useOutletContext } from "react-router-dom";
-import { useFieldArray, useForm } from "react-hook-form";
 import { Helmet } from "react-helmet-async";
+import { useFieldArray, useForm } from "react-hook-form";
+import { useNavigate, useOutletContext, useParams } from "react-router-dom";
 // Components
 import { Button } from "@/components/ui";
 // Util
-import { IButton, IFormTextInput } from "@/shared/types";
-import { ContextTypes, ContextData } from "@/shared/types/ContextTypes";
-import { templateFormFields } from "@/shared/form-fields/formFields";
-import { ADMIN_HEADING_LINKS, ADMIN_HEADING_LOGOLINK } from "@/core/constants";
-import { Form as CForm, Stack, ContainedList } from "carbon-components-react";
-import FormTextField from "@/components/features/form/form-fields/FormTextField";
-import { TemplateForm } from "@/shared/types/IForm";
-import CustomForm from "@/components/ui/customForm/CustomForm";
-import "./templateform.scss";
-import FormTextAreaField from "@/components/features/form/form-fields/FormTextAreaField";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { createTemplate } from "@/api/template/template";
-import { forCreatingEntry } from "@/shared/query-setup/forCreatingEntry";
-import FormLabel from "@/components/ui/FormLabel/FormLabel";
-import { Search } from "@carbon/react";
 import { getInstitutions } from "@/api";
+import { createTemplate } from "@/api/template/template";
+import FormTextAreaField from "@/components/features/form/form-fields/FormTextAreaField";
+import FormTextField from "@/components/features/form/form-fields/FormTextField";
 import ListItems from "@/components/newComponets/ListItems";
+import FormLabel from "@/components/ui/FormLabel/FormLabel";
+import CustomForm from "@/components/ui/customForm/CustomForm";
+import { ADMIN_HEADING_LINKS, ADMIN_HEADING_LOGOLINK } from "@/core/constants";
+import { templateFormFields } from "@/shared/form-fields/formFields";
+import { forCreatingEntry } from "@/shared/query-setup/forCreatingEntry";
+import { IButton, IFormTextInput } from "@/shared/types";
+import { ContextData, ContextTypes } from "@/shared/types/ContextTypes";
+import { TemplateForm } from "@/shared/types/IForm";
 import { debounceEvent } from "@/shared/util";
+import { Search } from "@carbon/react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { Form as CForm, ContainedList, Stack } from "carbon-components-react";
+import "./templateform.scss";
 
 const blankCustomTemplate = {
   attributeType: "",
@@ -95,7 +95,7 @@ const TemplatesForm: FunctionComponent = (): ReactElement => {
     (data: FormData) => createTemplate(data),
     {
       ...forCreatingEntry({
-        navigate: () => navigate("/admin/template"),
+        navigate: () => navigate("/admin/templates"),
         updateContext,
         entity: "UserSchema",
         setError,
