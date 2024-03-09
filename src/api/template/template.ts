@@ -28,3 +28,17 @@ export const fetchTemplate = async ({ queryKey }) => {
   });
   return data;
 };
+
+export const getSingleTemplate = async ({ queryKey }) => {
+  const [, { id }] = queryKey;
+  const { data } = await httpService.get(`/data/user-schema/${id}`);
+  return data;
+};
+
+export const editTemplate = async (id: string | undefined, templateData) => {
+  const { data } = await httpService.patch(
+    `/data/user-schema/${id}`,
+    templateData
+  );
+  return data;
+};

@@ -9,7 +9,7 @@ const FormTextAreaField: FunctionComponent<{
   cancelForm: (e, id) => void;
   classNameCustom?: string;
 }> = ({ register, data, cancelForm, classNameCustom }): ReactElement => {
-  const { id, label, placeholder, validations, errors, readonly } = data;
+  const { id, label, placeholder, validations, errors } = data;
 
   return (
     <TextArea

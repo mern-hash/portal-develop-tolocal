@@ -178,20 +178,12 @@ export const institutionCredentialsHLC = (navigate) => {
     logoLink: INSTUTION_HEADING_LOGOLINK,
     title: "Credentials",
     button: (
-      <HeaderButton
-        id="add-student"
-        buttonText={ADD_STUDENTS_DROPDOWN_TEXT}
-        iconType="add"
-        items={[
-          {
-            text: "Manually",
-            onClick: () => navigate("create"),
-          },
-          {
-            text: "Bulk upload",
-            onClick: () => navigate("bulk"),
-          },
-        ]}
+      <Button
+        label={ADD_STUDENTS_DROPDOWN_TEXT}
+        icon="add"
+        type="button"
+        clickFn={() => navigate("create")}
+        kind="primary"
       />
     ),
   };

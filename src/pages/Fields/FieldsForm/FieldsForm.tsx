@@ -6,20 +6,19 @@ import { useNavigate, useOutletContext, useParams } from "react-router-dom";
 // Components
 import { Button } from "@/components/ui";
 // Util
+import { createFields } from "@/api/fields/fields";
 import Delete from "@/assets/icons/Delete";
 import FormSelectField from "@/components/features/form/form-fields/FormSelectField";
 import FormTextField from "@/components/features/form/form-fields/FormTextField";
 import { ADMIN_HEADING_LINKS, ADMIN_HEADING_LOGOLINK } from "@/core/constants";
 import { fieldFormFields } from "@/shared/form-fields/formFields";
+import { forCreatingEntry } from "@/shared/query-setup/forCreatingEntry";
 import { IButton, IFormTextInput } from "@/shared/types";
 import { ContextData, ContextTypes } from "@/shared/types/ContextTypes";
 import { FieldForm, IFormSelectInput } from "@/shared/types/IForm";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Form as CForm, Stack } from "carbon-components-react";
 import "./fieldsform.scss";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { createTemplate } from "@/api/template/template";
-import { forCreatingEntry } from "@/shared/query-setup/forCreatingEntry";
-import { createFields } from "@/api/fields/fields";
 
 const TemplatesForm: FunctionComponent = (): ReactElement => {
   // Fetched data, used to compare freshly edited input fields to see which

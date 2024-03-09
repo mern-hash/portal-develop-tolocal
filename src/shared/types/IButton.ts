@@ -24,6 +24,7 @@ interface IButton {
   kind?: keyof typeof Kinds;
   aria_label?: string;
   size?: string;
+  disabled?: boolean;
 }
 
 export default IButton;

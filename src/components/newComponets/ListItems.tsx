@@ -1,4 +1,4 @@
-import { Loading, ContainedListItem } from "carbon-components-react";
+import { ContainedListItem } from "carbon-components-react";
 
 const ListItems = ({
   name,

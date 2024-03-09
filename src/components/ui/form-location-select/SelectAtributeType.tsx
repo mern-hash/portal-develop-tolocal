@@ -19,7 +19,17 @@ const SelectAtributeType: FunctionComponent<{
   validations: any;
   label: string;
   classNameCustom?: string;
-}> = ({ id, register, errors, watch, validations, label, classNameCustom }) => {
+  disabled?: boolean;
+}> = ({
+  id,
+  register,
+  errors,
+  watch,
+  validations,
+  label,
+  classNameCustom,
+  disabled,
+}) => {
   const { attributeType } = watch;
   const [selectedValue, setSelectedValue] = useState<string>("");
 
@@ -35,6 +45,7 @@ const SelectAtributeType: FunctionComponent<{
       {...register(id, validations)}
       {...errors}
       className={classNameCustom}
+      disabled={disabled ? disabled : false}
     >
       <SelectItem disabled hidden value="" text="Select Atribute" />
       {attributeData?.map((c, i) => (

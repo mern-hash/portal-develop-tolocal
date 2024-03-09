@@ -1,43 +1,43 @@
 //SECTION - Imports
 //ANCHOR - Core
 import { FunctionComponent, ReactElement, useEffect, useState } from "react";
-import { useNavigate, useOutletContext } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
+import { useNavigate, useOutletContext } from "react-router-dom";
 //ANCHOR - Carbon
+import { Edit } from "@carbon/icons-react";
 import { Loading, Pagination } from "carbon-components-react";
-import { Edit, TrashCan } from "@carbon/icons-react";
 //ANCHOR - Api
+import { deleteInstitutions } from "@/api";
 import {
   useInfiniteQuery,
   useMutation,
   useQueryClient,
 } from "@tanstack/react-query";
-import { deleteInstitutions, getInstitutions } from "@/api";
 //ANCHOR - Components
-import { Button } from "@/components/ui";
 import { EmptyPage, ErrorPage, Table } from "@/components/features";
+import { Button } from "@/components/ui";
 //ANCHOR - Table stuff
+import { templateHeaderData } from "@/shared/table-data/tableHeaders";
 import {
-  deleteModal,
   configDateForFilter,
+  deleteModal,
   onSortTable,
 } from "@/shared/table-data/tableMethods";
-import { templateHeaderData } from "@/shared/table-data/tableHeaders";
 //ANCHOR - Util
-import { ContextTypes, ContextData } from "@/shared/types/ContextTypes";
-import { IInstitutionTableData, ITableDefaults } from "@/shared/types";
-import { deleteMsg, pluralize } from "@/shared/util";
 import { Sponge } from "@/assets/icons";
 import { templatesListHLC } from "@/shared/outlet-context/outletContext";
+import { IInstitutionTableData, ITableDefaults } from "@/shared/types";
+import { ContextData, ContextTypes } from "@/shared/types/ContextTypes";
+import { deleteMsg, pluralize } from "@/shared/util";
 //ANCHOR - Constants
+import { fetchTemplate } from "@/api/template/template";
 import {
   TABLE_ORDER,
   TABLE_ORDER_BY,
   TABLE_PAGE_SIZES,
 } from "@/core/constants";
-import { forGettingTableData } from "@/shared/query-setup/forGettingTableData";
 import { forDeletingTableData } from "@/shared/query-setup/forDeletingTableData";
-import { fetchTemplate } from "@/api/template/template";
+import { forGettingTableData } from "@/shared/query-setup/forGettingTableData";
 //!SECTION
 
 /**
@@ -149,17 +149,17 @@ const TemplateList: FunctionComponent = (): ReactElement => {
       iconDescription: "Edit",
       onClick: (cellData) => navigate(`edit/${cellData.id}`),
     },
-    {
-      icon: TrashCan,
-      iconDescription: "Delete",
-      onClick: (cellData) =>
-        deleteModal(
-          updateContext,
-          `Delete ${cellData.name}`,
-          `Are you sure you want to delete ${cellData.name}?`,
-          () => deleteInstitutionEntry.mutate([cellData])
-        ),
-    },
+    // {
+    //   icon: TrashCan,
+    //   iconDescription: "Delete",
+    //   onClick: (cellData) =>
+    //     deleteModal(
+    //       updateContext,
+    //       `Delete ${cellData.name}`,
+    //       `Are you sure you want to delete ${cellData.name}?`,
+    //       () => deleteInstitutionEntry.mutate([cellData])
+    //     ),
+    // },
   ];
 
   /**
@@ -261,9 +261,9 @@ const TemplateList: FunctionComponent = (): ReactElement => {
         sortBy={(term: string, direction: string) =>
           onSortTable({ term, direction, tableInfo, setTableInfo })
         }
-        // tableColumnActions={tableCTA}
+        tableColumnActions={tableCTA}
         nameNavigate={(val) => {
-          // navigate(`edit/${val}`)
+          navigate(`edit/${val}`);
         }}
       />
       <Pagination

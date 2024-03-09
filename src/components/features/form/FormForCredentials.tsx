@@ -68,7 +68,6 @@ const FormForCredentials: FunctionComponent<IFormCredentialsComponent> = ({
                                 key={index}
                                 name={item?.name}
                                 onClickFunc={(item) => {
-                                  console.log("object");
                                   row?.onClick?.(row.id, item);
                                 }}
                                 item={item}

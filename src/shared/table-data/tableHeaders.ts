@@ -78,6 +78,11 @@ const fieldHeaderData: ITableHeaderItem[] = [
     isSortable: true,
   },
   {
+    header: "Field type",
+    key: "type",
+    isSortable: false,
+  },
+  {
     header: "Value",
     key: "value",
     isSortable: false,

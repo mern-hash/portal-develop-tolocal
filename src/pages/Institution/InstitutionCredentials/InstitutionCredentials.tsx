@@ -1,60 +1,23 @@
 //SECTION - Imports
 //ANCHOR - Core
-import { FunctionComponent, ReactElement, useEffect, useState } from "react";
-import "../institution.scss";
-import { useNavigate, useOutletContext } from "react-router-dom";
+import { FunctionComponent, ReactElement, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
-import { format, isValid } from "date-fns";
+import { useNavigate, useOutletContext } from "react-router-dom";
+import "../institution.scss";
 //ANCHOR - Api
-import {
-  useInfiniteQuery,
-  useMutation,
-  useQuery,
-  useQueryClient,
-} from "@tanstack/react-query";
-import {
-  deleteStudent,
-  getStudents,
-  getInstitutionTableFields,
-  resendCredentialEmail,
-} from "@/api";
 //ANCHOR - Components
-import { HeaderButton } from "@/components/ui";
-import { EmptyPage, ErrorPage, Table } from "@/components/features";
-import { Loading, Pagination } from "carbon-components-react";
+import { EmptyPage } from "@/components/features";
+import { Button } from "@/components/ui";
 //ANCHOR - Table stuff
-import {
-  configDateForFilter,
-  deleteModal,
-  confirmModal,
-  onSortTable,
-  toastNotification,
-} from "@/shared/table-data/tableMethods";
 //ANCHOR - Util
-import { ContextData, ContextTypes } from "@/shared/types/ContextTypes";
-import { deleteMsg, pluralize, formatDateWithoutTimezone } from "@/shared/util";
 import { Square } from "@/assets/icons";
-import { Edit, TrashCan } from "@carbon/icons-react";
+import { ContextData, ContextTypes } from "@/shared/types/ContextTypes";
 //ANCHOR - Constants
-import {
-  ADD_STUDENTS_DROPDOWN_TEXT,
-  TABLE_ORDER,
-  TABLE_ORDER_BY,
-  TABLE_PAGE_SIZES,
-  TOAST_NOTIFICATION_KINDS,
-  TOAST_NOTIFICATION_TITLES,
-} from "@/core/constants";
+import { ADD_STUDENTS_DROPDOWN_TEXT } from "@/core/constants";
 import {
   clearTabs,
   institutionCredentialsHLC,
-  institutionStudentsHLC,
 } from "@/shared/outlet-context/outletContext";
-import { ITableDefaults } from "@/shared/types";
-import { forGettingTableData } from "@/shared/query-setup/forGettingTableData";
-import { forDeletingTableData } from "@/shared/query-setup/forDeletingTableData";
-import { clearModal } from "@/shared/outlet-context/outletContext";
-import { errorMessages } from "@/shared/errorText";
-import { successMessages } from "@/shared/successText";
 //!SECTION
 
 const InstitutionCredentials: FunctionComponent = (): ReactElement => {
@@ -99,20 +62,12 @@ const InstitutionCredentials: FunctionComponent = (): ReactElement => {
           heading="Start by adding credentials"
           desc="Your credentials will be linked to a student and selected template."
           button={
-            <HeaderButton
-              id="add-student"
-              buttonText={ADD_STUDENTS_DROPDOWN_TEXT}
-              iconType="add"
-              items={[
-                {
-                  text: "Manually",
-                  onClick: () => navigate("create"),
-                },
-                {
-                  text: "Bulk upload",
-                  onClick: () => navigate("bulk"),
-                },
-              ]}
+            <Button
+              label={ADD_STUDENTS_DROPDOWN_TEXT}
+              icon="add"
+              type="button"
+              clickFn={() => navigate("create")}
+              kind="primary"
             />
           }
         />

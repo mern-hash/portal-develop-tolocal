@@ -19,6 +19,7 @@ import { ContextData, ContextTypes } from "@/shared/types/ContextTypes";
 
 import { ADD_STUDENT_BUTTON_TEXT, SAVE_CHANGES } from "@/core/constants";
 
+import { fetchTemplate } from "@/api/template/template";
 import FormForCredentials from "@/components/features/form/FormForCredentials";
 import { credentialFormField } from "@/shared/form-fields/credentialField";
 import { ICredentialForm } from "@/shared/types/IForm";
@@ -26,28 +27,7 @@ import { debounceEvent } from "@/shared/util";
 import "./CredentialForm.scss";
 
 //!SECTION
-const dropdownItems = [
-  { name: "John Doe", email: "johndoe@example.com" },
-  { name: "Jane Smith", email: "janesmith@example.com" },
-  { name: "Alex Johnson", email: "alexj@example.com" },
-];
 
-function filterItems(
-  items,
-  searchString
-): {
-  name: string;
-  email: string;
-}[] {
-  const lowerCaseSearchString = searchString.toLowerCase();
-
-  return items.filter((item) => {
-    return (
-      item.name.toLowerCase().includes(lowerCaseSearchString) ||
-      item.email.toLowerCase().includes(lowerCaseSearchString)
-    );
-  });
-}
 const CredentialForm: FunctionComponent = () => {
   const { updateContext } = useOutletContext<{
     updateContext: (state: string, data: ContextData) => void;
@@ -56,13 +36,10 @@ const CredentialForm: FunctionComponent = () => {
     studentName: false,
     templateName: false,
   });
-
-  const [templateList, setTemplateList] = useState<
-    {
-      name: string;
-      email: string;
-    }[]
-  >([]);
+  const [selected, setSelected] = useState({
+    studentName: null,
+    templateName: null,
+  });
 
   const { id } = useParams();
   const navigate = useNavigate();
@@ -72,7 +49,6 @@ const CredentialForm: FunctionComponent = () => {
   //ANCHOR - RHF Setup
   const {
     register,
-    handleSubmit,
     formState: { errors },
     watch,
     trigger,
@@ -83,7 +59,13 @@ const CredentialForm: FunctionComponent = () => {
   });
 
   //ANCHOR - setFormDefaultValues
-
+  const searchTemplate = useQuery(
+    ["templates", { term: watch("templateName") }],
+    fetchTemplate,
+    {
+      enabled: watch("templateName")?.length > 0,
+    }
+  );
   //ANCHOR - Submit
   const onSubmit = () => {
     console.log("");
@@ -159,6 +141,7 @@ const CredentialForm: FunctionComponent = () => {
   );
 
   const handleSet = (id, item) => {
+    setSelected({ ...selected, [id]: item });
     setValue(id, item?.name);
   };
 
@@ -171,8 +154,6 @@ const CredentialForm: FunctionComponent = () => {
 
   useEffect(() => {
     if (watch("templateName") && watch("templateName").length > 0) {
-      const filtered = filterItems(dropdownItems, watch("templateName"));
-      setTemplateList(filtered);
       setShowDropdown((prev) => ({ ...prev, templateName: true }));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -190,7 +171,10 @@ const CredentialForm: FunctionComponent = () => {
           errors,
           {
             onBlur: handleBlur,
-            list: { studentData: searchStudents?.data?.data, templateList },
+            list: {
+              studentData: searchStudents?.data?.data,
+              templateList: searchTemplate?.data?.data,
+            },
             showDropdown,
           },
           handleSet,

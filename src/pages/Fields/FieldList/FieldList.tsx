@@ -4,7 +4,6 @@ import { FunctionComponent, ReactElement, useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useNavigate, useOutletContext } from "react-router-dom";
 //ANCHOR - Carbon
-import { Edit, TrashCan } from "@carbon/icons-react";
 import { Loading, Pagination } from "carbon-components-react";
 //ANCHOR - Api
 import { deleteInstitutions } from "@/api";
@@ -143,24 +142,24 @@ const FieldList: FunctionComponent = (): ReactElement => {
    * ANCHOR tableCTA
    * Last column table row buttons (edit/delete)
    */
-  const tableCTA = [
-    {
-      icon: Edit,
-      iconDescription: "Edit",
-      onClick: (cellData) => navigate(`edit/${cellData.id}`),
-    },
-    {
-      icon: TrashCan,
-      iconDescription: "Delete",
-      onClick: (cellData) =>
-        deleteModal(
-          updateContext,
-          `Delete ${cellData.name}`,
-          `Are you sure you want to delete ${cellData.name}?`,
-          () => deleteInstitutionEntry.mutate([cellData])
-        ),
-    },
-  ];
+  // const tableCTA = [
+  //   {
+  //     icon: Edit,
+  //     iconDescription: "Edit",
+  //     onClick: (cellData) => navigate(`edit/${cellData.id}`),
+  //   },
+  //   {
+  //     icon: TrashCan,
+  //     iconDescription: "Delete",
+  //     onClick: (cellData) =>
+  //       deleteModal(
+  //         updateContext,
+  //         `Delete ${cellData.name}`,
+  //         `Are you sure you want to delete ${cellData.name}?`,
+  //         () => deleteInstitutionEntry.mutate([cellData])
+  //       ),
+  //   },
+  // ];
 
   /**
    * ANCHOR date filter

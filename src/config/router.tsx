@@ -87,6 +87,10 @@ const router = sentryCreateBrowserRouter([
         path: "templates/create",
         element: <TemplatesForm />,
       },
+      {
+        path: "templates/edit/:id",
+        element: <TemplatesForm />,
+      },
       { path: "fields", element: <FieldList /> },
 
       {

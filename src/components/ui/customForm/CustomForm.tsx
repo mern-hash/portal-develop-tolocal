@@ -1,16 +1,15 @@
-import FormTextField from "@/components/features/form/form-fields/FormTextField";
+import Delete from "@/assets/icons/Delete";
+import FormCheck from "@/components/features/form/form-fields/FormCheck";
 import FormSelectField from "@/components/features/form/form-fields/FormSelectField";
+import FormTextField from "@/components/features/form/form-fields/FormTextField";
 import { customFormFields } from "@/shared/form-fields/formFields";
 import { IFormSelectInput, IFormTextInput } from "@/shared/types";
-import FormCheck from "@/components/features/form/form-fields/FormCheck";
-import Delete from "@/assets/icons/Delete";
-import FormTextAreaField from "@/components/features/form/form-fields/FormTextAreaField";
+import { TemplateForm } from "@/shared/types/IForm";
 import {
   UseFieldArrayRemove,
   UseFormRegister,
   UseFormWatch,
 } from "react-hook-form";
-import { TemplateForm } from "@/shared/types/IForm";
 
 type Props = {
   indexOfField: number;
@@ -19,6 +18,7 @@ type Props = {
   remove: UseFieldArrayRemove;
   watch: UseFormWatch<TemplateForm>;
   errors: any;
+  id: boolean;
 };
 
 const CustomForm = ({
@@ -28,6 +28,7 @@ const CustomForm = ({
   remove,
   watch,
   errors,
+  id,
 }: Props) => {
   const deleteFunc = () => {
     remove(indexOfField);
@@ -64,6 +65,7 @@ const CustomForm = ({
                 indexOfField
               )[2] as IFormSelectInput
             }
+            disabled={id}
             classNameCustom="template-form__select-secound-half"
           />
           <FormTextField
@@ -116,13 +118,16 @@ const CustomForm = ({
               }
               classNameCustom="template-form__Requird-check"
               key={item}
+              disabled={id}
             />
           ))}
         </div>
-        <Delete
-          classNameCustom="template-form__DeleteSvg"
-          clickFunc={deleteFunc}
-        />
+        {!id && (
+          <Delete
+            classNameCustom="template-form__DeleteSvg"
+            clickFunc={deleteFunc}
+          />
+        )}
       </div>
     </>
   );

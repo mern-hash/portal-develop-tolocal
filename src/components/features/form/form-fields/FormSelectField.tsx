@@ -8,7 +8,8 @@ const FormSelectField: FunctionComponent<{
   register: UseFormRegister<any>;
   data: IFormSelectInput;
   classNameCustom?: string;
-}> = ({ register, data, classNameCustom }): ReactElement => {
+  disabled?: boolean;
+}> = ({ register, data, classNameCustom, disabled }): ReactElement => {
   const { id, label, placeholder, validations, errors, items, watch } =
     data as IFormSelectInput;
   const locationProps = { id, register, errors, watch };
@@ -23,6 +24,7 @@ const FormSelectField: FunctionComponent<{
         validations={validations}
         label={label}
         classNameCustom={classNameCustom}
+        disabled={disabled}
       />
     );
   }

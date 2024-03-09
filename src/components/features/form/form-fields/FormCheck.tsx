@@ -1,14 +1,15 @@
 import { Checkbox } from "@carbon/react";
-import { useState } from "react";
 
 function FormCheck({
   data,
   register,
   classNameCustom,
+  disabled,
 }: {
   data: any;
   register: any;
   classNameCustom?: any;
+  disabled?: boolean;
 }) {
   const { id, label } = data;
   return (
@@ -17,6 +18,7 @@ function FormCheck({
       labelText={label}
       {...register(id)}
       className={classNameCustom}
+      disabled={disabled ? disabled : false}
     />
   );
 }

@@ -1,5 +1,11 @@
 // Core
-import { FunctionComponent, ReactElement, useEffect, useState } from "react";
+import {
+  FunctionComponent,
+  ReactElement,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { Helmet } from "react-helmet-async";
 import { useFieldArray, useForm } from "react-hook-form";
 import { useNavigate, useOutletContext, useParams } from "react-router-dom";
@@ -7,7 +13,11 @@ import { useNavigate, useOutletContext, useParams } from "react-router-dom";
 import { Button } from "@/components/ui";
 // Util
 import { getInstitutions } from "@/api";
-import { createTemplate } from "@/api/template/template";
+import {
+  createTemplate,
+  editTemplate,
+  getSingleTemplate,
+} from "@/api/template/template";
 import FormTextAreaField from "@/components/features/form/form-fields/FormTextAreaField";
 import FormTextField from "@/components/features/form/form-fields/FormTextField";
 import ListItems from "@/components/newComponets/ListItems";
@@ -22,8 +32,15 @@ import { TemplateForm } from "@/shared/types/IForm";
 import { debounceEvent } from "@/shared/util";
 import { Search } from "@carbon/react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Form as CForm, ContainedList, Stack } from "carbon-components-react";
+import {
+  Form as CForm,
+  ContainedList,
+  Stack,
+  Loading,
+} from "carbon-components-react";
 import "./templateform.scss";
+import { forEditingEntry } from "@/shared/query-setup/forEditingEntry";
+import ModalForCustomField from "@/components/newComponets/ModalForCustomField";
 
 const blankCustomTemplate = {
   attributeType: "",
@@ -46,10 +63,11 @@ const TemplatesForm: FunctionComponent = (): ReactElement => {
   const { id } = useParams();
   const [institution, setInstitution] = useState(null);
   const [showDropdown, setShowDropdown] = useState(false);
+  const [open, setOpen] = useState(false);
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isValid },
     setError,
     watch,
     trigger,
@@ -70,6 +88,15 @@ const TemplatesForm: FunctionComponent = (): ReactElement => {
     updateContext: (state: string, data: ContextData) => void;
   }>();
 
+  const singleTemplate = useQuery(
+    ["singleTemplate ", { id }],
+    getSingleTemplate,
+    {
+      enabled: !!id,
+      refetchOnWindowFocus: false,
+    }
+  );
+
   // Initial heading setup
   const updateHeadingContext = (title: string) => {
     updateContext(ContextTypes.HLC, {
@@ -84,12 +111,25 @@ const TemplatesForm: FunctionComponent = (): ReactElement => {
   }, 500);
 
   const searchInstitution = useQuery(
-    ["institutions", { term: watch("institute") }],
+    ["fields", { term: watch("institute") }],
     getInstitutions,
     {
       enabled: watch("institute")?.length > 0,
     }
   );
+
+  const editTemplateEntry = useMutation((data) => editTemplate(id, data), {
+    ...forEditingEntry({
+      updateContext,
+      navigate: () => {
+        // navigate("/admin/templates");
+      },
+      entity: "Templates",
+      setError,
+      invalidate: () =>
+        queryClient.invalidateQueries(["singleTemplate ", { id }]),
+    }),
+  });
 
   const createTemplateEntry = useMutation(
     (data: FormData) => createTemplate(data),
@@ -99,17 +139,33 @@ const TemplatesForm: FunctionComponent = (): ReactElement => {
         updateContext,
         entity: "UserSchema",
         setError,
-        invalidate: () => queryClient.invalidateQueries(["alltemplates"]),
+        invalidate: () => queryClient.invalidateQueries(["templates"]),
       }),
     }
   );
 
+  const loading = useMemo(
+    () => createTemplateEntry.isLoading || editTemplateEntry.isLoading,
+    [createTemplateEntry, editTemplateEntry]
+  );
+
+  const setFormDefaultValues = (data: any) => {
+    // Maps over data entries and set each of them as form's defaultValue
+    Object.entries(data).forEach(([name, value]: any) => setValue(name, value));
+    updateHeadingContext(`Edit ${data.name}`);
+  };
+
   useEffect(() => {
+    if (id && singleTemplate.data) {
+      setFormDefaultValues(singleTemplate.data);
+      return;
+    }
     updateHeadingContext("Build a template");
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [singleTemplate.data, id]);
 
   const onSubmit = async (data) => {
+    if (loading || !isValid) return;
     const formData = new FormData();
     formData.append("name", data.name);
     formData.append("description", data.description);
@@ -120,10 +176,16 @@ const TemplatesForm: FunctionComponent = (): ReactElement => {
           formData.append(`fields[${index}][${key}]`, field[key]);
         }
       }
+      return null;
     });
     const createTemplate = createTemplateEntry.mutate(formData);
 
     return createTemplate;
+  };
+
+  const onUpdate = async (data) => {
+    if (loading || !isValid) return;
+    editTemplateEntry.mutate(data);
   };
 
   const formButtons: IButton[] = [
@@ -164,14 +226,28 @@ const TemplatesForm: FunctionComponent = (): ReactElement => {
     watch("institute") &&
       watch("institute").length > 0 &&
       setShowDropdown(true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [watch("institute")]);
+
+  const addCustomField = (item) => {
+    console.log(item);
+    if (!item) return;
+    setOpen(false);
+    append({
+      ...blankCustomTemplate,
+      name: item?.name,
+      label: item?.name,
+      attributeType: item?.type,
+    });
+  };
 
   return (
     <>
       <Helmet>
         <title>{id ? "Update" : "Create"}</title>
       </Helmet>
-      <CForm onSubmit={handleSubmit(onSubmit)} className="form">
+      {loading && <Loading />}
+      <CForm onSubmit={handleSubmit(id ? onUpdate : onSubmit)} className="form">
         <div className="template-form__wrapper">
           <div className="template-form__left-content">
             <h6>Template name</h6>
@@ -226,6 +302,7 @@ const TemplatesForm: FunctionComponent = (): ReactElement => {
                   placeholder={"Search for institution"}
                   onBlur={onBlur}
                   onChange={onSearchChange}
+                  disabled={!!id}
                 />
                 {showDropdown && searchInstitution?.data?.data && (
                   <ContainedList className="search-list-wrapper" label="">
@@ -265,6 +342,7 @@ const TemplatesForm: FunctionComponent = (): ReactElement => {
                 cancelForm={cancelForm}
                 watch={watch}
                 errors={errors?.customField && errors?.customField[i]}
+                id={!!id}
               />
             ))}
             <div className="template-form__Addfield-btnwrapper">
@@ -276,26 +354,35 @@ const TemplatesForm: FunctionComponent = (): ReactElement => {
                 type="button"
                 aria_label="add-button"
                 kind="secondary"
+                disabled={!!id}
               />
 
               <Button
                 clickFn={() => {
-                  append(blankCustomTemplate);
+                  setOpen(true);
                 }}
                 label="Add Custom Field"
                 type="button"
                 aria_label="add-button"
                 kind="secondary"
+                disabled={!!id}
               />
             </div>
           </Stack>
         </div>
-
         <div className="form__row form__row__buttons template-form__build-cancel-btn-wrapper">
           {formButtons.map((button: IButton, i: number) => (
             <Button key={i} {...button} />
           ))}
         </div>
+        <ModalForCustomField
+          open={open}
+          setOpen={setOpen}
+          heading="Add custom field"
+          secondaryButtonText="Cancel"
+          primaryButtonText="Add field"
+          onSubmit={addCustomField}
+        />
       </CForm>
     </>
   );
