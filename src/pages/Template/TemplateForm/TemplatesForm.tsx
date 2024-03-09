@@ -61,7 +61,7 @@ const TemplatesForm: FunctionComponent = (): ReactElement => {
 
   const navigate = useNavigate();
   const { id } = useParams();
-  const [institution, setInstitution] = useState(null);
+  const [institution, setInstitution] = useState({ id: "" });
   const [showDropdown, setShowDropdown] = useState(false);
   const [open, setOpen] = useState(false);
   const {
@@ -73,7 +73,7 @@ const TemplatesForm: FunctionComponent = (): ReactElement => {
     trigger,
     control,
     setValue,
-  } = useForm<TemplateForm>({
+  } = useForm < TemplateForm > ({
     mode: "onBlur",
     defaultValues: {},
   });
@@ -84,9 +84,9 @@ const TemplatesForm: FunctionComponent = (): ReactElement => {
   });
   const queryClient = useQueryClient();
   // <Outlet /> context to update HeaderLayout data
-  const { updateContext } = useOutletContext<{
+  const { updateContext } = useOutletContext < {
     updateContext: (state: string, data: ContextData) => void;
-  }>();
+  } > ();
 
   const singleTemplate = useQuery(
     ["singleTemplate ", { id }],
@@ -169,6 +169,7 @@ const TemplatesForm: FunctionComponent = (): ReactElement => {
     const formData = new FormData();
     formData.append("name", data.name);
     formData.append("description", data.description);
+    formData.append("instituteId", institution?.id);
 
     data.customField.map((field, index) => {
       for (let key in field) {
