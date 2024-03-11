@@ -1,0 +1,56 @@
+@use "@carbon/react/scss/breakpoint" as *;
+@use "@carbon/react/scss/colors" as *;
+@use "@carbon/react/scss/spacing" as *;
+@use "@carbon/react/scss/type" as *;
+
+.auth {
+  &__container {
+    padding: 32px 75px 48px;
+
+    @include breakpoint(md) {
+      max-width: 450px;
+    }
+
+    @include breakpoint-down(md) {
+      padding: 32px 24px;
+    }
+  }
+
+  &__error {
+    margin-top: $spacing-05;
+  }
+
+  &__heading {
+    @include type-style("productive-heading-04");
+    margin-top: $spacing-09;
+    white-space: nowrap;
+    line-height: 40px;
+  }
+
+  &__link {
+    @include type-style("body-compact-01");
+    margin-top: 6px;
+    color: $gray-100;
+  }
+
+  &__return-link {
+    text-decoration: underline;
+    margin-top: $spacing-07;
+  }
+
+  &__stack {
+    margin-top: $spacing-07;
+    min-width: 300px;
+
+    button {
+      min-height: 40px;
+      padding-top: 10px;
+      padding-bottom: 10px;
+    }
+  }
+
+  &__text {
+    @include type-style("body-compact-01");
+    max-width: 300px;
+  }
+}

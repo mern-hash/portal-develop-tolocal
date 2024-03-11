@@ -1,0 +1,44 @@
+@use "@carbon/react/scss/breakpoint" as *;
+@use "@carbon/react/scss/colors" as *;
+
+.popup-modal {
+  .cds--modal-container {
+    position: fixed;
+    top: 248px;
+    max-width: 480px;
+    height: fit-content;
+
+    @include breakpoint-down(md) {
+      padding-top: 16px;
+      top: 25%;
+      max-height: 260px;
+      width: 90vw;
+
+      .cds--modal-close {
+        top: 16px;
+      }
+    }
+  }
+
+  // For success modals (e.g. resend email)
+  .cds--modal-footer {
+    @include breakpoint-down(md) {
+      height: 48px;
+    }
+
+    .cds--btn--primary {
+      background: $certie-blue;
+      color: $gray-100;
+    }
+  }
+
+  @include breakpoint-down(md) {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &__text {
+    line-height: 1;
+  }
+}

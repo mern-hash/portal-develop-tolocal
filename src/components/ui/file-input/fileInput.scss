@@ -1,0 +1,42 @@
+@use "@carbon/react/scss/colors" as *;
+@use "@carbon/react/scss/spacing" as *;
+@use "@carbon/react/scss/type" as *;
+
+.file-input {
+  // Drag and drop files here or click to upload and
+  .cds--file-browse-btn,
+  // Uploaded file preview (white with text)
+  .cds--file__selected-file {
+    margin-top: $spacing-05;
+    max-width: 100%;
+    width: 100%;
+  }
+
+  // Edit institution/student -> preview img wrapper
+  &__preview-edit {
+    display: flex;
+    align-items: center;
+    margin-top: $spacing-05;
+
+    .cds--file__selected-file {
+      margin-top: 0;
+    }
+  }
+
+  // Edit institution/student -> preview img
+  &__preview-img {
+    height: 48px;
+    object-fit: contain;
+  }
+
+  // Bulk upload, text above input field
+  &__description {
+    @include type-style("body-compact-01");
+
+    // Link inside that text
+    &__template {
+      color: $blue-60;
+      cursor: pointer;
+    }
+  }
+}

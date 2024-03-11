@@ -1,0 +1,17 @@
+{
+  "$schema": "https://typedoc.org/schema.json",
+  "name": "Certie FE",
+  "entryPoints": [
+    "./src/App.tsx",
+    "./src/components/**/**/*.tsx",
+    "./src/pages/**/**/*.tsx",
+    "./src/api/**/*.ts",
+    "./src/config/*.tsx",
+    "./src/shared/*.ts"
+  ],
+  "theme": "hierarchy",
+  "sort": ["alphabetical"],
+  "categoryOrder": ["Feature", "*"],
+  "out": "docs",
+  "githubPages": false
+}

@@ -1,0 +1,29 @@
+@use "@carbon/react/scss/breakpoint" as *;
+@use "@carbon/react/scss/spacing" as *;
+
+.header-layout {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background: $color-black;
+
+  &__body {
+    height: 100%;
+    padding: 56px 0 48px;
+    overflow: auto;
+
+    @include breakpoint-down(md) {
+      padding: 32px 0;
+    }
+
+    &__content {
+      margin: 0 auto;
+      width: fit-content;
+      height: 100%;
+    }
+
+    &__wrapper {
+      flex: 1;
+    }
+  }
+}

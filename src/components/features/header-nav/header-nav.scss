@@ -1,0 +1,101 @@
+@use "@carbon/react/scss/breakpoint" as *;
+@use "@carbon/react/scss/colors" as *;
+
+.header-nav {
+  &__sidenav {
+    // Hamburger sidenav button
+    &-button {
+      @include breakpoint(lg) {
+        display: none;
+      }
+    }
+
+    &-item {
+      padding: 1rem;
+      color: $gray-10;
+      text-decoration: none;
+    }
+  }
+
+  &__link {
+    &--active {
+      background-color: $gray-80 !important;
+      color: $gray-20 !important;
+    }
+
+    &__myacc {
+      padding-top: 4px;
+    }
+
+    &__logout {
+      padding-bottom: 4px;
+    }
+  }
+
+  &__account {
+    background-color: $gray-100 !important;
+    border-bottom: 1px solid $gray-80;
+    box-shadow: none !important;
+
+    &:hover {
+      border-bottom: none !important;
+      background-color: $gray-80 !important;
+      outline: none;
+    }
+  }
+  &__account.cds--overflow-menu--open {
+    border: 1px solid $gray-80;
+    border-bottom: none;
+    outline: none;
+  }
+}
+
+[aria-label="User menu"] {
+  width: 256px;
+  justify-content: center;
+  left: calc(100% - 256px) !important;
+  top: 48px !important;
+  position: fixed !important;
+
+  &:hover {
+    *::after {
+      display: none;
+    }
+  }
+
+  li {
+    position: relative;
+    width: 100%;
+    height: 56px !important;
+    background: $gray-100;
+
+    &:not(:last-of-type) {
+      &::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 5%;
+        width: 90%;
+        background: $gray-80;
+        height: 1px;
+      }
+    }
+
+    &:focus-visible {
+      outline: none;
+      border: none;
+    }
+
+    button {
+      min-width: 100%;
+      height: 100%;
+      font-weight: 600;
+      position: absolute;
+
+      &:focus {
+        outline: none;
+        border: none;
+      }
+    }
+  }
+}

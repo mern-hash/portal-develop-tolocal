@@ -1,0 +1,25 @@
+@use "@carbon/react/scss/colors" as *;
+
+.button {
+  &--full {
+    min-width: 100%;
+  }
+
+  &--primary {
+    background: $certie-blue;
+    color: $gray-100;
+
+    &:hover {
+      background: $certie-blue-focus;
+      color: $gray-100;
+    }
+
+    &:active,
+    &:focus {
+      background: $certie-blue-active;
+      box-shadow: 0 0 0 1px $white, 0 0 0 4px $certie-blue;
+      border: 1px solid transparent;
+      color: $gray-100;
+    }
+  }
+}

@@ -1,0 +1,20 @@
+@use "@carbon/react/scss/colors" as *;
+@use "@carbon/react/scss/spacing" as *;
+@use "@carbon/react/scss/type" as *;
+
+.empty-page {
+  margin-top: -28px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  &__heading {
+    @include type-style("productive-heading-05");
+  }
+  &__desc {
+    max-width: 450px;
+    margin: $spacing-03 0 $spacing-07;
+    color: $gray-70;
+  }
+}

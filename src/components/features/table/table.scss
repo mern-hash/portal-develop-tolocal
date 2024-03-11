@@ -1,0 +1,132 @@
+@use "@carbon/react/scss/breakpoint" as *;
+@use "@carbon/react/scss/colors" as *;
+@use "@carbon/react/scss/type" as *;
+@use "@carbon/react/scss/spacing" as *;
+
+.datatable {
+  .cds--table-sort__icon,
+  .cds--table-sort__icon-unsorted {
+    min-width: 1.25rem;
+    width: 1.25rem;
+    height: 20px;
+  }
+  .cds--table-sort__icon-unsorted {
+    opacity: 1;
+  }
+  .cds--table-sort {
+    &:focus,
+    &:focus-visible {
+      outline: none;
+    }
+  }
+
+  .cds--batch-actions {
+    background-color: $gray-80;
+    * {
+      background-color: $gray-80;
+    }
+
+    .cds--action-list {
+      .cds--btn:hover {
+        background: $gray-100-hover;
+      }
+    }
+  }
+
+  .cds--data-table-container {
+    padding-top: 0;
+    max-width: 90vw;
+
+    .cds--link {
+      cursor: pointer;
+    }
+
+    @include breakpoint(md) {
+      width: 800px;
+    }
+
+    @include breakpoint(lg) {
+      width: 1126px;
+    }
+  }
+
+  &__thead {
+    .cds--table-sort__flex {
+      pointer-events: none;
+    }
+  }
+
+  &__minw {
+    width: 170px;
+  }
+  &__btns {
+    width: 120px !important;
+  }
+
+  &__filter {
+    position: absolute;
+    top: 50px;
+    right: 0;
+    padding: 16px 16px 72px;
+    width: 350px;
+    background: $gray-20;
+    color: $gray-100;
+    z-index: 1;
+    max-width: 100%;
+
+    &__actions {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+
+      button {
+        width: 50%;
+      }
+    }
+
+    &__arrow {
+      position: absolute;
+      top: 50%;
+      left: 47%;
+    }
+
+    .cds--date-picker--range {
+      position: relative;
+      width: 100%;
+      justify-content: space-between;
+    }
+
+    .heading {
+      @include type-style("productive-heading-03");
+      margin-bottom: $spacing-06;
+    }
+
+    &__row {
+      position: relative;
+      margin-top: $spacing-05;
+    }
+  }
+
+  &__name {
+    cursor: pointer;
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  .cds--search-input {
+    border-bottom: 1px solid $gray-50 !important;
+  }
+}
+
+.cds--pagination {
+  height: 48px;
+
+  .cds--pagination__control-buttons {
+    .cds--pagination__button {
+      width: 48px;
+      height: 48px;
+    }
+  }
+}
