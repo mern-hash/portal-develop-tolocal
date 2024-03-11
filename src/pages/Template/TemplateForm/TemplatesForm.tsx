@@ -61,7 +61,7 @@ const TemplatesForm: FunctionComponent = (): ReactElement => {
 
   const navigate = useNavigate();
   const { id } = useParams();
-  const [institution, setInstitution] = useState({ id: "" });
+  const [institution, setInstitution] = useState<string | null>(null);
   const [showDropdown, setShowDropdown] = useState(false);
   const [open, setOpen] = useState(false);
   const {
@@ -73,7 +73,7 @@ const TemplatesForm: FunctionComponent = (): ReactElement => {
     trigger,
     control,
     setValue,
-  } = useForm < TemplateForm > ({
+  } = useForm<TemplateForm>({
     mode: "onBlur",
     defaultValues: {},
   });
@@ -84,9 +84,9 @@ const TemplatesForm: FunctionComponent = (): ReactElement => {
   });
   const queryClient = useQueryClient();
   // <Outlet /> context to update HeaderLayout data
-  const { updateContext } = useOutletContext < {
+  const { updateContext } = useOutletContext<{
     updateContext: (state: string, data: ContextData) => void;
-  } > ();
+  }>();
 
   const singleTemplate = useQuery(
     ["singleTemplate ", { id }],
@@ -165,11 +165,18 @@ const TemplatesForm: FunctionComponent = (): ReactElement => {
   }, [singleTemplate.data, id]);
 
   const onSubmit = async (data) => {
+    if (!institution) {
+      setError("institute", {
+        message: "Please select valid institution from suggested option!",
+      });
+      return;
+    }
+
     if (loading || !isValid) return;
     const formData = new FormData();
     formData.append("name", data.name);
     formData.append("description", data.description);
-    formData.append("instituteId", institution?.id);
+    formData.append("instituteId", institution);
 
     data.customField.map((field, index) => {
       for (let key in field) {
@@ -213,7 +220,7 @@ const TemplatesForm: FunctionComponent = (): ReactElement => {
   };
 
   const onChangeInstitute = (item: any) => {
-    setInstitution(item);
+    setInstitution(item?.id);
     setValue("institute", item?.name);
   };
 
@@ -231,7 +238,6 @@ const TemplatesForm: FunctionComponent = (): ReactElement => {
   }, [watch("institute")]);
 
   const addCustomField = (item) => {
-    console.log(item);
     if (!item) return;
     setOpen(false);
     append({
@@ -241,7 +247,6 @@ const TemplatesForm: FunctionComponent = (): ReactElement => {
       attributeType: item?.type,
     });
   };
-
   return (
     <>
       <Helmet>
@@ -299,12 +304,17 @@ const TemplatesForm: FunctionComponent = (): ReactElement => {
               <div className="CredentialForm__search-input-wrapper">
                 <Search
                   labelText={"Institute"}
-                  {...register("institute")}
+                  {...register("institute", {
+                    required: { value: true, message: "Required field" },
+                  })}
                   placeholder={"Search for institution"}
                   onBlur={onBlur}
                   onChange={onSearchChange}
                   disabled={!!id}
                 />
+                {errors?.institute && (
+                  <p className="error_msg">{errors.institute.message}</p>
+                )}
                 {showDropdown && searchInstitution?.data?.data && (
                   <ContainedList className="search-list-wrapper" label="">
                     {searchInstitution?.data?.data?.length > 0 ? (
@@ -376,14 +386,16 @@ const TemplatesForm: FunctionComponent = (): ReactElement => {
             <Button key={i} {...button} />
           ))}
         </div>
-        <ModalForCustomField
-          open={open}
-          setOpen={setOpen}
-          heading="Add custom field"
-          secondaryButtonText="Cancel"
-          primaryButtonText="Add field"
-          onSubmit={addCustomField}
-        />
+        {open && (
+          <ModalForCustomField
+            open={open}
+            setOpen={setOpen}
+            heading="Add custom field"
+            secondaryButtonText="Cancel"
+            primaryButtonText="Add field"
+            onSubmit={addCustomField}
+          />
+        )}
       </CForm>
     </>
   );

@@ -101,7 +101,7 @@ export interface TemplateForm {
   description: string | null;
   name: string;
   institute: string;
-  customField: {
+  customField?: {
     attributeType: string;
     name: string;
     placeholder: string;
@@ -117,10 +117,16 @@ export interface TemplateForm {
 }
 
 export interface FieldForm {
-  value?: string;
+  value: string;
   name: string;
   attributeType: string;
   valueList?: { value: string }[];
+}
+
+export interface FieldFormForRequest {
+  value: string | string[];
+  name: string;
+  type: string;
 }
 
 export interface CustomFormType {

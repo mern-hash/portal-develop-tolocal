@@ -29,7 +29,7 @@ import { IInstitutionTableData, ITableDefaults } from "@/shared/types";
 import { ContextData, ContextTypes } from "@/shared/types/ContextTypes";
 import { deleteMsg, pluralize } from "@/shared/util";
 //ANCHOR - Constants
-import { fetchFields } from "@/api/fields/fields";
+import { deleteFields, fetchFields } from "@/api/fields/fields";
 import {
   TABLE_ORDER,
   TABLE_ORDER_BY,
@@ -37,6 +37,8 @@ import {
 } from "@/core/constants";
 import { forDeletingTableData } from "@/shared/query-setup/forDeletingTableData";
 import { forGettingTableData } from "@/shared/query-setup/forGettingTableData";
+import { Edit, TrashCan } from "@carbon/icons-react";
+
 //!SECTION
 
 /**
@@ -74,7 +76,7 @@ const FieldList: FunctionComponent = (): ReactElement => {
    * ANCHOR get all
    * Fetch all institutions data based on tableInfo params (page, size, order etc.)
    */
-  const allInstitutions = useInfiniteQuery(
+  const allFields = useInfiniteQuery(
     [
       "fields",
       {
@@ -100,25 +102,22 @@ const FieldList: FunctionComponent = (): ReactElement => {
    * or by selecting a batch of items and clicking button in toolbar
    * and refetch all institutions to live update the view
    */
-  const deleteInstitutionEntry = useMutation(
-    (data: IInstitutionTableData[]) => deleteInstitutions(data),
-    {
-      ...forDeletingTableData({
-        refetch: () =>
-          queryClient.invalidateQueries({
-            queryKey: [
-              "institutions",
-              {
-                ...tableInfo,
-              },
-            ],
-          }),
-        updateContext,
-        entity: deleteMsg(deletedItemsCount, "Institution"),
-        setCount: setDeletedItemsCount,
-      }),
-    }
-  );
+  const deleteFieldEntry = useMutation((data: any) => deleteFields(data), {
+    ...forDeletingTableData({
+      refetch: () =>
+        queryClient.invalidateQueries({
+          queryKey: [
+            "fields",
+            {
+              ...tableInfo,
+            },
+          ],
+        }),
+      updateContext,
+      entity: deleteMsg(deletedItemsCount, "Fields"),
+      setCount: setDeletedItemsCount,
+    }),
+  });
   //!SECTION
 
   /**
@@ -134,7 +133,7 @@ const FieldList: FunctionComponent = (): ReactElement => {
         data,
         `Are you sure you want to delete ${data?.length} item`
       )}?`,
-      () => deleteInstitutionEntry.mutate(data)
+      () => deleteFieldEntry.mutate(data)
     );
   };
 
@@ -142,24 +141,24 @@ const FieldList: FunctionComponent = (): ReactElement => {
    * ANCHOR tableCTA
    * Last column table row buttons (edit/delete)
    */
-  // const tableCTA = [
-  //   {
-  //     icon: Edit,
-  //     iconDescription: "Edit",
-  //     onClick: (cellData) => navigate(`edit/${cellData.id}`),
-  //   },
-  //   {
-  //     icon: TrashCan,
-  //     iconDescription: "Delete",
-  //     onClick: (cellData) =>
-  //       deleteModal(
-  //         updateContext,
-  //         `Delete ${cellData.name}`,
-  //         `Are you sure you want to delete ${cellData.name}?`,
-  //         () => deleteInstitutionEntry.mutate([cellData])
-  //       ),
-  //   },
-  // ];
+  const tableCTA = [
+    {
+      icon: Edit,
+      iconDescription: "Edit",
+      onClick: (cellData) => navigate(`edit/${cellData.id}`),
+    },
+    {
+      icon: TrashCan,
+      iconDescription: "Delete",
+      onClick: (cellData) =>
+        deleteModal(
+          updateContext,
+          `Delete ${cellData.name}`,
+          `Are you sure you want to delete ${cellData.name}?`,
+          () => deleteFieldEntry.mutate([cellData])
+        ),
+    },
+  ];
 
   /**
    * ANCHOR date filter
@@ -179,18 +178,18 @@ const FieldList: FunctionComponent = (): ReactElement => {
   //ANCHOR - items list
   const renderFetchedInstitutions = () => {
     // if loading and some items already fetched (visible), display them
-    return allInstitutions.isLoading
+    return allFields.isLoading
       ? itemsFetched?.length
         ? itemsFetched
         : []
       : // else, display new ones
-        allInstitutions.data?.pages[0][0]?.data;
+        allFields.data?.pages[0]?.data;
   };
   //ANCHOR - isEmptyPage
   const isEmptyPage = (): boolean =>
     // If there is no new fetched data
 
-    !allInstitutions.data?.pages[0][0]?.data?.length &&
+    !allFields.data?.pages[0]?.data?.length &&
     // There is no previously fetched data (sorting works better with this)
     !itemsFetched?.length &&
     // Wasn't searched for anything (empty search req should display
@@ -203,14 +202,14 @@ const FieldList: FunctionComponent = (): ReactElement => {
    * ANCHOR error
    * Render page
    */
-  if (allInstitutions.isError) return <ErrorPage title="Fields" />;
+  if (allFields.isError) return <ErrorPage title="Fields" />;
 
   //ANCHOR - loading
-  if (initialFetch && allInstitutions.isLoading)
+  if (initialFetch && allFields.isLoading)
     return <Loading withOverlay={false} />;
   //ANCHOR - empty
   // If there isn't data and there isn't search term or date filter
-  if (allInstitutions.data?.pages[0][0]?.data?.length < 1 || isEmptyPage())
+  if (isEmptyPage())
     return (
       <>
         <Helmet>
@@ -259,9 +258,9 @@ const FieldList: FunctionComponent = (): ReactElement => {
         sortBy={(term: string, direction: string) =>
           onSortTable({ term, direction, tableInfo, setTableInfo })
         }
-        // tableColumnActions={tableCTA}
+        tableColumnActions={tableCTA}
         nameNavigate={(val) => {
-          // navigate(`edit/${val}`)
+          navigate(`edit/${val}`);
         }}
       />
       <Pagination

@@ -1,7 +1,7 @@
-import { FieldForm } from "@/shared/types/IForm";
+import { FieldFormForRequest } from "@/shared/types/IForm";
 import { httpService } from "../http";
 
-export const createFields = async (fieldsData: FieldForm) => {
+export const createFields = async (fieldsData: FieldFormForRequest) => {
   const { data } = await httpService.post(`/custom-field`, fieldsData, {
     headers: {
       "Content-Type": "application/json",
@@ -23,5 +23,23 @@ export const fetchFields = async ({ queryKey }) => {
       to,
     },
   });
+  return data;
+};
+
+export const deleteFields = async (data: any) => {
+  const resp = await httpService.delete("/custom-field", {
+    data: { ids: data.map((i: any) => i.id) },
+  });
+  return resp;
+};
+
+export const getSingleField = async ({ queryKey }) => {
+  const [, { id }] = queryKey;
+  const { data } = await httpService.get(`/custom-field/${id}`);
+  return data;
+};
+
+export const editField = async (id: string | undefined, FieldData) => {
+  const { data } = await httpService.patch(`/custom-field/${id}`, FieldData);
   return data;
 };

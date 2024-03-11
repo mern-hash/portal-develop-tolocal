@@ -1,12 +1,12 @@
 // Core
-import { FunctionComponent, ReactElement, useEffect } from "react";
+import { FunctionComponent, ReactElement, useEffect, useMemo } from "react";
 import { Helmet } from "react-helmet-async";
 import { useFieldArray, useForm } from "react-hook-form";
 import { useNavigate, useOutletContext, useParams } from "react-router-dom";
 // Components
 import { Button } from "@/components/ui";
 // Util
-import { createFields } from "@/api/fields/fields";
+import { createFields, editField, getSingleField } from "@/api/fields/fields";
 import Delete from "@/assets/icons/Delete";
 import FormSelectField from "@/components/features/form/form-fields/FormSelectField";
 import FormTextField from "@/components/features/form/form-fields/FormTextField";
@@ -15,12 +15,17 @@ import { fieldFormFields } from "@/shared/form-fields/formFields";
 import { forCreatingEntry } from "@/shared/query-setup/forCreatingEntry";
 import { IButton, IFormTextInput } from "@/shared/types";
 import { ContextData, ContextTypes } from "@/shared/types/ContextTypes";
-import { FieldForm, IFormSelectInput } from "@/shared/types/IForm";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Form as CForm, Stack } from "carbon-components-react";
+import {
+  FieldForm,
+  FieldFormForRequest,
+  IFormSelectInput,
+} from "@/shared/types/IForm";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { Form as CForm, Stack, Loading } from "carbon-components-react";
+import { forEditingEntry } from "@/shared/query-setup/forEditingEntry";
 import "./fieldsform.scss";
 
-const TemplatesForm: FunctionComponent = (): ReactElement => {
+const FieldsForm: FunctionComponent = (): ReactElement => {
   // Fetched data, used to compare freshly edited input fields to see which
   // one needs to get patched
 
@@ -31,8 +36,9 @@ const TemplatesForm: FunctionComponent = (): ReactElement => {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isValid },
     setError,
+    setValue,
     watch,
     trigger,
     control,
@@ -51,7 +57,7 @@ const TemplatesForm: FunctionComponent = (): ReactElement => {
   }>();
 
   const createFieldEntry = useMutation(
-    (data: FieldForm) => createFields(data),
+    (data: FieldFormForRequest) => createFields(data),
     {
       ...forCreatingEntry({
         navigate: () => navigate("/admin/fields"),
@@ -63,6 +69,11 @@ const TemplatesForm: FunctionComponent = (): ReactElement => {
     }
   );
 
+  const singleField = useQuery(["singleField", { id }], getSingleField, {
+    enabled: !!id,
+    refetchOnWindowFocus: false,
+  });
+
   // Initial heading setup
   const updateHeadingContext = (title: string) => {
     updateContext(ContextTypes.HLC, {
@@ -72,13 +83,66 @@ const TemplatesForm: FunctionComponent = (): ReactElement => {
     });
   };
 
+  const editFieldEntry = useMutation(
+    (data: FieldFormForRequest) => editField(id, data),
+    {
+      ...forEditingEntry({
+        updateContext,
+        navigate: () => {
+          navigate("/admin/fields");
+        },
+        entity: "Fields",
+        setError,
+        invalidate: () =>
+          queryClient.invalidateQueries(["singleField ", { id }]),
+      }),
+    }
+  );
+
+  const setFormDefaultValues = (data: any) => {
+    // Maps over data entries and set each of them as form's defaultValue
+    Object.entries(data).forEach(([name, value]: any) => {
+      if (name === "type") {
+        setValue("attributeType", value);
+      } else {
+        setValue(name, value);
+      }
+    });
+    updateHeadingContext(`Edit ${data.name}`);
+  };
+
   useEffect(() => {
+    window.scrollTo(0, 0);
+    // If there is ID in url -> fetch institution data and set values
+    // as form default and set heading to "Edit __"
+    if (id && singleField.data) {
+      setFormDefaultValues(singleField.data);
+      return;
+    }
     updateHeadingContext("Fields");
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [singleField.data]);
 
-  const onSubmit = async (data) => {
-    createFieldEntry.mutate(data);
+  const loading = useMemo(
+    () => createFieldEntry.isLoading || editFieldEntry.isLoading,
+    [createFieldEntry, editFieldEntry]
+  );
+
+  const onSubmit = async (data: FieldForm) => {
+    if (loading || !isValid) return;
+    const { name, attributeType: type, value, valueList } = data;
+
+    const newObj: FieldFormForRequest = { name, value, type };
+
+    if (valueList && valueList.length > 0) {
+      const newValue = [value];
+      valueList.map(({ value }) => {
+        newValue.push(value);
+      });
+      newObj.value = newValue;
+    }
+
+    id ? editFieldEntry.mutate(newObj) : createFieldEntry.mutate(newObj);
   };
 
   const formButtons: IButton[] = [
@@ -109,6 +173,7 @@ const TemplatesForm: FunctionComponent = (): ReactElement => {
       <Helmet>
         <title>{id ? "Update" : "Create"}</title>
       </Helmet>
+      {loading && <Loading />}
       <CForm onSubmit={handleSubmit(onSubmit)} className="form">
         <div className="field-form__main-wrapper">
           <div className="field-form__wrapper">
@@ -195,4 +260,4 @@ const TemplatesForm: FunctionComponent = (): ReactElement => {
   );
 };
 
-export default TemplatesForm;
+export default FieldsForm;

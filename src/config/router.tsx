@@ -97,6 +97,10 @@ const router = sentryCreateBrowserRouter([
         path: "fields/create",
         element: <FieldsForm />,
       },
+      {
+        path: "fields/edit/:id",
+        element: <FieldsForm />,
+      },
     ],
   },
 

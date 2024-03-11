@@ -1,10 +1,10 @@
-import { Modal, Search, ContainedList } from "carbon-components-react";
-import FormLabel from "../ui/FormLabel/FormLabel";
-import { useQuery } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
 import { fetchFields } from "@/api/fields/fields";
+import { useQuery } from "@tanstack/react-query";
+import { ContainedList, Modal, Search } from "carbon-components-react";
+import { useEffect, useState } from "react";
+import FormLabel from "../ui/FormLabel/FormLabel";
 import ListItems from "./ListItems";
-import { debounceEvent } from "@/shared/util";
+import "./CustomFieldModal.scss";
 
 const ModalForCustomField = ({
   open,
@@ -25,25 +25,25 @@ const ModalForCustomField = ({
   const [showDropdown, setShowDropdown] = useState<boolean>(false);
   const [selected, setSelected] = useState<any>(null);
   const [listData, setListData] = useState<any>([]);
-  const onSearchChange = debounceEvent((e) => setValue(e.target.value), 500);
+  // const onSearchChange = debounceEvent((e) => setValue(e.target.value), 500);
 
   useQuery(["fields", { term: value }], fetchFields, {
     enabled: value?.length > 0,
     onSuccess: (data) => {
-      setListData(data?.[0]?.data || []);
+      setListData(data?.data || []);
     },
   });
 
   const onBlur = () => {
     setTimeout(() => {
       setShowDropdown(false);
-    }, 200);
+    }, 400);
   };
 
   useEffect(() => {
     value && value.length > 0 && setShowDropdown(true);
   }, [value]);
-
+  // console.log(selected);
   return (
     <Modal
       open={open}
@@ -56,11 +56,13 @@ const ModalForCustomField = ({
       onRequestSubmit={() => {
         onSubmit(selected);
       }}
+      className="Modal__wrapper"
     >
       <FormLabel label={""} description={"Select custom field"} />
       <Search
         labelText={"Institute"}
-        onChange={onSearchChange}
+        value={value}
+        onChange={(e) => setValue(e.target.value)}
         placeholder={"Search for custom field"}
         onBlur={onBlur}
       />
