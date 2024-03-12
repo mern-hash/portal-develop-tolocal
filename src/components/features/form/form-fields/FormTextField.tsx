@@ -8,7 +8,8 @@ const FormTextField: FunctionComponent<{
   data: IFormTextInput;
   cancelForm: (e, id) => void;
   classNameCustom?: string;
-}> = ({ register, data, cancelForm, classNameCustom }): ReactElement => {
+  isCustom?: boolean
+}> = ({ register, data, cancelForm, classNameCustom, isCustom }): ReactElement => {
   const { id, label, placeholder, validations, errors, readonly } = data;
 
   return (
@@ -23,6 +24,7 @@ const FormTextField: FunctionComponent<{
       })}
       {...errors}
       onBlur={(e) => cancelForm(e, id)}
+      disabled={!!isCustom}
     />
   );
 };
