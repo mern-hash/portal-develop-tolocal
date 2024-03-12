@@ -3,8 +3,8 @@ import { useQuery } from "@tanstack/react-query";
 import { ContainedList, Modal, Search } from "carbon-components-react";
 import { useEffect, useState } from "react";
 import FormLabel from "../ui/FormLabel/FormLabel";
-import ListItems from "./ListItems";
 import "./CustomFieldModal.scss";
+import ListItems from "./ListItems";
 
 const ModalForCustomField = ({
   open,
@@ -22,28 +22,38 @@ const ModalForCustomField = ({
   onSubmit: (item: any) => any;
 }) => {
   const [value, setValue] = useState<string>("");
+  const [search, setSearch] = useState<string>("");
   const [showDropdown, setShowDropdown] = useState<boolean>(false);
+  const [showDropdownNew, setShowDropdownNew] = useState<boolean>(false);
   const [selected, setSelected] = useState<any>(null);
   const [listData, setListData] = useState<any>([]);
-  // const onSearchChange = debounceEvent((e) => setValue(e.target.value), 500);
 
-  useQuery(["fields", { term: value }], fetchFields, {
-    enabled: value?.length > 0,
+  useQuery(["fields", { term: search }], fetchFields, {
+    enabled: showDropdownNew && search?.length > 0,
     onSuccess: (data) => {
       setListData(data?.data || []);
     },
   });
 
   const onBlur = () => {
+    setShowDropdownNew(false);
     setTimeout(() => {
       setShowDropdown(false);
-    }, 400);
+    }, 200);
+  };
+
+  const onFocus = () => {
+    setShowDropdownNew(true);
+    setShowDropdown(true);
   };
 
   useEffect(() => {
-    value && value.length > 0 && setShowDropdown(true);
+    const delayInputTimeoutId = setTimeout(() => {
+      setSearch(value);
+    }, 500);
+    return () => clearTimeout(delayInputTimeoutId);
   }, [value]);
-  // console.log(selected);
+
   return (
     <Modal
       open={open}
@@ -65,26 +75,29 @@ const ModalForCustomField = ({
         onChange={(e) => setValue(e.target.value)}
         placeholder={"Search for custom field"}
         onBlur={onBlur}
+        onFocus={onFocus}
       />
-      {showDropdown && (
-        <ContainedList className="search-list-wrapper" label="">
-          {listData.length > 0 ? (
-            listData.map((item) => (
-              <ListItems
-                key={item?.id}
-                name={item?.name}
-                onClickFunc={(item) => {
-                  setSelected(item);
-                  setValue(item.name);
-                }}
-                item={item}
-              />
-            ))
-          ) : (
-            <ListItems name={"No data found"} />
-          )}
-        </ContainedList>
-      )}
+
+      <ContainedList
+        className={`search-list-wrapper ${!showDropdown ? "click-hide" : ""}`}
+        label=""
+      >
+        {listData.length > 0 ? (
+          listData.map((item) => (
+            <ListItems
+              key={item?.id}
+              name={item?.name}
+              onClickFunc={(item) => {
+                setSelected(item);
+                setValue(item.name);
+              }}
+              item={item}
+            />
+          ))
+        ) : (
+          <ListItems name={"No data found"} />
+        )}
+      </ContainedList>
     </Modal>
   );
 };

@@ -53,6 +53,7 @@ const blankCustomTemplate = {
   isSortable: false,
   isFilterable: false,
   inTable: false,
+  isCustom: false,
 };
 
 const TemplatesForm: FunctionComponent = (): ReactElement => {
@@ -63,6 +64,8 @@ const TemplatesForm: FunctionComponent = (): ReactElement => {
   const { id } = useParams();
   const [institution, setInstitution] = useState<string | null>(null);
   const [showDropdown, setShowDropdown] = useState(false);
+  const [showDropdownNew, setShowDropdownNew] = useState(false);
+
   const [open, setOpen] = useState(false);
   const {
     register,
@@ -114,7 +117,7 @@ const TemplatesForm: FunctionComponent = (): ReactElement => {
     ["fields", { term: watch("institute") }],
     getInstitutions,
     {
-      enabled: watch("institute")?.length > 0,
+      enabled: showDropdownNew && watch("institute")?.length > 0,
     }
   );
 
@@ -225,17 +228,11 @@ const TemplatesForm: FunctionComponent = (): ReactElement => {
   };
 
   const onBlur = () => {
+    setShowDropdownNew(false);
     setTimeout(() => {
       setShowDropdown(false);
     }, 200);
   };
-
-  useEffect(() => {
-    watch("institute") &&
-      watch("institute").length > 0 &&
-      setShowDropdown(true);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [watch("institute")]);
 
   const addCustomField = (item) => {
     if (!item) return;
@@ -245,6 +242,7 @@ const TemplatesForm: FunctionComponent = (): ReactElement => {
       name: item?.name,
       label: item?.name,
       attributeType: item?.type,
+      isCustom: true,
     });
   };
   return (
@@ -311,12 +309,22 @@ const TemplatesForm: FunctionComponent = (): ReactElement => {
                   onBlur={onBlur}
                   onChange={onSearchChange}
                   disabled={!!id}
+                  onFocus={() => {
+                    setShowDropdownNew(true);
+                    setShowDropdown(true);
+                  }}
                 />
                 {errors?.institute && (
                   <p className="error_msg">{errors.institute.message}</p>
                 )}
-                {showDropdown && searchInstitution?.data?.data && (
-                  <ContainedList className="search-list-wrapper" label="">
+                {searchInstitution?.data?.data && (
+                  <ContainedList
+                    className={`search-list-wrapper ${
+                      !showDropdown ? "hide" : ""
+                    }`}
+                    label=""
+                    style={{ display: "none" }}
+                  >
                     {searchInstitution?.data?.data?.length > 0 ? (
                       searchInstitution?.data?.data?.map((item) => (
                         <ListItems
@@ -354,6 +362,7 @@ const TemplatesForm: FunctionComponent = (): ReactElement => {
                 watch={watch}
                 errors={errors?.customField && errors?.customField[i]}
                 id={!!id}
+                isCustom={item.isCustom}
               />
             ))}
             <div className="template-form__Addfield-btnwrapper">

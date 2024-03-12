@@ -19,6 +19,7 @@ type Props = {
   watch: UseFormWatch<TemplateForm>;
   errors: any;
   id: boolean;
+  isCustom: boolean;
 };
 
 const CustomForm = ({
@@ -29,6 +30,7 @@ const CustomForm = ({
   watch,
   errors,
   id,
+  isCustom,
 }: Props) => {
   const deleteFunc = () => {
     remove(indexOfField);
@@ -65,7 +67,7 @@ const CustomForm = ({
                 indexOfField
               )[2] as IFormSelectInput
             }
-            disabled={id}
+            disabled={id || isCustom}
             classNameCustom="template-form__select-secound-half"
           />
           <FormTextField

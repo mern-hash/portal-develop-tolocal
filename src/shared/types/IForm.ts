@@ -113,6 +113,7 @@ export interface TemplateForm {
     isSortable: boolean;
     isFilterable: boolean;
     inTable: boolean;
+    isCustom: boolean;
   }[];
 }
 
