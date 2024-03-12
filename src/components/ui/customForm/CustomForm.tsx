@@ -52,7 +52,6 @@ const CustomForm = ({
             }
             cancelForm={cancelForm}
             classNameCustom="template-form__input-first-half"
-            isCustom={isCustom}
           />
           <FormSelectField
             register={register}
@@ -83,6 +82,8 @@ const CustomForm = ({
             }
             cancelForm={cancelForm}
             classNameCustom="template-form__input-fifty"
+            isCustom={isCustom}
+
           />
           <FormTextField
             register={register}
