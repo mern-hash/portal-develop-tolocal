@@ -154,7 +154,13 @@ const TemplatesForm: FunctionComponent = (): ReactElement => {
 
   const setFormDefaultValues = (data: any) => {
     // Maps over data entries and set each of them as form's defaultValue
-    Object.entries(data).forEach(([name, value]: any) => setValue(name, value));
+    Object.entries(data).forEach(([name, value]: any) => {
+      if (name === "institutions") {
+        setValue("institute", value?.[0].name);
+      } else {
+        setValue(name, value);
+      }
+    });
     updateHeadingContext(`Edit ${data.name}`);
   };
 
