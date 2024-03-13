@@ -371,7 +371,7 @@ export const customFormFields = (
     {
       type: "text",
       id: `customField.${index}.selectOption`,
-      label: "Field options with coma separated values",
+      label: `Enter List or Dropdown coma separated values`,
       placeholder: "Field options with coma separated values",
       validations: {
         required: "Required field",

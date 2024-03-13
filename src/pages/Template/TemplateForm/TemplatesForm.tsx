@@ -43,6 +43,7 @@ import { forEditingEntry } from "@/shared/query-setup/forEditingEntry";
 import ModalForCustomField from "@/components/newComponets/ModalForCustomField";
 
 const blankCustomTemplate = {
+  selectOption: "",
   attributeType: "",
   name: "",
   placeholder: "",
@@ -245,6 +246,7 @@ const TemplatesForm: FunctionComponent = (): ReactElement => {
     setOpen(false);
     append({
       ...blankCustomTemplate,
+      selectOption: item?.value,
       name: item?.name,
       label: item?.name,
       attributeType: item?.type,

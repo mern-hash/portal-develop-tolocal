@@ -70,6 +70,24 @@ const CustomForm = ({
             disabled={id || isCustom}
             classNameCustom="template-form__select-secound-half"
           />
+          {(watch(`customField.${indexOfField}.attributeType`) === "list" ||
+            watch(`customField.${indexOfField}.attributeType`) ===
+              "dropdown") && (
+            <FormTextField
+              register={register}
+              data={
+                customFormFields(
+                  register,
+                  errors,
+                  watch,
+                  indexOfField
+                )[3] as IFormTextInput
+              }
+              cancelForm={cancelForm}
+              classNameCustom="template-form__input-fifty"
+              isCustom={isCustom}
+            />
+          )}
           <FormTextField
             register={register}
             data={
@@ -83,7 +101,6 @@ const CustomForm = ({
             cancelForm={cancelForm}
             classNameCustom="template-form__input-fifty"
             isCustom={isCustom}
-
           />
           <FormTextField
             register={register}
@@ -98,22 +115,6 @@ const CustomForm = ({
             cancelForm={cancelForm}
             classNameCustom="template-form__input-fifty"
           />
-
-          {watch(`customField.${indexOfField}.attributeType`) === "select" && (
-            <FormTextField
-              register={register}
-              data={
-                customFormFields(
-                  register,
-                  errors,
-                  watch,
-                  indexOfField
-                )[3] as IFormTextInput
-              }
-              cancelForm={cancelForm}
-              classNameCustom="template-form__input-full-width"
-            />
-          )}
           {Array.from({ length: 6 }, (_, index) => index + 4).map((item) => (
             <FormCheck
               register={register}
