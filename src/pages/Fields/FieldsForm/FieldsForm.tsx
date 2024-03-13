@@ -99,15 +99,32 @@ const FieldsForm: FunctionComponent = (): ReactElement => {
     }
   );
 
-  const setFormDefaultValues = (data: any) => {
-    // Maps over data entries and set each of them as form's defaultValue
-    Object.entries(data).forEach(([name, value]: any) => {
-      if (name === "type") {
-        setValue("attributeType", value);
-      } else {
-        setValue(name, value);
-      }
-    });
+  const setFormDefaultValues = (data: {
+    type: string;
+    name: string;
+    value?: string;
+  }) => {
+    // Set the form's default values for attributeType and name.
+    setValue("attributeType", data.type);
+    setValue("name", data.name);
+
+    // Handle the specific logic for 'dropdown' and 'list' types.
+    if (data.type === "dropdown" || data.type === "list") {
+      // Split the value by comma and iterate over the items.
+      const values = data?.value ? data.value.split(",") : [];
+      values.forEach((item, i) => {
+        // For the first item, use setValue. For subsequent items, use append.
+        if (i === 0) {
+          setValue("value", item);
+        } else {
+          append({ value: item });
+        }
+      });
+    } else {
+      // For other types, simply set the value.
+      setValue("value", data.value || "");
+    }
+
     updateHeadingContext(`Edit ${data.name}`);
   };
 
@@ -199,12 +216,24 @@ const FieldsForm: FunctionComponent = (): ReactElement => {
             <Stack gap={7} className="form__stack field-form__stack">
               <FormTextField
                 register={register}
-                data={fieldFormFields(errors)[2] as IFormTextInput}
+                data={
+                  {
+                    ...fieldFormFields(errors)[2],
+                    validations: {
+                      required:
+                        watch("attributeType") === "list" ||
+                        watch("attributeType") === "dropdown"
+                          ? "Required field"
+                          : false,
+                    },
+                  } as IFormTextInput
+                }
                 cancelForm={cancelForm}
               />
             </Stack>
           </div>
-          {watch("attributeType") === "list" && (
+          {(watch("attributeType") === "list" ||
+            watch("attributeType") === "dropdown") && (
             <>
               {fields.length > 0 && (
                 <div className="field-form__wrapper field-form__wrapper-list">
