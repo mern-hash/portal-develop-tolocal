@@ -13,21 +13,32 @@ export const forCreatingEntry = ({
   setError,
   invalidate,
 }: {
-  navigate?: () => void;
+  navigate?: (id?: any) => void;
   updateContext: any;
   entity: string;
   setError: any;
   invalidate: () => void;
 }) => ({
-  onSuccess: () => {
-    navigate?.();
-    toastNotification({
-      updateContext,
-      title: TOAST_NOTIFICATION_TITLES.SUCCESS,
-      kind: TOAST_NOTIFICATION_KINDS.SUCCESS,
-      subtitle: `${entity} has successfully been created.`,
-    });
-  },
+  onSuccess:
+    entity === "Student"
+      ? (data) => {
+          navigate?.(data?.id);
+          toastNotification({
+            updateContext,
+            title: TOAST_NOTIFICATION_TITLES.SUCCESS,
+            kind: TOAST_NOTIFICATION_KINDS.SUCCESS,
+            subtitle: `${entity} has successfully been created.`,
+          });
+        }
+      : () => {
+          navigate?.();
+          toastNotification({
+            updateContext,
+            title: TOAST_NOTIFICATION_TITLES.SUCCESS,
+            kind: TOAST_NOTIFICATION_KINDS.SUCCESS,
+            subtitle: `${entity} has successfully been created.`,
+          });
+        },
   onError: ({ response }: AxiosError) => {
     toastNotification({
       updateContext,

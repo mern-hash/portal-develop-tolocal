@@ -306,6 +306,23 @@ export const fieldFormFields = (
   ];
 };
 
+export const valueListField = ({ parentIndex, index, errors }) => {
+  return {
+    type: "text",
+    id: `customField.${parentIndex}.value.${index}.value`,
+    label: `Enter value`,
+    placeholder: "Enter value",
+    validations: {
+      required: "Required field",
+      minLength: {
+        value: 2,
+        message: "Required field",
+      },
+    },
+    errors: invalidInput(errors?.value?.[index], "value"),
+  };
+};
+
 export const customFormFields = (
   register,
   errors,
@@ -370,7 +387,7 @@ export const customFormFields = (
 
     {
       type: "text",
-      id: `customField.${index}.selectOption`,
+      id: `customField.${index}.value`,
       label: `Enter List or Dropdown coma separated values`,
       placeholder: "Field options with coma separated values",
       validations: {
@@ -380,7 +397,7 @@ export const customFormFields = (
           message: "Required field",
         },
       },
-      errors: invalidInput(errors, "selectOption"),
+      errors: invalidInput(errors, "value"),
     },
 
     {

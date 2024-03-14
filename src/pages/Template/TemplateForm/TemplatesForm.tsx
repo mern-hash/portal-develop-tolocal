@@ -43,7 +43,6 @@ import { forEditingEntry } from "@/shared/query-setup/forEditingEntry";
 import ModalForCustomField from "@/components/newComponets/ModalForCustomField";
 
 const blankCustomTemplate = {
-  selectOption: "",
   attributeType: "",
   name: "",
   placeholder: "",
@@ -187,11 +186,15 @@ const TemplatesForm: FunctionComponent = (): ReactElement => {
     formData.append("name", data.name);
     formData.append("description", data.description);
     formData.append("instituteId", institution);
-
     data.customField.map((field, index) => {
       for (let key in field) {
         if (field.hasOwnProperty(key)) {
-          formData.append(`fields[${index}][${key}]`, field[key]);
+          if (key === "value") {
+            // const value = field[key].map((obj) => obj.value).join(",");
+            // formData.append(`fields[${index}][${key}]`, value);
+          } else {
+            formData.append(`fields[${index}][${key}]`, field[key]);
+          }
         }
       }
       return null;
@@ -371,6 +374,7 @@ const TemplatesForm: FunctionComponent = (): ReactElement => {
                 errors={errors?.customField && errors?.customField[i]}
                 id={!!id}
                 isCustom={item.isCustom}
+                control={control}
               />
             ))}
             <div className="template-form__Addfield-btnwrapper">

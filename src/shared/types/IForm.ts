@@ -114,6 +114,7 @@ export interface TemplateForm {
     isFilterable: boolean;
     inTable: boolean;
     isCustom: boolean;
+    value?: { value: string }[];
   }[];
 }
 

@@ -267,6 +267,7 @@ const InstitutionStudents: FunctionComponent = (): ReactElement => {
       isSortable: false,
     },
   ];
+  console.log(institutionTableFields.data);
 
   //ANCHOR - isEmptyPage
   const isEmptyPage = () => {

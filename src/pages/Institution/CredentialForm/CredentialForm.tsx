@@ -19,7 +19,10 @@ import { ContextData, ContextTypes } from "@/shared/types/ContextTypes";
 
 import { ADD_STUDENT_BUTTON_TEXT, SAVE_CHANGES } from "@/core/constants";
 
-import { fetchTemplate } from "@/api/template/template";
+import {
+  fetchTemplate,
+  fetchTemplateForCredential,
+} from "@/api/template/template";
 import FormForCredentials from "@/components/features/form/FormForCredentials";
 import { credentialFormField } from "@/shared/form-fields/credentialField";
 import { ICredentialForm } from "@/shared/types/IForm";
@@ -61,7 +64,7 @@ const CredentialForm: FunctionComponent = () => {
   //ANCHOR - setFormDefaultValues
   const searchTemplate = useQuery(
     ["templates", { term: watch("templateName") }],
-    fetchTemplate,
+    fetchTemplateForCredential,
     {
       enabled: watch("templateName")?.length > 0,
     }
