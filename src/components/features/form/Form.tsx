@@ -24,7 +24,9 @@ import FormFileField from "./form-fields/FormFileField";
 import FormSelectField from "./form-fields/FormSelectField";
 import FormPasswordField from "./form-fields/FormPasswordField";
 import ListItems from "@/components/newComponets/ListItems";
-import { IListCredentials } from "@/shared/types/IForm";
+import { IFormSearchInput, IListCredentials } from "@/shared/types/IForm";
+import { Search } from "@carbon/react";
+import FormLabel from "@/components/ui/FormLabel/FormLabel";
 
 /**
  * @description Form component that renders passed array of fields (objects)
@@ -204,21 +206,31 @@ const Form: FunctionComponent<IFormComponent> = ({
                 />
               );
             case "addTemplate":
+              const {
+                placeholder: addPlaceHolder,
+                label: addLabel,
+                navigateFunc,
+              } = row as unknown as {
+                type: string;
+                id: string;
+                label: string;
+                placeholder: string;
+                navigateFunc: () => void;
+              };
               return (
                 <div className="form__row form__issued-credentials-head">
                   <FormItem className="file-input" key={i}>
-                    <p className="cds--file--label">{row?.label}</p>
+                    <p className="cds--file--label">{addLabel}</p>
                     {true ? (
                       <p className="file-input__description cds--label--description">
-                        {row.placeholder}
+                        {addPlaceHolder}
                       </p>
                     ) : undefined}
-                    {/* <button type="button">Add new credential</button> */}
                   </FormItem>
                   <Button
                     kind="tertiary"
                     label="Add new credential"
-                    clickFn={() => {}}
+                    clickFn={navigateFunc}
                     icon="add"
                     type="button"
                     size="sm"
@@ -228,7 +240,7 @@ const Form: FunctionComponent<IFormComponent> = ({
             case "credentialsList":
               const { data } = row as unknown as IListCredentials;
               return (
-                <div className="form__row">
+                <div className="form__row" key={i}>
                   <ContainedList className="form__search-list-wrapper">
                     {data.map(
                       (
@@ -243,6 +255,57 @@ const Form: FunctionComponent<IFormComponent> = ({
                       )
                     )}
                   </ContainedList>
+                </div>
+              );
+            case "search":
+              const {
+                description,
+                label,
+                id,
+                list,
+                onBlur,
+                onClick,
+                onSearchChange,
+                placeholder,
+                showDropdown,
+                onFocus,
+              } = row as unknown as IFormSearchInput;
+              return (
+                <div
+                  className="CredentialForm__search-wrapper form__search-wrapper"
+                  key={i}
+                >
+                  <FormLabel label={label} description={description} />
+                  <div className="CredentialForm__search-input-wrapper">
+                    <Search
+                      labelText={label}
+                      {...register(id)}
+                      placeholder={placeholder}
+                      onBlur={() => onBlur()}
+                      onChange={(e) => {
+                        onSearchChange?.(e);
+                      }}
+                      onFocus={onFocus}
+                    />
+                    {showDropdown && list && (
+                      <ContainedList className="search-list-wrapper">
+                        {showDropdown && list.length > 0 ? (
+                          list.map((item, index) => (
+                            <ListItems
+                              key={index}
+                              name={item?.name}
+                              onClickFunc={(item) => {
+                                onClick?.(item);
+                              }}
+                              item={item}
+                            />
+                          ))
+                        ) : (
+                          <ListItems name="data not found" />
+                        )}
+                      </ContainedList>
+                    )}
+                  </div>
                 </div>
               );
             default:

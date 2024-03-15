@@ -325,7 +325,12 @@ const StudentForm: FunctionComponent = () => {
     ];
 
     if (id) {
-      formFieldData.push(addTemplate);
+      formFieldData.push({
+        ...addTemplate,
+        navigateFunc: () => {
+          navigate("/institution/credentials/create");
+        },
+      });
       formFieldData.push({
         ...credentialsList,
         data: [

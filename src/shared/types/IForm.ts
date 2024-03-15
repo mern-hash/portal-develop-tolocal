@@ -39,6 +39,22 @@ export interface IFormSelectInput {
   watch: any;
 }
 
+export interface IFormSearchInput {
+  errors: { invalid: boolean; invalidText: any } | undefined;
+  id: string;
+  label: string;
+  placeholder: string;
+  description: string;
+  type: string;
+  validations: { [key: string]: any };
+  list: any[];
+  onBlur: () => void;
+  showDropdown: boolean;
+  onClick: (item: any) => void;
+  onSearchChange: (e: { target: HTMLInputElement }) => void;
+  onFocus: () => void;
+}
+
 export interface IListCredentials {
   type: string;
   id: string;
@@ -95,6 +111,7 @@ export interface IInstitutionForm {
   phone: string;
   postalCode: string;
   website: string | null;
+  template: string;
 }
 
 export interface TemplateForm {

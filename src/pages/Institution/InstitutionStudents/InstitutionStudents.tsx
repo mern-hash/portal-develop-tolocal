@@ -279,7 +279,6 @@ const InstitutionStudents: FunctionComponent = (): ReactElement => {
       }
       return true;
     };
-
     // If there is no new fetched data
     return (
       !allStudents.data?.pages[0].data?.length &&

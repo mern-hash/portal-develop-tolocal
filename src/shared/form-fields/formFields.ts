@@ -8,14 +8,26 @@ import {
 import { isValidPhoneNumber } from "react-phone-number-input";
 import { errorMessages } from "../errorText";
 import { UseFormRegister } from "react-hook-form";
-import { FieldForm } from "../types/IForm";
+import { FieldForm, IFormSearchInput } from "../types/IForm";
 
-type FormFieldsData = IFormImageFile | IFormTextInput | IFormSelectInput;
+type FormFieldsData =
+  | IFormImageFile
+  | IFormTextInput
+  | IFormSelectInput
+  | IFormSearchInput;
 
 export const institutionFormFields = (
   register,
   errors,
-  watchers
+  watchers,
+  searchFields: {
+    onBlur: () => void;
+    onFocus: () => void;
+    list: any[];
+    showDropdown: boolean;
+    onClick: (item: any) => void;
+    onSearchChange: (e: { target: HTMLInputElement }) => void;
+  }
 ): FormFieldsData[] => {
   return [
     {
@@ -172,6 +184,17 @@ export const institutionFormFields = (
       description: errorMessages.img_size,
       placeholder: "Drag and drop files here or click to upload",
       previewFile: watchers.logo,
+    },
+    {
+      type: "search",
+      id: `template`,
+      label: "Connected templates",
+      placeholder: "Search for template name",
+      description:
+        "Here you can find all connected templates for this institution.",
+      validations: {},
+      errors: invalidInput(errors, "template"),
+      ...searchFields,
     },
   ];
 };

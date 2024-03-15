@@ -1,6 +1,6 @@
 //SECTION - Imports
 //ANCHOR - Core
-import { FunctionComponent } from "react";
+import { FunctionComponent, useEffect } from "react";
 import "../auth.scss";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
@@ -67,8 +67,8 @@ const Login: FunctionComponent = () => {
       },
     }
   );
-
   //ANCHOR - return()
+
   return (
     <section className="auth">
       <Helmet>
