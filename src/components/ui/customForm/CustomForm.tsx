@@ -57,65 +57,42 @@ const CustomForm = ({
   useEffect(() => {
     append({ value: "" });
   }, []);
+
+  const formField = customFormFields(
+    register,
+    errors,
+    {
+      attributeType: watch(`customField.${indexOfField}.attributeType`),
+    },
+    indexOfField
+  );
   return (
     <>
       <div className="template-form__form-outer-wrapper">
         <div className="template-form__form-inner-wrapper">
           <FormTextField
             register={register}
-            data={
-              customFormFields(
-                register,
-                errors,
-                watch,
-                indexOfField
-              )[10] as IFormTextInput
-            }
+            data={formField[10] as IFormTextInput}
             cancelForm={cancelForm}
             classNameCustom="template-form__input-first-half"
           />
           <FormSelectField
             register={register}
-            data={
-              customFormFields(
-                register,
-                errors,
-                {
-                  attributeType: watch(
-                    `customField.${indexOfField}.attributeType`
-                  ),
-                },
-                indexOfField
-              )[2] as IFormSelectInput
-            }
+            data={formField[2] as IFormSelectInput}
             disabled={id || isCustom}
             classNameCustom="template-form__select-secound-half"
           />
 
           <FormTextField
             register={register}
-            data={
-              customFormFields(
-                register,
-                errors,
-                watch,
-                indexOfField
-              )[0] as IFormTextInput
-            }
+            data={formField[0] as IFormTextInput}
             cancelForm={cancelForm}
             classNameCustom="template-form__input-fifty"
             isCustom={isCustom}
           />
           <FormTextField
             register={register}
-            data={
-              customFormFields(
-                register,
-                errors,
-                watch,
-                indexOfField
-              )[1] as IFormTextInput
-            }
+            data={formField[1] as IFormTextInput}
             cancelForm={cancelForm}
             classNameCustom="template-form__input-fifty"
           />
@@ -156,7 +133,6 @@ const CustomForm = ({
                   type="button"
                   aria_label="add-button"
                   kind="secondary"
-                  // icon="add"
                   size="sm"
                 />
               </div>
@@ -165,9 +141,7 @@ const CustomForm = ({
           {Array.from({ length: 6 }, (_, index) => index + 4).map((item) => (
             <FormCheck
               register={register}
-              data={
-                customFormFields(register, errors, watch, indexOfField)[item]
-              }
+              data={formField[item]}
               classNameCustom="template-form__Requird-check"
               key={item}
               disabled={id}
