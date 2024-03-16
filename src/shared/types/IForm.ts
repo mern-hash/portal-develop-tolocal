@@ -64,7 +64,8 @@ export interface IListCredentials {
 export type IFormFieldsData =
   | IFormImageFile
   | IFormTextInput
-  | IFormSelectInput;
+  | IFormSelectInput
+  | IFormMultiSelect;
 
 export interface IFile {
   lastModified: number;
@@ -73,6 +74,23 @@ export interface IFile {
   size: number;
   type: string;
   webkitRelativePath: string;
+}
+
+export interface IFormMultiSelect {
+  id: string;
+  name: string;
+  label: string;
+  placeholder: string;
+  type: string;
+  value: string[];
+  isOptional: boolean;
+  isClaim: boolean;
+  isSearchable: boolean;
+  isSortable: boolean;
+  isFilterable: boolean;
+  inTable: boolean;
+  validations: any;
+  errors?: { invalid: boolean; invalidText: string };
 }
 
 export interface IFormComponent {
@@ -166,6 +184,7 @@ export interface IFormSchemaField {
   isOptional: boolean;
   isSearchable: boolean;
   validations: any;
+  value?: string[];
 }
 
 export interface IStudentForm {

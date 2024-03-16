@@ -24,9 +24,16 @@ import FormFileField from "./form-fields/FormFileField";
 import FormSelectField from "./form-fields/FormSelectField";
 import FormPasswordField from "./form-fields/FormPasswordField";
 import ListItems from "@/components/newComponets/ListItems";
-import { IFormSearchInput, IListCredentials } from "@/shared/types/IForm";
+import {
+  IFormMultiSelect,
+  IFormSearchInput,
+  IListCredentials,
+} from "@/shared/types/IForm";
 import { Search } from "@carbon/react";
 import FormLabel from "@/components/ui/FormLabel/FormLabel";
+import FormMultiSelect from "./form-fields/FormMultiSelect";
+import FormCheck from "./form-fields/FormCheck";
+import FormNumberField from "./form-fields/FormNumberField";
 
 /**
  * @description Form component that renders passed array of fields (objects)
@@ -122,6 +129,7 @@ import FormLabel from "@/components/ui/FormLabel/FormLabel";
  * }
  * ```
  */
+
 const Form: FunctionComponent<IFormComponent> = ({
   register,
   setValue,
@@ -171,6 +179,15 @@ const Form: FunctionComponent<IFormComponent> = ({
                   cancelForm={cancelForm}
                 />
               );
+            case "number":
+              return (
+                <FormNumberField
+                  key={i}
+                  register={register}
+                  data={row as IFormTextInput}
+                  cancelForm={cancelForm}
+                />
+              );
             case "file-image":
             case "file-csv":
               return (
@@ -203,6 +220,24 @@ const Form: FunctionComponent<IFormComponent> = ({
                   data={row}
                   setError={setError}
                   clearErrors={clearErrors}
+                />
+              );
+            case "list":
+              return (
+                <FormMultiSelect
+                  key={i}
+                  data={row as IFormMultiSelect}
+                  setValue={setValue}
+                  register={register}
+                />
+              );
+            case "checkbox":
+              return (
+                <FormCheck
+                  register={register}
+                  data={row}
+                  classNameCustom="template-form__Requird-check"
+                  key={i}
                 />
               );
             case "addTemplate":

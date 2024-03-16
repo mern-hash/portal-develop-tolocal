@@ -1,5 +1,6 @@
 import { Button, HeaderButton, HeaderSelect } from "@/components/ui";
 import {
+  ADD_CREDENTIALS_DROPDOWN_TEXT,
   ADD_STUDENTS_DROPDOWN_TEXT,
   ADMIN_HEADING_LINKS,
   ADMIN_HEADING_LOGOLINK,
@@ -179,7 +180,7 @@ export const institutionCredentialsHLC = (navigate) => {
     title: "Credentials",
     button: (
       <Button
-        label={ADD_STUDENTS_DROPDOWN_TEXT}
+        label={ADD_CREDENTIALS_DROPDOWN_TEXT}
         icon="add"
         type="button"
         clickFn={() => navigate("create")}

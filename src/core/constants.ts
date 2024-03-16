@@ -97,6 +97,8 @@ export const LOCATION_ARRAY = [country, city, postalCode];
 //LABELS
 export const ADD_STUDENT_BUTTON_TEXT = "Add a student";
 export const ADD_STUDENTS_DROPDOWN_TEXT = "Add students";
+export const ADD_CREDENTIALS_BUTTON_TEXT = "Add a student";
+export const ADD_CREDENTIALS_DROPDOWN_TEXT = "Add a credentials";
 
 // CREDENTIAL STATUS
 export const CREDENTIAL_DATA_STATUS = {

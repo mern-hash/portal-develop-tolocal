@@ -17,13 +17,15 @@ import { studentFormHLC } from "@/shared/outlet-context/outletContext";
 import { IButton } from "@/shared/types";
 import { ContextData, ContextTypes } from "@/shared/types/ContextTypes";
 
-import { ADD_STUDENT_BUTTON_TEXT, SAVE_CHANGES } from "@/core/constants";
-
 import {
-  fetchTemplate,
-  fetchTemplateForCredential,
-} from "@/api/template/template";
+  ADD_CREDENTIALS_DROPDOWN_TEXT,
+  ADD_STUDENT_BUTTON_TEXT,
+  SAVE_CHANGES,
+} from "@/core/constants";
+
+import { fetchTemplateForCredential } from "@/api/template/template";
 import FormForCredentials from "@/components/features/form/FormForCredentials";
+import ModalForCredential from "@/components/newComponets/ModalForCredential";
 import { credentialFormField } from "@/shared/form-fields/credentialField";
 import { ICredentialForm } from "@/shared/types/IForm";
 import { debounceEvent } from "@/shared/util";
@@ -43,6 +45,10 @@ const CredentialForm: FunctionComponent = () => {
     studentName: null,
     templateName: null,
   });
+  const [open, setOpen] = useState<boolean>(false);
+  const [formValue, setFormValue] = useState<
+    { id: string; name: string; value: any }[] | null
+  >(null);
 
   const { id } = useParams();
   const navigate = useNavigate();
@@ -101,7 +107,10 @@ const CredentialForm: FunctionComponent = () => {
       return;
     }
 
-    updateContext(ContextTypes.HLC, studentFormHLC(ADD_STUDENT_BUTTON_TEXT));
+    updateContext(
+      ContextTypes.HLC,
+      studentFormHLC(ADD_CREDENTIALS_DROPDOWN_TEXT)
+    );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [singleStudent.data]);
 
@@ -145,6 +154,7 @@ const CredentialForm: FunctionComponent = () => {
 
   const handleSet = (id, item) => {
     setSelected({ ...selected, [id]: item });
+    setOpen(true);
     setValue(id, item?.name);
   };
 
@@ -187,6 +197,13 @@ const CredentialForm: FunctionComponent = () => {
         register={register}
         formButtons={formButtons}
       />
+      {open && (
+        <ModalForCredential
+          open={open}
+          setOpen={setOpen}
+          setFormValue={setFormValue}
+        />
+      )}
     </>
   );
 };

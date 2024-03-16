@@ -1,24 +1,18 @@
 //SECTION - Imports
 //ANCHOR - Core
+import { format, isValid as validateDate } from "date-fns";
 import { FunctionComponent, useEffect, useMemo, useState } from "react";
-import { useOutletContext, useParams, useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { useForm } from "react-hook-form";
-import { isValid as validateDate, format } from "date-fns";
+import { useNavigate, useOutletContext, useParams } from "react-router-dom";
 //ANCHOR - Api
-import { useMutation, useQuery, QueryClient } from "@tanstack/react-query";
-import {
-  createStudent,
-  editStudent,
-  getSingleStudent,
-  getStudentsSchema,
-} from "@/api";
+import { createStudent, editStudent, getSingleStudent } from "@/api";
+import { QueryClient, useMutation, useQuery } from "@tanstack/react-query";
 //ANCHOR - Components
 import { Form } from "@/components/features";
 import { ToastNotification } from "@/components/ui";
 import { Loading } from "carbon-components-react";
 //ANCHOR - Util
-import { formatSchema } from "@/shared/form-fields/formSchemaFormat";
 import {
   addTemplate,
   credentialsList,
@@ -29,16 +23,16 @@ import { studentFormHLC } from "@/shared/outlet-context/outletContext";
 import { confirmModal } from "@/shared/table-data/tableMethods";
 import { formatDateWithoutTimezone } from "@/shared/util";
 //ANCHOR - Types
-import { IButton, IStudentForm } from "@/shared/types";
-import { ContextData, ContextTypes } from "@/shared/types/ContextTypes";
-import { forCreatingEntry } from "@/shared/query-setup/forCreatingEntry";
-import { forEditingEntry } from "@/shared/query-setup/forEditingEntry";
-import { errorMessages } from "@/shared/errorText";
 import {
   ADD_STUDENT_BUTTON_TEXT,
   SAVE_CHANGES,
   UPDATE_USER_MSG,
 } from "@/core/constants";
+import { errorMessages } from "@/shared/errorText";
+import { forCreatingEntry } from "@/shared/query-setup/forCreatingEntry";
+import { forEditingEntry } from "@/shared/query-setup/forEditingEntry";
+import { IButton, IStudentForm } from "@/shared/types";
+import { ContextData, ContextTypes } from "@/shared/types/ContextTypes";
 //!SECTION
 
 const StudentForm: FunctionComponent = () => {

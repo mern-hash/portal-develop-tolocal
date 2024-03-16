@@ -26,7 +26,12 @@ export const formatSchema = (arrayOfFields, errors: FieldErrors) => {
 
     field["errors"] = invalidInput(errors, `fields.${field.name}`);
     field["id"] = `fields.${field.name}`;
-
+    if (field.type === "dropdown") {
+      field["type"] = "select";
+      field["items"] = field.value
+        ? field.value.map((item) => ({ value: item, text: item }))
+        : [];
+    }
     return field;
   });
 };

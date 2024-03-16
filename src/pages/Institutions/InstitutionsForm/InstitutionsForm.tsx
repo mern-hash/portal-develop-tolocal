@@ -6,25 +6,22 @@ import {
   useMemo,
   useState,
 } from "react";
-import { useParams, useNavigate, useOutletContext } from "react-router-dom";
-import { useForm } from "react-hook-form";
 import { Helmet } from "react-helmet-async";
+import { useForm } from "react-hook-form";
+import { useNavigate, useOutletContext, useParams } from "react-router-dom";
 // Api
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   createInstitution,
   editInstitution,
   getSingleInstitution,
 } from "@/api/institutions/institutions";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 // Components
 import { Form } from "@/components/features";
 import { ToastNotification } from "@/components/ui";
 import { Loading } from "carbon-components-react";
 // Util
-import { IButton, IInstitutionForm } from "@/shared/types";
-import { ContextTypes, ContextData } from "@/shared/types/ContextTypes";
-import { forCreatingEntry } from "@/shared/query-setup/forCreatingEntry";
-import { institutionFormFields } from "@/shared/form-fields/formFields";
+import { fetchTemplate } from "@/api/template/template";
 import {
   ADMIN_HEADING_LINKS,
   ADMIN_HEADING_LOGOLINK,
@@ -33,13 +30,13 @@ import {
   country,
   logo,
 } from "@/core/constants";
-import { forEditingEntry } from "@/shared/query-setup/forEditingEntry";
 import { errorMessages } from "@/shared/errorText";
+import { institutionFormFields } from "@/shared/form-fields/formFields";
+import { forCreatingEntry } from "@/shared/query-setup/forCreatingEntry";
+import { forEditingEntry } from "@/shared/query-setup/forEditingEntry";
+import { IButton, IInstitutionForm } from "@/shared/types";
+import { ContextData, ContextTypes } from "@/shared/types/ContextTypes";
 import { debounceEvent } from "@/shared/util";
-import {
-  fetchTemplate,
-  fetchTemplateForCredential,
-} from "@/api/template/template";
 
 const InstitutionsForm: FunctionComponent = (): ReactElement => {
   // Fetched data, used to compare freshly edited input fields to see which

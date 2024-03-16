@@ -13,7 +13,10 @@ import { Button } from "@/components/ui";
 import { Square } from "@/assets/icons";
 import { ContextData, ContextTypes } from "@/shared/types/ContextTypes";
 //ANCHOR - Constants
-import { ADD_STUDENTS_DROPDOWN_TEXT } from "@/core/constants";
+import {
+  ADD_CREDENTIALS_DROPDOWN_TEXT,
+  ADD_STUDENTS_DROPDOWN_TEXT,
+} from "@/core/constants";
 import {
   clearTabs,
   institutionCredentialsHLC,
@@ -63,7 +66,7 @@ const InstitutionCredentials: FunctionComponent = (): ReactElement => {
           desc="Your credentials will be linked to a student and selected template."
           button={
             <Button
-              label={ADD_STUDENTS_DROPDOWN_TEXT}
+              label={ADD_CREDENTIALS_DROPDOWN_TEXT}
               icon="add"
               type="button"
               clickFn={() => navigate("create")}

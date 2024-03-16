@@ -6,7 +6,6 @@ import { useNavigate, useOutletContext } from "react-router-dom";
 //ANCHOR - Carbon
 import { Loading, Pagination } from "carbon-components-react";
 //ANCHOR - Api
-import { deleteInstitutions } from "@/api";
 import {
   useInfiniteQuery,
   useMutation,
