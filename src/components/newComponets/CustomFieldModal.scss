@@ -64,3 +64,26 @@
     }
   }
 }
+
+.CredentialsTemplateModal {
+  &__wrapper {
+    & .cds--modal-container {
+      inline-size: auto;
+      & .cds--modal-header {
+        & .cds--modal-header__heading {
+          font-size: 28px;
+          color: #000;
+          font-weight: 600;
+        }
+      }
+      & .cds--modal-content {
+        padding: 14px 25px 29px;
+        & form {
+          & .cds--checkbox-wrapper {
+            align-self: end;
+          }
+        }
+      }
+    }
+  }
+}

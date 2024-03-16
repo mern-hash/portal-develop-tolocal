@@ -57,6 +57,20 @@ const data = [
       },
       {
         id: "b50d92ac-1a84-4539-a48a-c77fdfcf0c03",
+        name: "success",
+        label: "Success",
+        placeholder: "Please select country",
+        type: "checkbox",
+        isOptional: true,
+        isClaim: true,
+        isSearchable: true,
+        isSortable: true,
+        isFilterable: false,
+        inTable: true,
+        validations: {},
+      },
+      {
+        id: "b50d92ac-1a84-4539-a48a-c77fdfcf0c03",
         name: "country",
         label: "Country",
         placeholder: "Please select country",
@@ -70,20 +84,7 @@ const data = [
         inTable: true,
         validations: {},
       },
-      {
-        id: "b50d92ac-1a84-4539-a48a-c77fdfcf0c03",
-        name: "success",
-        label: "Success",
-        placeholder: "Please select country",
-        type: "checkbox",
-        isOptional: true,
-        isClaim: true,
-        isSearchable: true,
-        isSortable: true,
-        isFilterable: false,
-        inTable: true,
-        validations: {},
-      },
+
       {
         id: "a69ffa08-68f3-412e-952a-a12bc8e3f2bc",
         name: "degree",
@@ -241,7 +242,7 @@ const ModalForCredential = ({ open, setOpen, setFormValue }: props) => {
       open={open}
       modalHeading={"heading"}
       onRequestClose={onCancel}
-      className="Modal__wrapper"
+      className="CredentialsTemplateModal__wrapper"
       passiveModal
     >
       <Form

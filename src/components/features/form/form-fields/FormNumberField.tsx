@@ -22,7 +22,7 @@ const FormNumberField: FunctionComponent<{
     <NumberInput
       id={id}
       className={`form__input ${classNameCustom && classNameCustom}`}
-      labelText={label}
+      label={label}
       placeholder={placeholder}
       readOnly={readonly}
       {...register(id, {
