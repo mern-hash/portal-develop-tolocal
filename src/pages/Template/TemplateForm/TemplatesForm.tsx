@@ -190,8 +190,8 @@ const TemplatesForm: FunctionComponent = (): ReactElement => {
       for (let key in field) {
         if (field.hasOwnProperty(key)) {
           if (key === "value") {
-            // const value = field[key].map((obj) => obj.value).join(",");
-            // formData.append(`fields[${index}][${key}]`, value);
+            const value = field[key].map((obj) => obj.value).join(",");
+            formData.append(`fields[${index}][${key}]`, value);
           } else {
             formData.append(`fields[${index}][${key}]`, field[key]);
           }
