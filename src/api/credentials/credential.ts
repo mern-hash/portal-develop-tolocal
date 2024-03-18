@@ -36,3 +36,12 @@ export const resendCredentialEmail = async (id) => {
 
   return data;
 };
+
+export const createCredential = async (credentialData) => {
+  const { data } = await httpService.post(`/credentials`, credentialData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+  return data;
+};

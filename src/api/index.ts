@@ -15,6 +15,7 @@ import {
   getCredential,
   getQrCode,
   resendCredentialEmail,
+  createCredential
 } from "./credentials/credential";
 
 // Institution
@@ -64,6 +65,7 @@ export {
   getCredential,
   getQrCode,
   resendCredentialEmail,
+  createCredential,
   // Institution
   getAccountData,
   getInstitutionStatistics,

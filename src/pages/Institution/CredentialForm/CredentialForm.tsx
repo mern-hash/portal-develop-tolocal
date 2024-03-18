@@ -6,8 +6,8 @@ import { useForm } from "react-hook-form";
 import { useNavigate, useOutletContext, useParams } from "react-router-dom";
 
 //ANCHOR - Api
-import { getSingleStudent, getStudents } from "@/api";
-import { useQuery } from "@tanstack/react-query";
+import {createCredential, getSingleStudent, getStudents} from "@/api";
+import {useMutation, useQuery} from "@tanstack/react-query";
 //ANCHOR - Components
 //ANCHOR - Util
 
@@ -30,6 +30,8 @@ import { credentialFormField } from "@/shared/form-fields/credentialField";
 import { ICredentialForm } from "@/shared/types/IForm";
 import { debounceEvent } from "@/shared/util";
 import "./CredentialForm.scss";
+import {forCreatingEntry} from "@/shared/query-setup/forCreatingEntry";
+
 
 //!SECTION
 
@@ -78,6 +80,23 @@ const CredentialForm: FunctionComponent = () => {
       enabled: watch("templateName")?.length > 0,
     }
   );
+  const createCredentialEntry = useMutation(
+      (data: FormData) => createCredential(data),
+      {
+        ...forCreatingEntry({
+          updateContext,
+          //navigate: (id) => navigate("/credentials/"+ id),
+          entity: "Credential"
+        }),
+        onError: ({ response }) => {
+          const errRes = response?.data?.error?.fields;
+          for (let key in errRes) {
+            //@ts-ignore
+            setError(key, { type: "custom", message: errRes[key] });
+          }
+        },
+      }
+  );
   //ANCHOR - Submit
   const onSubmit = () => {
     const data = {
@@ -86,6 +105,9 @@ const CredentialForm: FunctionComponent = () => {
       templateId: selected.templateName?.id,
       formValue,
     };
+    const createTemplate = createCredentialEntry.mutate(data);
+
+    return createTemplate;
   };
 
   //SECTION - API
