@@ -241,12 +241,16 @@ const TemplatesForm: FunctionComponent = (): ReactElement => {
     setShowDropdownNew(false);
     setTimeout(() => {
       setShowDropdown(false);
-    }, 200);
+    }, 400);
   };
 
   const addCustomField = (item) => {
     if (!item) return;
     setOpen(false);
+    let value;
+    if ((item?.type === "list" || item?.type === "dropdown") && item?.value) {
+      value = item.value.split(",").map((item) => ({ value: item }));
+    }
     append({
       ...blankCustomTemplate,
       selectOption: item?.value,
@@ -254,6 +258,7 @@ const TemplatesForm: FunctionComponent = (): ReactElement => {
       label: item?.name,
       attributeType: item?.type,
       isCustom: true,
+      value,
     });
   };
   return (

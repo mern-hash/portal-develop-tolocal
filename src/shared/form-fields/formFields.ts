@@ -338,7 +338,7 @@ export const valueListField = ({ parentIndex, index, errors }) => {
     validations: {
       required: "Required field",
       minLength: {
-        value: 2,
+        value: 1,
         message: "Required field",
       },
     },

@@ -8,7 +8,7 @@ import {
 } from "@/shared/form-fields/formFields";
 import { IFormSelectInput, IFormTextInput } from "@/shared/types";
 import { TemplateForm } from "@/shared/types/IForm";
-import { useEffect } from "react";
+import { Fragment, useEffect } from "react";
 import {
   Control,
   UseFieldArrayRemove,
@@ -55,8 +55,14 @@ const CustomForm = ({
   };
 
   useEffect(() => {
-    append({ value: "" });
-  }, []);
+    if (
+      (watch(`customField.${indexOfField}.attributeType`) === "list" ||
+        watch(`customField.${indexOfField}.attributeType`) === "dropdown") &&
+      fields.length < 1
+    ) {
+      append({ value: "" });
+    }
+  }, [watch(`customField.${indexOfField}.attributeType`)]);
 
   const formField = customFormFields(
     register,
@@ -100,9 +106,9 @@ const CustomForm = ({
             watch(`customField.${indexOfField}.attributeType`) ===
               "dropdown") && (
             <>
-              {fields.map((_, index) => {
+              {fields.map((item, index) => {
                 return (
-                  <>
+                  <Fragment key={item.id}>
                     <FormTextField
                       register={register}
                       data={
@@ -121,7 +127,7 @@ const CustomForm = ({
                         removeValue(index);
                       }}
                     />
-                  </>
+                  </Fragment>
                 );
               })}
               <div className="template-form__AddValue">
