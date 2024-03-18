@@ -47,6 +47,14 @@ export const getSingleTemplate = async ({ queryKey }) => {
   return data;
 };
 
+export const getSingleTemplateFields = async ({ queryKey }) => {
+  const [, { id }] = queryKey;
+  const { data } = await httpService.get(
+    `http://localhost:3002/institution/schemas/${id}/schema-fields`
+  );
+  return data;
+};
+
 export const editTemplate = async (id: string | undefined, templateData) => {
   const { data } = await httpService.patch(
     `/data/user-schema/${id}`,

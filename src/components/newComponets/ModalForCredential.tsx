@@ -5,6 +5,8 @@ import React, { useCallback, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { Form } from "../features";
 import "./CustomFieldModal.scss";
+import { getSingleTemplateFields } from "@/api/template/template";
+import { useQuery } from "@tanstack/react-query";
 
 const data = [
   {
@@ -182,6 +184,7 @@ const formButtonsBase = [
 type props = {
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  templateId: string | undefined;
   setFormValue: React.Dispatch<
     React.SetStateAction<
       | {
@@ -194,7 +197,12 @@ type props = {
   >;
 };
 
-const ModalForCredential = ({ open, setOpen, setFormValue }: props) => {
+const ModalForCredential = ({
+  open,
+  setOpen,
+  setFormValue,
+  templateId,
+}: props) => {
   const {
     register,
     handleSubmit,
@@ -208,7 +216,20 @@ const ModalForCredential = ({ open, setOpen, setFormValue }: props) => {
     defaultValues: {},
   });
 
-  const formFields = formatSchema(JSON.parse(JSON.stringify(data)), errors);
+  const searchTemplateFields = useQuery(
+    ["templates", { id: templateId }],
+    getSingleTemplateFields,
+    {
+      enabled: templateId && templateId.length > 0 ? true : false,
+    }
+  );
+
+  const formFields = formatSchema(
+    searchTemplateFields?.data
+      ? [{ fields: searchTemplateFields?.data }]
+      : { fields: [] },
+    errors
+  );
 
   const onCancel = useCallback(() => {
     setOpen(false);
@@ -222,10 +243,10 @@ const ModalForCredential = ({ open, setOpen, setFormValue }: props) => {
       })),
     [onCancel]
   );
-  console.log(formFields);
+
   const onSubmit = useCallback(
     (submitData) => {
-      const submittedFields = data?.[0].fields.map((item) => ({
+      const submittedFields = searchTemplateFields?.data.map((item) => ({
         id: item.id,
         name: item.name,
         value: submitData?.fields[item.name],
@@ -234,7 +255,7 @@ const ModalForCredential = ({ open, setOpen, setFormValue }: props) => {
       setFormValue(submittedFields);
       onCancel();
     },
-    [data, setFormValue, onCancel]
+    [data, setFormValue, onCancel, searchTemplateFields]
   );
 
   return (

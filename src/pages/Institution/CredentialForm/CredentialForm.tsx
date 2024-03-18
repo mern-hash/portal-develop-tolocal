@@ -41,7 +41,10 @@ const CredentialForm: FunctionComponent = () => {
     studentName: false,
     templateName: false,
   });
-  const [selected, setSelected] = useState({
+  const [selected, setSelected] = useState<{
+    studentName: any;
+    templateName: any;
+  }>({
     studentName: null,
     templateName: null,
   });
@@ -77,7 +80,12 @@ const CredentialForm: FunctionComponent = () => {
   );
   //ANCHOR - Submit
   const onSubmit = () => {
-    console.log("");
+    const data = {
+      name: watch("name"),
+      studentId: selected.studentName?.id,
+      templateId: selected.templateName?.id,
+      formValue,
+    };
   };
 
   //SECTION - API
@@ -141,7 +149,7 @@ const CredentialForm: FunctionComponent = () => {
     // Hides the dropdown when the user stops interacting with the input
     setTimeout(() => {
       setShowDropdown((prev) => ({ ...prev, [key]: false }));
-    }, 300);
+    }, 500);
   };
 
   const searchStudents = useQuery(
@@ -154,7 +162,9 @@ const CredentialForm: FunctionComponent = () => {
 
   const handleSet = (id, item) => {
     setSelected({ ...selected, [id]: item });
-    setOpen(true);
+    if (id === "templateName") {
+      setOpen(true);
+    }
     setValue(id, item?.name);
   };
 
@@ -202,6 +212,7 @@ const CredentialForm: FunctionComponent = () => {
           open={open}
           setOpen={setOpen}
           setFormValue={setFormValue}
+          templateId={selected.templateName?.id}
         />
       )}
     </>
