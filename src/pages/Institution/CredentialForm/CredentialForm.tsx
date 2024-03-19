@@ -6,8 +6,8 @@ import { useForm } from "react-hook-form";
 import { useNavigate, useOutletContext, useParams } from "react-router-dom";
 
 //ANCHOR - Api
-import {createCredential, getSingleStudent, getStudents} from "@/api";
-import {useMutation, useQuery} from "@tanstack/react-query";
+import { createCredential, getSingleStudent, getStudents } from "@/api";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 //ANCHOR - Components
 //ANCHOR - Util
 
@@ -27,11 +27,10 @@ import { fetchTemplateForCredential } from "@/api/template/template";
 import FormForCredentials from "@/components/features/form/FormForCredentials";
 import ModalForCredential from "@/components/newComponets/ModalForCredential";
 import { credentialFormField } from "@/shared/form-fields/credentialField";
+import { forCreatingEntry } from "@/shared/query-setup/forCreatingEntry";
 import { ICredentialForm } from "@/shared/types/IForm";
 import { debounceEvent } from "@/shared/util";
 import "./CredentialForm.scss";
-import {forCreatingEntry} from "@/shared/query-setup/forCreatingEntry";
-
 
 //!SECTION
 
@@ -67,10 +66,12 @@ const CredentialForm: FunctionComponent = () => {
     watch,
     trigger,
     setValue,
+    setError,
   } = useForm<ICredentialForm>({
     mode: "onTouched",
     defaultValues: {},
   });
+  const queryClient = useQueryClient();
 
   //ANCHOR - setFormDefaultValues
   const searchTemplate = useQuery(
@@ -81,21 +82,23 @@ const CredentialForm: FunctionComponent = () => {
     }
   );
   const createCredentialEntry = useMutation(
-      (data: FormData) => createCredential(data),
-      {
-        ...forCreatingEntry({
-          updateContext,
-          //navigate: (id) => navigate("/credentials/"+ id),
-          entity: "Credential"
-        }),
-        onError: ({ response }) => {
-          const errRes = response?.data?.error?.fields;
-          for (let key in errRes) {
-            //@ts-ignore
-            setError(key, { type: "custom", message: errRes[key] });
-          }
-        },
-      }
+    (data: any) => createCredential(data),
+    {
+      ...forCreatingEntry({
+        updateContext,
+        navigate: () => navigate("credentials"),
+        entity: "Credential",
+        setError,
+        invalidate: () => queryClient.invalidateQueries(["allCredential"]),
+      }),
+      onError: ({ response }) => {
+        const errRes = response?.data?.error?.fields;
+        for (let key in errRes) {
+          //@ts-ignore
+          setError(key, { type: "custom", message: errRes[key] });
+        }
+      },
+    }
   );
   //ANCHOR - Submit
   const onSubmit = () => {

@@ -226,7 +226,7 @@ const ModalForCredential = ({
 
   const formFields = formatSchema(
     searchTemplateFields?.data
-      ? [{ fields: searchTemplateFields?.data }]
+      ? JSON.parse(JSON.stringify([{ fields: searchTemplateFields?.data }]))
       : { fields: [] },
     errors
   );

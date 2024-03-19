@@ -262,12 +262,26 @@ const InstitutionStudents: FunctionComponent = (): ReactElement => {
       key: i.field,
     })),
     {
+      header: "Name",
+      key: "name",
+      isSortable: false,
+    },
+    {
+      header: "Date Created",
+      key: "createdAt",
+      isSortable: true,
+    },
+    {
+      header: "Email",
+      key: "email",
+      isSortable: false,
+    },
+    {
       header: "Resend email",
       key: "resend_email",
       isSortable: false,
     },
   ];
-  console.log(institutionTableFields.data);
 
   //ANCHOR - isEmptyPage
   const isEmptyPage = () => {

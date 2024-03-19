@@ -45,3 +45,10 @@ export const createCredential = async (credentialData) => {
   });
   return data;
 };
+
+export const getCredentials = async ({ queryKey }) => {
+  const { data } = await httpService.get("/credentials", {
+    params: queryKey[1],
+  });
+  return data;
+};
