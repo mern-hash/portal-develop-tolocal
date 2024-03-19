@@ -185,6 +185,7 @@ type props = {
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   templateId: string | undefined;
+  templateName: string | undefined;
   setFormValue: React.Dispatch<
     React.SetStateAction<
       | {
@@ -202,6 +203,7 @@ const ModalForCredential = ({
   setOpen,
   setFormValue,
   templateId,
+  templateName,
 }: props) => {
   const {
     register,
@@ -261,7 +263,7 @@ const ModalForCredential = ({
   return (
     <Modal
       open={open}
-      modalHeading={"heading"}
+      modalHeading={templateName}
       onRequestClose={onCancel}
       className="CredentialsTemplateModal__wrapper"
       passiveModal

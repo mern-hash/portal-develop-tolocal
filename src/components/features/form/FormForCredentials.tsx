@@ -35,7 +35,7 @@ const FormForCredentials: FunctionComponent<IFormCredentialsComponent> = ({
             switch (row.type) {
               case "text":
                 return (
-                  <div className="CredentialForm__input-wrapper">
+                  <div className="CredentialForm__input-wrapper" key={i}>
                     <FormTextField
                       register={register}
                       data={row as IFormTextInput}
@@ -45,7 +45,7 @@ const FormForCredentials: FunctionComponent<IFormCredentialsComponent> = ({
                 );
               case "search":
                 return (
-                  <div className="CredentialForm__search-wrapper">
+                  <div className="CredentialForm__search-wrapper" key={i}>
                     <FormLabel
                       label={row.label}
                       description={row.description}
@@ -57,9 +57,15 @@ const FormForCredentials: FunctionComponent<IFormCredentialsComponent> = ({
                         placeholder={row.placeholder}
                         onBlur={() => row.onBlur(row.id)}
                         onChange={(e) => {
+                          row?.onFocus?.(row.id);
                           row?.onSearchChange?.(e, row.id);
                         }}
+                        autoFocus={true}
                       />
+                      {row?.errors?.invalid && (
+                        <p className="error_msg">{row?.errors?.invalidText}</p>
+                      )}
+
                       {row.showDropdown && row.list && (
                         <ContainedList className="search-list-wrapper">
                           {row.showDropdown && row.list.length > 0 ? (

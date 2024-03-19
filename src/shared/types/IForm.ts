@@ -58,7 +58,7 @@ export interface IFormSearchInput {
 export interface IListCredentials {
   type: string;
   id: string;
-  data: { name: string; details: string }[];
+  data: { name: string; details: string; id: string }[];
 }
 
 export type IFormFieldsData =

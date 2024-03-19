@@ -21,6 +21,8 @@ import {
   ADD_CREDENTIALS_DROPDOWN_TEXT,
   ADD_STUDENT_BUTTON_TEXT,
   SAVE_CHANGES,
+  TOAST_NOTIFICATION_KINDS,
+  TOAST_NOTIFICATION_TITLES,
 } from "@/core/constants";
 
 import { fetchTemplateForCredential } from "@/api/template/template";
@@ -31,6 +33,7 @@ import { forCreatingEntry } from "@/shared/query-setup/forCreatingEntry";
 import { ICredentialForm } from "@/shared/types/IForm";
 import { debounceEvent } from "@/shared/util";
 import "./CredentialForm.scss";
+import { toastNotification } from "@/shared/table-data/tableMethods";
 
 //!SECTION
 
@@ -68,7 +71,7 @@ const CredentialForm: FunctionComponent = () => {
     setValue,
     setError,
   } = useForm<ICredentialForm>({
-    mode: "onTouched",
+    mode: "all",
     defaultValues: {},
   });
   const queryClient = useQueryClient();
@@ -86,7 +89,7 @@ const CredentialForm: FunctionComponent = () => {
     {
       ...forCreatingEntry({
         updateContext,
-        navigate: () => navigate("credentials"),
+        navigate: () => navigate("/institution/credentials"),
         entity: "Credential",
         setError,
         invalidate: () => queryClient.invalidateQueries(["allCredential"]),
@@ -102,6 +105,30 @@ const CredentialForm: FunctionComponent = () => {
   );
   //ANCHOR - Submit
   const onSubmit = () => {
+    if (!selected.studentName?.id) {
+      setError("studentName", {
+        type: "custom",
+        message: "Please select valid student from list!",
+      });
+      return;
+    }
+    if (!selected.templateName?.id) {
+      setError("templateName", {
+        type: "custom",
+        message: "Please select valid template from list!",
+      });
+      return;
+    }
+    if (!formValue) {
+      toastNotification({
+        updateContext,
+        title: TOAST_NOTIFICATION_TITLES.ERROR,
+        kind: TOAST_NOTIFICATION_KINDS.ERROR,
+        subtitle: `Please enter value before creating credentials.`,
+      });
+      return;
+    }
+
     const data = {
       name: watch("name"),
       studentId: selected.studentName?.id,
@@ -193,19 +220,23 @@ const CredentialForm: FunctionComponent = () => {
     setValue(id, item?.name);
   };
 
-  useEffect(() => {
-    if (watch("studentName") && watch("studentName").length > 0) {
-      setShowDropdown((prev) => ({ ...prev, studentName: true }));
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [watch("studentName")]);
+  const onFocus = (id: string) => {
+    !showDropdown[id] && setShowDropdown((prev) => ({ ...prev, [id]: true }));
+  };
 
-  useEffect(() => {
-    if (watch("templateName") && watch("templateName").length > 0) {
-      setShowDropdown((prev) => ({ ...prev, templateName: true }));
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [watch("templateName")]);
+  // useEffect(() => {
+  //   if (watch("studentName") && watch("studentName").length > 0) {
+  //     setShowDropdown((prev) => ({ ...prev, studentName: true }));
+  //   }
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [watch("studentName")]);
+
+  // useEffect(() => {
+  //   if (watch("templateName") && watch("templateName").length > 0) {
+  //     setShowDropdown((prev) => ({ ...prev, templateName: true }));
+  //   }
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [watch("templateName")]);
 
   return (
     <>
@@ -224,6 +255,7 @@ const CredentialForm: FunctionComponent = () => {
               templateList: searchTemplate?.data?.data,
             },
             showDropdown,
+            onFocus,
           },
           handleSet,
           onSearchChange
@@ -238,6 +270,7 @@ const CredentialForm: FunctionComponent = () => {
           setOpen={setOpen}
           setFormValue={setFormValue}
           templateId={selected.templateName?.id}
+          templateName={selected.templateName?.name}
         />
       )}
     </>

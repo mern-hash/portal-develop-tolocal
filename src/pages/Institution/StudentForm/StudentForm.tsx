@@ -159,31 +159,6 @@ const StudentForm: FunctionComponent = () => {
     refetchOnWindowFocus: false,
   });
 
-  // const studentsSchema = useQuery(["studentsSchema"], getStudentsSchema, {
-  //   onSuccess: (data) => {
-  //     // Required credential data - if any of these fields are changed, the double confirmation
-  //     // modal will pop up on submit, displaying the warning about reissuing the credential
-  //     setReqCredentialData([
-  //       ...studentFormFields(errors).map(
-  //         (i) =>
-  //           i.isClaim && {
-  //             id: i.id,
-  //             type: i.type,
-  //           }
-  //       ),
-  //       ...data?.[0].fields.map((i) => {
-  //         return (
-  //           i.isClaim && {
-  //             id: `fields.${i.name}`,
-  //             type: i.type,
-  //           }
-  //         );
-  //       }),
-  //     ]);
-  //   },
-  //   refetchOnWindowFocus: false,
-  // });
-
   const createStudentEntry = useMutation(
     (data: FormData) => createStudent(data),
     {
@@ -310,7 +285,11 @@ const StudentForm: FunctionComponent = () => {
     },
   ];
 
-  const configFormFields = (errors, watchers) => {
+  const configFormFields = (
+    errors,
+    watchers,
+    credentialData: any[] | undefined
+  ) => {
     const formFieldData: any = [
       ...studentFormFields(errors),
       studentFormImage({
@@ -327,10 +306,7 @@ const StudentForm: FunctionComponent = () => {
       });
       formFieldData.push({
         ...credentialsList,
-        data: [
-          { name: "-", details: "-" },
-          { name: "test1", details: "testing1" },
-        ],
+        data: credentialData && credentialData.length > 0 ? credentialData : [],
       });
     }
 
@@ -343,13 +319,16 @@ const StudentForm: FunctionComponent = () => {
         <title>{id ? "Edit student" : "Create student"}</title>
       </Helmet>
       {loading && <Loading />}
-      {/* {!studentsSchema.isLoading && ( */}
       <Form
         errorNotification={renderErrorNotification()}
         formButtons={formButtons}
-        formFields={configFormFields(errors, {
-          photo: watch("photo"),
-        })}
+        formFields={configFormFields(
+          errors,
+          {
+            photo: watch("photo"),
+          },
+          singleStudent.data?.credentialData
+        )}
         onSubmit={handleSubmit(onSubmit, onError)}
         register={register}
         setValue={setValue}
@@ -357,7 +336,6 @@ const StudentForm: FunctionComponent = () => {
         setError={setError}
         clearErrors={clearErrors}
       />
-      {/* )} */}
     </>
   );
 };

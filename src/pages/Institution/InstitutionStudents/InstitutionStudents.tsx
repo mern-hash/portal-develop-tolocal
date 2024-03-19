@@ -139,15 +139,6 @@ const InstitutionStudents: FunctionComponent = (): ReactElement => {
     }
   );
 
-  //ANCHOR - get table fields
-  const institutionTableFields = useQuery(
-    ["institutionTableFields"],
-    getInstitutionTableFields,
-    {
-      refetchOnWindowFocus: false,
-      refetchInterval: 60 * 1000,
-    }
-  );
   //!SECTION
 
   //ANCHOR batch action
@@ -255,12 +246,7 @@ const InstitutionStudents: FunctionComponent = (): ReactElement => {
         fixName(allStudents.data?.pages[0].data);
   };
 
-  const configHeadersForTable = (headersArr) => [
-    ...headersArr?.map((i) => ({
-      ...i,
-      header: i.name,
-      key: i.field,
-    })),
+  const configHeadersForTable = () => [
     {
       header: "Name",
       key: "name",
@@ -282,7 +268,6 @@ const InstitutionStudents: FunctionComponent = (): ReactElement => {
       isSortable: false,
     },
   ];
-
   //ANCHOR - isEmptyPage
   const isEmptyPage = () => {
     const notFilteredByDate = () => {
@@ -314,18 +299,6 @@ const InstitutionStudents: FunctionComponent = (): ReactElement => {
         label_to: "Date created to",
       },
     ];
-    if (!institutionTableFields.isLoading) {
-      institutionTableFields.data.forEach((i) => {
-        if (i.isFilterable && i.type === "timestamp") {
-          fields.push({
-            id: i.field,
-            label_from: `${i.name} from`,
-            label_to: `${i.name} to`,
-          });
-        }
-      });
-    }
-
     return fields;
   };
 
@@ -334,7 +307,7 @@ const InstitutionStudents: FunctionComponent = (): ReactElement => {
   if (allStudents.isError) return <ErrorPage title="Institutions" />;
 
   //ANCHOR - loading
-  if (initialFetch && allStudents.isLoading) {
+  if (allStudents.isLoading) {
     return (
       <div className="institution-students__loader">
         <Loading withOverlay={false} />
@@ -381,29 +354,28 @@ const InstitutionStudents: FunctionComponent = (): ReactElement => {
       <Helmet>
         <title>Students</title>
       </Helmet>
-      {!institutionTableFields.isLoading && (
-        <Table
-          batchSelectionAction={batchSelectionAction}
-          dateFilter={configDateFilterFields()}
-          headerData={configHeadersForTable(institutionTableFields.data)}
-          initialFetch={initialFetch}
-          onFilterByDate={onFilterByDate}
-          onSearch={(searchTerm) =>
-            setTableInfo({
-              ...tableInfo,
-              term: searchTerm,
-              page: 1,
-            })
-          }
-          rowsData={renderFetchedStudents()}
-          sortBy={(term: string, direction: string) =>
-            onSortTable({ term, direction, tableInfo, setTableInfo })
-          }
-          tableColumnActions={tableCTA}
-          nameNavigate={(val) => navigate(`edit/${val}`)}
-          onResendEmail={(val) => onResendEmail(val)}
-        />
-      )}
+
+      <Table
+        batchSelectionAction={batchSelectionAction}
+        dateFilter={configDateFilterFields()}
+        headerData={configHeadersForTable()}
+        initialFetch={initialFetch}
+        onFilterByDate={onFilterByDate}
+        onSearch={(searchTerm) =>
+          setTableInfo({
+            ...tableInfo,
+            term: searchTerm,
+            page: 1,
+          })
+        }
+        rowsData={renderFetchedStudents()}
+        sortBy={(term: string, direction: string) =>
+          onSortTable({ term, direction, tableInfo, setTableInfo })
+        }
+        tableColumnActions={tableCTA}
+        nameNavigate={(val) => navigate(`edit/${val}`)}
+        onResendEmail={(val) => onResendEmail(val)}
+      />
       <Pagination
         totalItems={itemCount || 0}
         onChange={({ _, page, pageSize }) =>

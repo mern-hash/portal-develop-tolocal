@@ -34,6 +34,7 @@ import FormLabel from "@/components/ui/FormLabel/FormLabel";
 import FormMultiSelect from "./form-fields/FormMultiSelect";
 import FormCheck from "./form-fields/FormCheck";
 import FormNumberField from "./form-fields/FormNumberField";
+import { useNavigate } from "react-router-dom";
 
 /**
  * @description Form component that renders passed array of fields (objects)
@@ -141,6 +142,7 @@ const Form: FunctionComponent<IFormComponent> = ({
   setError,
   clearErrors,
 }) => {
+  const navigate = useNavigate();
   const submitForm = (evt: React.SyntheticEvent) => {
     evt.preventDefault();
     return onSubmit();
@@ -279,13 +281,16 @@ const Form: FunctionComponent<IFormComponent> = ({
                   <ContainedList className="form__search-list-wrapper">
                     {data.map(
                       (
-                        list: { name: string; details: string },
+                        list: { name: string; details: string; id: string },
                         index: number
                       ) => (
                         <ListItems
                           name={list.name}
                           details={list.details}
                           key={index}
+                          onClickFunc={() =>
+                            navigate("/institution/credentials/edit/" + list.id)
+                          }
                         />
                       )
                     )}
