@@ -27,7 +27,7 @@ export const fetchTemplate = async ({ queryKey }) => {
 
 export const fetchTemplateForCredential = async ({ queryKey }) => {
   const [, { page, pageSize, orderBy, order, term, from, to }] = queryKey;
-  const { data } = await httpService.get(`/data/user-schema/institutions`, {
+  const { data } = await httpService.get(`/institution/schemas/byTerm`, {
     params: {
       orderBy,
       order,
