@@ -237,7 +237,6 @@ const CredentialForm: FunctionComponent = () => {
         : { fields: [] },
       errors
     );
-
     return [...basicFields, ...templateFields];
   };
 

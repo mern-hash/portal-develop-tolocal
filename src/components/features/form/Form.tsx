@@ -173,12 +173,14 @@ const Form: FunctionComponent<IFormComponent> = ({
         {formFields.map((row: IFormFieldsData, i: number) => {
           switch (row.type) {
             case "text":
+              const { classNameCustom } = row as IFormTextInput;
               return (
                 <FormTextField
                   key={i}
                   register={register}
                   data={row as IFormTextInput}
                   cancelForm={cancelForm}
+                  classNameCustom={classNameCustom || ""}
                 />
               );
             case "number":
@@ -310,9 +312,8 @@ const Form: FunctionComponent<IFormComponent> = ({
                 showDropdown,
                 onFocus,
                 disabled,
+                errors,
               } = row as unknown as IFormSearchInput;
-              if (id === "templateName") {
-              }
               return (
                 <div
                   className="CredentialForm__search-wrapper form__search-wrapper"
@@ -340,6 +341,9 @@ const Form: FunctionComponent<IFormComponent> = ({
                       }}
                       disabled={disabled}
                     />
+                    {errors?.invalid && (
+                      <p className="error_msg">{errors.invalidText}</p>
+                    )}
                     {showDropdown && list && (
                       <ContainedList className="search-list-wrapper">
                         {showDropdown && list.length > 0 ? (

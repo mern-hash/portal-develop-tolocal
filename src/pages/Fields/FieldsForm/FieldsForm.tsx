@@ -184,7 +184,9 @@ const FieldsForm: FunctionComponent = (): ReactElement => {
       ? evt.relatedTarget.click()
       : trigger(id);
   };
-
+  const formField = fieldFormFields(errors, register, {
+    attributeType: watch(`attributeType`),
+  });
   return (
     <>
       <Helmet>
@@ -197,16 +199,12 @@ const FieldsForm: FunctionComponent = (): ReactElement => {
             <Stack gap={7} className="form__stack field-form__stack">
               <FormTextField
                 register={register}
-                data={fieldFormFields(errors)[0] as IFormTextInput}
+                data={formField[0] as IFormTextInput}
                 cancelForm={cancelForm}
               />
               <FormSelectField
                 register={register}
-                data={
-                  fieldFormFields(errors, register, {
-                    attributeType: watch(`attributeType`),
-                  })[1] as IFormSelectInput
-                }
+                data={formField[1] as IFormSelectInput}
                 classNameCustom="field-form__select-secound-half"
               />
             </Stack>
@@ -218,7 +216,7 @@ const FieldsForm: FunctionComponent = (): ReactElement => {
                 register={register}
                 data={
                   {
-                    ...fieldFormFields(errors)[2],
+                    ...formField[2],
                     validations: {
                       required:
                         watch("attributeType") === "list" ||

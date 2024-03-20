@@ -129,11 +129,11 @@ const InstitutionCredentials: FunctionComponent = (): ReactElement => {
   }, []);
 
   const tableCTA = [
-    {
-      icon: Edit,
-      iconDescription: "Edit",
-      onClick: (cellData) => navigate(`edit/${cellData.id}`),
-    },
+    // {
+    //   icon: Edit,
+    //   iconDescription: "Edit",
+    //   onClick: (cellData) => navigate(`edit/${cellData.id}`),
+    // },
     {
       icon: TrashCan,
       iconDescription: "Delete",
@@ -194,10 +194,20 @@ const InstitutionCredentials: FunctionComponent = (): ReactElement => {
     // if loading and some items already fetched (visible), display them
     return allCredentials.isLoading
       ? itemsFetched.length
-        ? itemsFetched
+        ? itemsFetched.map((item) => ({
+            ...item,
+            studentName: item?.user?.name,
+            studentEmail: item?.user?.email,
+            user: null,
+          }))
         : []
       : // else, display new ones
-        allCredentials.data?.pages[0].data;
+        allCredentials.data?.pages[0].data.map((item) => ({
+          ...item,
+          studentName: item?.user?.name,
+          studentEmail: item?.user?.email,
+          user: null,
+        }));
   };
 
   const isEmptyPage = (): boolean =>
@@ -277,7 +287,6 @@ const InstitutionCredentials: FunctionComponent = (): ReactElement => {
           onSortTable({ term, direction, tableInfo, setTableInfo })
         }
         tableColumnActions={tableCTA}
-        nameNavigate={(val) => navigate(`edit/${val}`)}
         // onResendEmail={(val) => onResendEmail(val)}
       />
 

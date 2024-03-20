@@ -191,7 +191,9 @@ const TemplatesForm: FunctionComponent = (): ReactElement => {
         if (field.hasOwnProperty(key)) {
           if (key === "value") {
             // const value = field[key].map((obj) => obj.value).join(",");
-            // formData.append(`fields[${index}][${key}]`, value);
+            field[key].map((obj, i) => {
+              formData.append(`fields[${index}][${key}][${i}]`, obj.value);
+            });
           } else {
             formData.append(`fields[${index}][${key}]`, field[key]);
           }
@@ -199,6 +201,11 @@ const TemplatesForm: FunctionComponent = (): ReactElement => {
       }
       return null;
     });
+
+    // formData.forEach((value, key) => {
+    //   console.log(`${key}: ${value}`);
+    // });
+    // return;
     const createTemplate = createTemplateEntry.mutate(formData);
 
     return createTemplate;

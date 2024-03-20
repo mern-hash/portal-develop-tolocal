@@ -18,6 +18,7 @@ export interface IFormTextInput {
   readonly?: boolean;
   validations?: { [key: string]: any };
   isClaim?: boolean;
+  classNameCustom?: string;
 }
 
 export interface IFormImageFile {

@@ -12,6 +12,7 @@ export const credentialFormField = (
       id: "name",
       label: "Credential name",
       placeholder: "How would you like to name this credential",
+      classNameCustom: "form__search-wrapper",
       validations: {
         required: errorMessages.required,
         maxLength: {

@@ -186,17 +186,17 @@ export const institutionFormFields = (
       placeholder: "Drag and drop files here or click to upload",
       previewFile: watchers.logo,
     },
-    {
-      type: "search",
-      id: `template`,
-      label: "Connected templates",
-      placeholder: "Search for template name",
-      description:
-        "Here you can find all connected templates for this institution.",
-      validations: {},
-      errors: invalidInput(errors, "template"),
-      ...searchFields,
-    },
+    // {
+    //   type: "search",
+    //   id: `template`,
+    //   label: "Connected templates",
+    //   placeholder: "Search for template name",
+    //   description:
+    //     "Here you can find all connected templates for this institution.",
+    //   validations: {},
+    //   errors: invalidInput(errors, "template"),
+    //   ...searchFields,
+    // },
   ];
 };
 
@@ -299,8 +299,8 @@ export const fieldFormFields = (
       validations: {
         required: "Required field",
         minLength: {
-          value: 2,
-          message: errorMessages.min_length(2),
+          value: 1,
+          message: errorMessages.min_length(1),
         },
         maxLength: {
           value: 500,
@@ -317,8 +317,8 @@ export const fieldFormFields = (
       validations: {
         required: "Required field",
         minLength: {
-          value: 2,
-          message: errorMessages.min_length(2),
+          value: 1,
+          message: errorMessages.min_length(1),
         },
         maxLength: {
           value: 500,
