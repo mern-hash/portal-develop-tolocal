@@ -27,6 +27,7 @@ export const institutionFormFields = (
     showDropdown: boolean;
     onClick: (item: any) => void;
     onSearchChange: (e: { target: HTMLInputElement }) => void;
+    disabled: boolean;
   }
 ): FormFieldsData[] => {
   return [

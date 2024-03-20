@@ -309,7 +309,10 @@ const Form: FunctionComponent<IFormComponent> = ({
                 placeholder,
                 showDropdown,
                 onFocus,
+                disabled,
               } = row as unknown as IFormSearchInput;
+              if (id === "templateName") {
+              }
               return (
                 <div
                   className="CredentialForm__search-wrapper form__search-wrapper"
@@ -323,9 +326,19 @@ const Form: FunctionComponent<IFormComponent> = ({
                       placeholder={placeholder}
                       onBlur={() => onBlur()}
                       onChange={(e) => {
-                        onSearchChange?.(e);
+                        if (id === "templateName" || id === "studentName") {
+                          onFocus?.(id);
+                          onSearchChange?.(e, id);
+                        } else {
+                          onSearchChange?.(e);
+                        }
                       }}
-                      onFocus={onFocus}
+                      onFocus={() => {
+                        if (id !== "templateName" && id !== "studentName") {
+                          onFocus();
+                        }
+                      }}
+                      disabled={disabled}
                     />
                     {showDropdown && list && (
                       <ContainedList className="search-list-wrapper">
@@ -335,7 +348,7 @@ const Form: FunctionComponent<IFormComponent> = ({
                               key={index}
                               name={item?.name}
                               onClickFunc={(item) => {
-                                onClick?.(item);
+                                onClick?.(item, id);
                               }}
                               item={item}
                             />

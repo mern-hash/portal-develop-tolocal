@@ -6,7 +6,7 @@ import { useForm } from "react-hook-form";
 import { useNavigate, useOutletContext, useParams } from "react-router-dom";
 
 //ANCHOR - Api
-import { createCredential, getSingleStudent, getStudents } from "@/api";
+import { createCredential, getStudents } from "@/api";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 //ANCHOR - Components
 //ANCHOR - Util
@@ -20,20 +20,19 @@ import { ContextData, ContextTypes } from "@/shared/types/ContextTypes";
 import {
   ADD_CREDENTIALS_DROPDOWN_TEXT,
   ADD_STUDENT_BUTTON_TEXT,
-  SAVE_CHANGES,
-  TOAST_NOTIFICATION_KINDS,
-  TOAST_NOTIFICATION_TITLES,
 } from "@/core/constants";
 
-import { fetchTemplateForCredential } from "@/api/template/template";
-import FormForCredentials from "@/components/features/form/FormForCredentials";
-import ModalForCredential from "@/components/newComponets/ModalForCredential";
+import {
+  fetchTemplateForCredential,
+  getSingleTemplateFields,
+} from "@/api/template/template";
+import { Form } from "@/components/features";
 import { credentialFormField } from "@/shared/form-fields/credentialField";
+import { formatSchema } from "@/shared/form-fields/formSchemaFormat";
 import { forCreatingEntry } from "@/shared/query-setup/forCreatingEntry";
 import { ICredentialForm } from "@/shared/types/IForm";
 import { debounceEvent } from "@/shared/util";
 import "./CredentialForm.scss";
-import { toastNotification } from "@/shared/table-data/tableMethods";
 
 //!SECTION
 
@@ -41,6 +40,7 @@ const CredentialForm: FunctionComponent = () => {
   const { updateContext } = useOutletContext<{
     updateContext: (state: string, data: ContextData) => void;
   }>();
+  const { id, name } = useParams();
   const [showDropdown, setShowDropdown] = useState({
     studentName: false,
     templateName: false,
@@ -49,15 +49,10 @@ const CredentialForm: FunctionComponent = () => {
     studentName: any;
     templateName: any;
   }>({
-    studentName: null,
+    studentName: id ? { id, name } : null,
     templateName: null,
   });
-  const [open, setOpen] = useState<boolean>(false);
-  const [formValue, setFormValue] = useState<
-    { id: string; name: string; value: any }[] | null
-  >(null);
 
-  const { id } = useParams();
   const navigate = useNavigate();
 
   //ANCHOR - renderErrorNotification()
@@ -70,9 +65,11 @@ const CredentialForm: FunctionComponent = () => {
     trigger,
     setValue,
     setError,
+    clearErrors,
+    handleSubmit,
   } = useForm<ICredentialForm>({
     mode: "all",
-    defaultValues: {},
+    defaultValues: { studentName: name || "" },
   });
   const queryClient = useQueryClient();
 
@@ -103,8 +100,26 @@ const CredentialForm: FunctionComponent = () => {
       },
     }
   );
+  const searchStudents = useQuery(
+    ["allStudents", { term: watch("studentName") }],
+    getStudents,
+    {
+      enabled: !id && watch("studentName")?.length > 0,
+    }
+  );
+
+  const searchTemplateFields = useQuery(
+    ["templates", { id: selected.templateName?.id }],
+    getSingleTemplateFields,
+    {
+      enabled:
+        selected.templateName?.id && selected.templateName?.id?.length > 0
+          ? true
+          : false,
+    }
+  );
   //ANCHOR - Submit
-  const onSubmit = () => {
+  const onSubmit = (submitData) => {
     if (!selected.studentName?.id) {
       setError("studentName", {
         type: "custom",
@@ -119,60 +134,45 @@ const CredentialForm: FunctionComponent = () => {
       });
       return;
     }
-    if (!formValue) {
-      toastNotification({
-        updateContext,
-        title: TOAST_NOTIFICATION_TITLES.ERROR,
-        kind: TOAST_NOTIFICATION_KINDS.ERROR,
-        subtitle: `Please enter value before creating credentials.`,
-      });
-      return;
-    }
+    const submittedFields = searchTemplateFields?.data.map((item) => ({
+      id: item.id,
+      name: item.name,
+      value: submitData?.fields[item.name],
+    }));
 
     const data = {
       name: watch("name"),
       studentId: selected.studentName?.id,
       templateId: selected.templateName?.id,
-      formValue,
+      formValue: submittedFields,
     };
     const createTemplate = createCredentialEntry.mutate(data);
 
     return createTemplate;
   };
 
-  //SECTION - API
-  //ANCHOR - getSingleStudent
-  const singleStudent = useQuery(["Student", { id }], getSingleStudent, {
-    enabled: !!id,
-    refetchOnWindowFocus: false,
-  });
-
-  const onSearchChange = debounceEvent((e, id) => {
-    setValue(id, e.target.value);
+  const onChange = debounceEvent((value, id) => {
+    setSelected((prev) => ({ ...prev, [id]: null }));
+    setValue(id, value);
   }, 500);
+
+  const onSearchChange = ({ target: { value } }, id) => {
+    if (value && value.length < 1) {
+      setShowDropdown((prev) => ({ ...prev, [id]: false }));
+    }
+    onChange(value, id);
+  };
 
   //ANCHOR - useEffect setup
   useEffect(() => {
     window.scrollTo(0, 0);
-
-    // if (id && singleStudent.data) {
-    //   setFormDefaultValues(singleStudent.data);
-    //   return;
-    // }
-    // If there is an ID in url, while waiting the data to fill in the form
-    // in header display "Edit" title instead of "Add a Student"
-    // Once data is fetched it will call setFormDefaultValues which updates header
-    if (id) {
-      updateContext(ContextTypes.HLC, studentFormHLC("Edit"));
-      return;
-    }
 
     updateContext(
       ContextTypes.HLC,
       studentFormHLC(ADD_CREDENTIALS_DROPDOWN_TEXT)
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [singleStudent.data]);
+  }, []);
 
   //ANCHOR - formButtons
   const formButtons: IButton[] = [
@@ -184,10 +184,10 @@ const CredentialForm: FunctionComponent = () => {
       aria_label: "cancel",
     },
     {
-      label: id ? SAVE_CHANGES : ADD_STUDENT_BUTTON_TEXT,
+      label: ADD_STUDENT_BUTTON_TEXT,
       type: "submit",
       kind: "primary",
-      icon: id ? undefined : "add",
+      icon: "add",
       aria_label: "submit",
       // clickFn: (e) => {
       //   if (!isDirty) return;
@@ -204,75 +204,61 @@ const CredentialForm: FunctionComponent = () => {
     }, 500);
   };
 
-  const searchStudents = useQuery(
-    ["allStudents", { term: watch("studentName") }],
-    getStudents,
-    {
-      enabled: watch("studentName")?.length > 0,
-    }
-  );
-
-  const handleSet = (id, item) => {
+  const handleSet = (item, id) => {
     setSelected({ ...selected, [id]: item });
-    if (id === "templateName") {
-      setOpen(true);
-    }
+
     setValue(id, item?.name);
+    setShowDropdown((prev) => ({ ...prev, [id]: false }));
   };
 
   const onFocus = (id: string) => {
     !showDropdown[id] && setShowDropdown((prev) => ({ ...prev, [id]: true }));
   };
 
-  // useEffect(() => {
-  //   if (watch("studentName") && watch("studentName").length > 0) {
-  //     setShowDropdown((prev) => ({ ...prev, studentName: true }));
-  //   }
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [watch("studentName")]);
+  const formFields = () => {
+    const basicFields = credentialFormField(
+      errors,
+      {
+        onBlur: handleBlur,
+        list: {
+          studentData: searchStudents?.data?.data,
+          templateList: searchTemplate?.data?.data,
+        },
+        showDropdown,
+        onFocus,
+        disabled: !!id,
+      },
+      handleSet,
+      onSearchChange
+    );
+    const templateFields = formatSchema(
+      searchTemplateFields?.data
+        ? JSON.parse(JSON.stringify([{ fields: searchTemplateFields?.data }]))
+        : { fields: [] },
+      errors
+    );
 
-  // useEffect(() => {
-  //   if (watch("templateName") && watch("templateName").length > 0) {
-  //     setShowDropdown((prev) => ({ ...prev, templateName: true }));
-  //   }
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [watch("templateName")]);
+    return [...basicFields, ...templateFields];
+  };
 
   return (
     <>
       <Helmet>
-        <title>{id ? "Edit Credential" : "Add Credential"}</title>
+        <title>{"Add Credential"}</title>
       </Helmet>
       {/* {loading && <Loading />} */}
-      <FormForCredentials
-        trigger={trigger}
-        formFields={credentialFormField(
-          errors,
-          {
-            onBlur: handleBlur,
-            list: {
-              studentData: searchStudents?.data?.data,
-              templateList: searchTemplate?.data?.data,
-            },
-            showDropdown,
-            onFocus,
-          },
-          handleSet,
-          onSearchChange
-        )}
-        onSubmit={onSubmit}
+
+      <Form
+        errorNotification={null}
+        formButtons={formButtons as IButton[]}
+        formFields={formFields()}
+        onSubmit={handleSubmit(onSubmit)}
         register={register}
-        formButtons={formButtons}
+        setValue={setValue}
+        trigger={trigger}
+        setError={setError}
+        clearErrors={clearErrors}
       />
-      {open && (
-        <ModalForCredential
-          open={open}
-          setOpen={setOpen}
-          setFormValue={setFormValue}
-          templateId={selected.templateName?.id}
-          templateName={selected.templateName?.name}
-        />
-      )}
     </>
   );
 };

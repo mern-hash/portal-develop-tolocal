@@ -141,7 +141,7 @@ const router = sentryCreateBrowserRouter([
         element: <CredentialForm />,
       },
       {
-        path: "credentials/edit/:id",
+        path: "credentials/:id/:name",
         element: <CredentialForm />,
       },
     ],

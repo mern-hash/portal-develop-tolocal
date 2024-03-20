@@ -253,7 +253,6 @@ const ModalForCredential = ({
         name: item.name,
         value: submitData?.fields[item.name],
       }));
-
       setFormValue(submittedFields);
       onCancel();
     },
@@ -261,25 +260,17 @@ const ModalForCredential = ({
   );
 
   return (
-    <Modal
-      open={open}
-      modalHeading={templateName}
-      onRequestClose={onCancel}
-      className="CredentialsTemplateModal__wrapper"
-      passiveModal
-    >
-      <Form
-        errorNotification={<></>}
-        formButtons={formButtons as IButton[]}
-        formFields={formFields}
-        onSubmit={handleSubmit(onSubmit)}
-        register={register}
-        setValue={setValue}
-        trigger={trigger}
-        setError={setError}
-        clearErrors={clearErrors}
-      />
-    </Modal>
+    <Form
+      errorNotification={<></>}
+      formButtons={formButtons as IButton[]}
+      formFields={formFields}
+      onSubmit={handleSubmit(onSubmit)}
+      register={register}
+      setValue={setValue}
+      trigger={trigger}
+      setError={setError}
+      clearErrors={clearErrors}
+    />
   );
 };
 

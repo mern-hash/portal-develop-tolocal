@@ -61,6 +61,7 @@ const FormForCredentials: FunctionComponent<IFormCredentialsComponent> = ({
                           row?.onSearchChange?.(e, row.id);
                         }}
                         autoFocus={true}
+                        disabled={row.disabled}
                       />
                       {row?.errors?.invalid && (
                         <p className="error_msg">{row?.errors?.invalidText}</p>

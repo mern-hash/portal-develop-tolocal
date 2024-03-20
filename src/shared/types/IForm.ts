@@ -5,8 +5,12 @@ import {
 } from "react-hook-form";
 import IButton from "./IButton";
 
+export interface ValidationError {
+  invalid: boolean;
+  invalidText: string | undefined;
+}
 export interface IFormTextInput {
-  errors: { invalid: boolean; invalidText: string };
+  errors: ValidationError;
   id: string;
   label: string;
   placeholder: string;
@@ -40,7 +44,7 @@ export interface IFormSelectInput {
 }
 
 export interface IFormSearchInput {
-  errors: { invalid: boolean; invalidText: any } | undefined;
+  errors: ValidationError | undefined;
   id: string;
   label: string;
   placeholder: string;
@@ -50,9 +54,10 @@ export interface IFormSearchInput {
   list: any[];
   onBlur: () => void;
   showDropdown: boolean;
-  onClick: (item: any) => void;
-  onSearchChange: (e: { target: HTMLInputElement }) => void;
-  onFocus: () => void;
+  onClick: (item: any, id?: string) => void;
+  onSearchChange: (e: { target: HTMLInputElement }, id?: string) => void;
+  onFocus: (id?: string) => void;
+  disabled: boolean;
 }
 
 export interface IListCredentials {
@@ -90,7 +95,7 @@ export interface IFormMultiSelect {
   isFilterable: boolean;
   inTable: boolean;
   validations: any;
-  errors?: { invalid: boolean; invalidText: string };
+  errors?: ValidationError;
 }
 
 export interface IFormComponent {

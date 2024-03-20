@@ -198,7 +198,7 @@ const StudentForm: FunctionComponent = () => {
     () => createStudentEntry.isLoading || editStudentEntry.isLoading,
     [createStudentEntry, editStudentEntry]
   );
-
+  console.log(singleStudent.data?.name);
   //ANCHOR - useEffect setup
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -301,7 +301,9 @@ const StudentForm: FunctionComponent = () => {
       formFieldData.push({
         ...addTemplate,
         navigateFunc: () => {
-          navigate("/institution/credentials/create");
+          navigate(
+            `/institution/credentials/${id}/${singleStudent.data?.name}`
+          );
         },
       });
       formFieldData.push({

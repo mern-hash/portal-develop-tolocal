@@ -279,6 +279,7 @@ const InstitutionsForm: FunctionComponent = (): ReactElement => {
             onSearchChange,
             showDropdown,
             onFocus,
+            disabled: false,
           }
         )}
         onSubmit={handleSubmit(onSubmit)}
