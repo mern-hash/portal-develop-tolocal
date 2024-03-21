@@ -65,3 +65,10 @@ export const editTemplate = async (id: string | undefined, templateData) => {
   );
   return data;
 };
+
+export const deleteTemplates = async (data: any[]) => {
+  const resp = await httpService.delete("/admin/user-schemas", {
+    data: { ids: data.map((i: any) => i.id) },
+  });
+  return resp;
+};
