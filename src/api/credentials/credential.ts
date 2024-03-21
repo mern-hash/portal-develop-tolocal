@@ -52,3 +52,10 @@ export const getCredentials = async ({ queryKey }) => {
   });
   return data;
 };
+
+export const deleteCredentials = async (data: any[]) => {
+  const resp = await httpService.delete("/credentials", {
+    data: { ids: data.map((i: any) => i.id) },
+  });
+  return resp;
+};

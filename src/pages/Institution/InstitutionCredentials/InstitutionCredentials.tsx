@@ -40,7 +40,10 @@ import {
 import { forDeletingTableData } from "@/shared/query-setup/forDeletingTableData";
 import { deleteMsg, pluralize } from "@/shared/util";
 import { Loading, Pagination } from "carbon-components-react";
-import { getCredentials } from "@/api/credentials/credential";
+import {
+  deleteCredentials,
+  getCredentials,
+} from "@/api/credentials/credential";
 
 //!SECTION
 
@@ -101,21 +104,13 @@ const InstitutionCredentials: FunctionComponent = (): ReactElement => {
     }
   );
 
-  const deleteInstitutionEntry = useMutation(
-    (data: any) => deleteInstitutions(data),
+  const deleteCredentialEntry = useMutation(
+    (data: any) => deleteCredentials(data),
     {
       ...forDeletingTableData({
-        refetch: () =>
-          queryClient.invalidateQueries({
-            queryKey: [
-              "institutions",
-              {
-                ...tableInfo,
-              },
-            ],
-          }),
+        refetch: () => queryClient.invalidateQueries(["allCredential"]),
         updateContext,
-        entity: deleteMsg(deletedItemsCount, "Institution"),
+        entity: deleteMsg(deletedItemsCount, "Credential"),
         setCount: setDeletedItemsCount,
       }),
     }
@@ -140,10 +135,10 @@ const InstitutionCredentials: FunctionComponent = (): ReactElement => {
       onClick: (cellData) =>
         deleteModal(
           updateContext,
-          `Delete ${cellData.firstName} ${cellData.lastName}`,
-          `Are you sure you want to delete ${cellData.firstName} ${cellData.lastName}?`,
+          `Delete ${cellData.name}`,
+          `Are you sure you want to delete ${cellData.name}?`,
           () => {
-            // deleteStudentEntry.mutate([cellData])
+            deleteCredentialEntry.mutate([cellData]);
           }
         ),
     },
@@ -170,7 +165,7 @@ const InstitutionCredentials: FunctionComponent = (): ReactElement => {
         data,
         `Are you sure you want to delete ${data.length} item`
       )}?`,
-      () => deleteInstitutionEntry.mutate(data)
+      () => deleteCredentialEntry.mutate(data)
     );
   };
 

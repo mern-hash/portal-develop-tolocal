@@ -20,8 +20,10 @@ const FormMultiSelect = ({
   register: UseFormRegister<any>;
 }) => {
   const [selectedItems, setSelectedItems] = useState<ItemsType>([]);
-  const generateItems = (value: string[]) => {
-    return value.map((item) => ({ id: item, label: item }));
+  const generateItems = (value: string[] | null) => {
+    return value && value.length > 0
+      ? value.map((item) => ({ id: item, label: item }))
+      : [];
   };
 
   const handleChange = (selectedItems: ItemsType) => {
