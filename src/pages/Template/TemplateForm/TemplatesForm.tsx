@@ -14,12 +14,7 @@ import { useNavigate, useOutletContext, useParams } from "react-router-dom";
 import { Button, ToastNotification } from "@/components/ui";
 
 // Util
-import { getInstitutions } from "@/api";
-import {
-  createTemplate,
-  editTemplate,
-  getSingleTemplate,
-} from "@/api/template/template";
+import { createTemplate, editTemplate, getInstitutions, getSingleTemplate } from "@/api";
 import FormTextAreaField from "@/components/features/form/form-fields/FormTextAreaField";
 import FormTextField from "@/components/features/form/form-fields/FormTextField";
 import ListItems from "@/components/ui/list/ListItems";

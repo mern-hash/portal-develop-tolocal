@@ -7,7 +7,6 @@ import "./fieldsform.scss";
 // Components
 import { Button } from "@/components/ui";
 // Util
-import { createFields, editField, getSingleField } from "@/api/fields/fields";
 import Delete from "@/assets/icons/Delete";
 import FormSelectField from "@/components/features/form/form-fields/FormSelectField";
 import FormTextField from "@/components/features/form/form-fields/FormTextField";
@@ -24,6 +23,8 @@ import {
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Form as CForm, Stack, Loading } from "carbon-components-react";
 import { forEditingEntry } from "@/shared/query-setup/forEditingEntry";
+import "./fieldsform.scss";
+import { createFields, editField, getSingleField } from "@/api";
 
 const FieldsForm: FunctionComponent = (): ReactElement => {
   // Fetched data, used to compare freshly edited input fields to see which
