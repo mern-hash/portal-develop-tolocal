@@ -21,16 +21,15 @@ import StudentBulk from "@/pages/Institution/StudentBulk";
 import StudentForm from "@/pages/Institution/StudentForm";
 import IntegrationsForm from "@/pages/Integrations/IntegrationsForm/IntegrationsForm";
 import IntegrationsList from "@/pages/Integrations/IntegrationsList";
-
-import Credential from "@/pages/Credential";
-
-import * as Sentry from "@sentry/react";
 import TemplateList from "@/pages/Template/TemplateList";
 import TemplatesForm from "@/pages/Template/TemplateForm";
 import InstitutionCredentials from "@/pages/Institution/InstitutionCredentials";
 import CredentialForm from "@/pages/Institution/CredentialForm";
 import FieldsForm from "@/pages/Fields/FieldsForm";
 import FieldList from "@/pages/Fields/FieldList";
+import Credential from "@/pages/Credential";
+
+import * as Sentry from "@sentry/react";
 
 const sentryCreateBrowserRouter =
   Sentry.wrapCreateBrowserRouter(createBrowserRouter);

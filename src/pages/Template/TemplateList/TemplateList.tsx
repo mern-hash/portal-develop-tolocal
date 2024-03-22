@@ -30,7 +30,6 @@ import { ITableDefaults } from "@/shared/types";
 import { ContextData, ContextTypes } from "@/shared/types/ContextTypes";
 import { deleteMsg, pluralize } from "@/shared/util";
 //ANCHOR - Constants
-import { deleteTemplates, fetchTemplate } from "@/api/template/template";
 import {
   TABLE_ORDER,
   TABLE_ORDER_BY,
@@ -41,6 +40,7 @@ import {
 import { forDeletingTableData } from "@/shared/query-setup/forDeletingTableData";
 import { forGettingTableData } from "@/shared/query-setup/forGettingTableData";
 import { ITemplateTableData } from "@/shared/types/ITable";
+import { deleteTemplates, fetchTemplate } from "@/api";
 //!SECTION
 
 /**

@@ -123,11 +123,6 @@ const InstitutionCredentials: FunctionComponent = (): ReactElement => {
   }, []);
 
   const tableCTA = [
-    // {
-    //   icon: Edit,
-    //   iconDescription: "Edit",
-    //   onClick: (cellData) => navigate(`edit/${cellData.id}`),
-    // },
     {
       icon: TrashCan,
       iconDescription: "Delete",
@@ -144,16 +139,16 @@ const InstitutionCredentials: FunctionComponent = (): ReactElement => {
   ];
   //SECTION - render()
   //ANCHOR - error
-  // if (allStudents.isError) return <ErrorPage title="Institutions" />;
+  if (allCredentials.isError) return <ErrorPage title="Institutions" />;
 
-  //ANCHOR - loading
-  // if (initialFetch && allStudents.isLoading) {
-  //   return (
-  //     <div className="institution-students__loader">
-  //       <Loading withOverlay={false} />
-  //     </div>
-  //   );
-  // }
+  // ANCHOR - loading
+  if (initialFetch && allCredentials.isLoading) {
+    return (
+      <div className="institution-students__loader">
+        <Loading withOverlay={false} />
+      </div>
+    );
+  }
 
   const batchSelectionAction = (data: any) => {
     setDeletedItemsCount(data.length);
@@ -230,7 +225,7 @@ const InstitutionCredentials: FunctionComponent = (): ReactElement => {
     return (
       <>
         <Helmet>
-          <title>Credentials list</title>
+          <title>Credentials</title>
         </Helmet>
         <EmptyPage
           icon={<Square />}
@@ -254,7 +249,7 @@ const InstitutionCredentials: FunctionComponent = (): ReactElement => {
   return (
     <>
       <Helmet>
-        <title>Credentials list</title>
+        <title>Credentials</title>
       </Helmet>
 
       <Table

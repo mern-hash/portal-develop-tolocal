@@ -11,7 +11,7 @@ const attributeData = [
   { name: "List ", value: "list" },
 ];
 
-const SelectAtributeType: FunctionComponent<{
+const SelectAttributeType: FunctionComponent<{
   id: string;
   register: UseFormRegister<any>;
   errors: { message: string; ref: JSX.Element; type: string } | undefined;
@@ -55,4 +55,4 @@ const SelectAtributeType: FunctionComponent<{
   );
 };
 
-export default SelectAtributeType;
+export default SelectAttributeType;
