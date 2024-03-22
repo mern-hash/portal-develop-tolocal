@@ -2,9 +2,9 @@ import { fetchFields } from "@/api/fields/fields";
 import { useQuery } from "@tanstack/react-query";
 import { ContainedList, Modal, Search } from "carbon-components-react";
 import { useEffect, useState } from "react";
-import FormLabel from "../ui/FormLabel/FormLabel";
+import FormLabel from "../FormLabel/FormLabel";
 import "./CustomFieldModal.scss";
-import ListItems from "./ListItems";
+import ListItems from "../list/ListItems";
 import { CustomItem, ListOfCustomItem } from "@/shared/types/IForm";
 
 const ModalForCustomField = ({

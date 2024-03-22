@@ -2,7 +2,7 @@ import { FunctionComponent, ReactElement } from "react";
 import { UseFormRegister } from "react-hook-form";
 import { SelectCity, SelectCountry, SelectInput } from "@/components/ui";
 import { IFormSelectInput } from "@/shared/types";
-import SelectAtributeType from "@/components/ui/form-location-select/SelectAtributeType";
+import SelectAttributeType from "@/components/ui/form-location-select/SelectAttributeType";
 
 const FormSelectField: FunctionComponent<{
   register: UseFormRegister<any>;
@@ -18,7 +18,7 @@ const FormSelectField: FunctionComponent<{
   if (id === "city") return <SelectCity key={id} {...locationProps} />;
   if (id.includes("attributeType")) {
     return (
-      <SelectAtributeType
+      <SelectAttributeType
         key={id}
         {...locationProps}
         validations={validations}

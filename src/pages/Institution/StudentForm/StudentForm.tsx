@@ -196,7 +196,7 @@ const StudentForm: FunctionComponent = () => {
     () => createStudentEntry.isLoading || editStudentEntry.isLoading,
     [createStudentEntry, editStudentEntry]
   );
-  console.log(singleStudent.data?.name);
+
   //ANCHOR - useEffect setup
   useEffect(() => {
     window.scrollTo(0, 0);

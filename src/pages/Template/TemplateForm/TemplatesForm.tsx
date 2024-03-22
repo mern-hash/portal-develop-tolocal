@@ -22,8 +22,8 @@ import {
 } from "@/api/template/template";
 import FormTextAreaField from "@/components/features/form/form-fields/FormTextAreaField";
 import FormTextField from "@/components/features/form/form-fields/FormTextField";
-import ListItems from "@/components/newComponents/ListItems";
-import ModalForCustomField from "@/components/newComponents/ModalForCustomField";
+import ListItems from "@/components/ui/list/ListItems";
+import ModalForCustomField from "@/components/ui/modal/ModalForCustomField";
 import FormLabel from "@/components/ui/FormLabel/FormLabel";
 import CustomForm from "@/components/ui/customForm/CustomForm";
 import { ADMIN_HEADING_LINKS, ADMIN_HEADING_LOGOLINK } from "@/core/constants";

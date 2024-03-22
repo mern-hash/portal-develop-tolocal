@@ -1,10 +1,10 @@
 //SECTION - Imports
 //ANCHOR - Core
 import { FunctionComponent } from "react";
-import { Helmet } from "react-helmet-async";
-import { useForm } from "react-hook-form";
-import { Link, useNavigate, useParams } from "react-router-dom";
 import "../auth.scss";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import { Helmet } from "react-helmet-async";
 //ANCHOR - Api
 import { login } from "@/api";
 import { useMutation } from "@tanstack/react-query";
@@ -19,11 +19,11 @@ import {
 } from "carbon-components-react";
 //ANCHOR - Util
 import { setToken } from "@/core/storage";
-import { errorMessages, invalidInput } from "@/shared/errorText";
+import { invalidInput, errorMessages } from "@/shared/errorText";
 import { validateEmailPattern } from "@/shared/validations";
 //ANCHOR - Types and constants
-import { ACCOUNT_PATH_TYPES } from "@/core/constants";
 import { ILogin, IToken } from "@/shared/types";
+import { ACCOUNT_PATH_TYPES } from "@/core/constants";
 //!SECTION
 
 /**

@@ -3,6 +3,7 @@ import { FunctionComponent, ReactElement, useEffect, useMemo } from "react";
 import { Helmet } from "react-helmet-async";
 import { useFieldArray, useForm } from "react-hook-form";
 import { useNavigate, useOutletContext, useParams } from "react-router-dom";
+import "./fieldsform.scss";
 // Components
 import { Button } from "@/components/ui";
 // Util
@@ -23,7 +24,6 @@ import {
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Form as CForm, Stack, Loading } from "carbon-components-react";
 import { forEditingEntry } from "@/shared/query-setup/forEditingEntry";
-import "./fieldsform.scss";
 
 const FieldsForm: FunctionComponent = (): ReactElement => {
   // Fetched data, used to compare freshly edited input fields to see which
