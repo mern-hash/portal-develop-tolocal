@@ -23,7 +23,6 @@ import {
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Form as CForm, Stack, Loading } from "carbon-components-react";
 import { forEditingEntry } from "@/shared/query-setup/forEditingEntry";
-import "./fieldsform.scss";
 import { createFields, editField, getSingleField } from "@/api";
 
 const FieldsForm: FunctionComponent = (): ReactElement => {
