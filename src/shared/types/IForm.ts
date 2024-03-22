@@ -234,7 +234,6 @@ export interface CustomItem {
   createdAt: number;
   updatedAt: number;
 }
-
 export interface ListOfCustomItem {
   data: CustomItem[];
 }
