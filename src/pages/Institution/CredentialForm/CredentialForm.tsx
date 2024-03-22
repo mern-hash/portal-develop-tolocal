@@ -9,6 +9,7 @@ import { useNavigate, useOutletContext, useParams } from "react-router-dom";
 import { createCredential, getStudents } from "@/api";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 //ANCHOR - Components
+import { Loading } from "carbon-components-react";
 //ANCHOR - Util
 
 import { studentFormHLC } from "@/shared/outlet-context/outletContext";
@@ -18,8 +19,8 @@ import { IButton } from "@/shared/types";
 import { ContextData, ContextTypes } from "@/shared/types/ContextTypes";
 
 import {
+  ADD_CREDENTIALS_BUTTON_TEXT,
   ADD_CREDENTIALS_DROPDOWN_TEXT,
-  ADD_STUDENT_BUTTON_TEXT,
 } from "@/core/constants";
 
 import {
@@ -184,7 +185,7 @@ const CredentialForm: FunctionComponent = () => {
       aria_label: "cancel",
     },
     {
-      label: ADD_STUDENT_BUTTON_TEXT,
+      label: ADD_CREDENTIALS_BUTTON_TEXT,
       type: "submit",
       kind: "primary",
       icon: "add",
@@ -237,16 +238,17 @@ const CredentialForm: FunctionComponent = () => {
         : { fields: [] },
       errors
     );
-    console.log(templateFields);
+
     return [...basicFields, ...templateFields];
   };
-
   return (
     <>
       <Helmet>
         <title>{"Add Credential"}</title>
       </Helmet>
-      {/* {loading && <Loading />} */}
+      {(createCredentialEntry.isLoading || searchTemplateFields.isFetching) && (
+        <Loading />
+      )}
 
       <Form
         errorNotification={null}

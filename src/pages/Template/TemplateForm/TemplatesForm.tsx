@@ -202,10 +202,6 @@ const TemplatesForm: FunctionComponent = (): ReactElement => {
       return null;
     });
 
-    // formData.forEach((value, key) => {
-    //   console.log(`${key}: ${value}`);
-    // });
-    // return;
     const createTemplate = createTemplateEntry.mutate(formData);
 
     return createTemplate;

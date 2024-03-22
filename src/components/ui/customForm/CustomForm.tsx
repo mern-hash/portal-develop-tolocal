@@ -54,6 +54,15 @@ const CustomForm = ({
     remove(indexOfField);
   };
 
+  const formField = customFormFields(
+    register,
+    errors,
+    {
+      attributeType: watch(`customField.${indexOfField}.attributeType`),
+    },
+    indexOfField
+  );
+
   useEffect(() => {
     if (
       (watch(`customField.${indexOfField}.attributeType`) === "list" ||
@@ -64,14 +73,6 @@ const CustomForm = ({
     }
   }, [watch(`customField.${indexOfField}.attributeType`)]);
 
-  const formField = customFormFields(
-    register,
-    errors,
-    {
-      attributeType: watch(`customField.${indexOfField}.attributeType`),
-    },
-    indexOfField
-  );
   return (
     <>
       <div className="template-form__form-outer-wrapper">
@@ -144,7 +145,8 @@ const CustomForm = ({
               </div>
             </>
           )}
-          {Array.from({ length: 6 }, (_, index) => index + 4).map((item) => (
+          {/* Code for showing additional checkbox. */}
+          {/* {Array.from({ length: 6 }, (_, index) => index + 4).map((item) => (
             <FormCheck
               register={register}
               data={formField[item]}
@@ -152,7 +154,16 @@ const CustomForm = ({
               key={item}
               disabled={id}
             />
-          ))}
+          ))} */}
+          {watch(`customField.${indexOfField}.attributeType`) !==
+            "checkbox" && (
+            <FormCheck
+              register={register}
+              data={formField[4]}
+              classNameCustom="template-form__Requird-check"
+              disabled={id}
+            />
+          )}
         </div>
         {!id && (
           <Delete

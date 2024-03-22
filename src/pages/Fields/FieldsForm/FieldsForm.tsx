@@ -210,29 +210,30 @@ const FieldsForm: FunctionComponent = (): ReactElement => {
             </Stack>
           </div>
           <div className="field-form__divider-hr"></div>
-          <div className="field-form__wrapper">
-            <Stack gap={7} className="form__stack field-form__stack">
-              <FormTextField
-                register={register}
-                data={
-                  {
-                    ...formField[2],
-                    validations: {
-                      required:
-                        watch("attributeType") === "list" ||
-                        watch("attributeType") === "dropdown"
-                          ? "Required field"
-                          : false,
-                    },
-                  } as IFormTextInput
-                }
-                cancelForm={cancelForm}
-              />
-            </Stack>
-          </div>
+
           {(watch("attributeType") === "list" ||
             watch("attributeType") === "dropdown") && (
             <>
+              <div className="field-form__wrapper">
+                <Stack gap={7} className="form__stack field-form__stack">
+                  <FormTextField
+                    register={register}
+                    data={
+                      {
+                        ...formField[2],
+                        validations: {
+                          required:
+                            watch("attributeType") === "list" ||
+                            watch("attributeType") === "dropdown"
+                              ? "Required field"
+                              : false,
+                        },
+                      } as IFormTextInput
+                    }
+                    cancelForm={cancelForm}
+                  />
+                </Stack>
+              </div>
               {fields.length > 0 && (
                 <div className="field-form__wrapper field-form__wrapper-list">
                   {fields.map((field, i) => (
