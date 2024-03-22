@@ -1,39 +1,33 @@
 //SECTION - Imports
 //ANCHOR - Core
-import { FunctionComponent, ReactElement, useEffect, useState } from "react";
-import "../institution.scss";
-import { useNavigate, useOutletContext } from "react-router-dom";
-import { Helmet } from "react-helmet-async";
 import { format, isValid } from "date-fns";
+import { FunctionComponent, ReactElement, useEffect, useState } from "react";
+import { Helmet } from "react-helmet-async";
+import { useNavigate, useOutletContext } from "react-router-dom";
+import "../institution.scss";
 //ANCHOR - Api
+import { deleteStudent, getStudents, resendCredentialEmail } from "@/api";
 import {
   useInfiniteQuery,
   useMutation,
-  useQuery,
   useQueryClient,
 } from "@tanstack/react-query";
-import {
-  deleteStudent,
-  getStudents,
-  getInstitutionTableFields,
-  resendCredentialEmail,
-} from "@/api";
 //ANCHOR - Components
-import { HeaderButton } from "@/components/ui";
 import { EmptyPage, ErrorPage, Table } from "@/components/features";
+import { HeaderButton } from "@/components/ui";
 import { Loading, Pagination } from "carbon-components-react";
 //ANCHOR - Table stuff
 import {
   configDateForFilter,
-  deleteModal,
   confirmModal,
+  deleteModal,
   onSortTable,
   toastNotification,
 } from "@/shared/table-data/tableMethods";
 //ANCHOR - Util
-import { ContextData, ContextTypes } from "@/shared/types/ContextTypes";
-import { deleteMsg, pluralize, formatDateWithoutTimezone } from "@/shared/util";
 import { Square } from "@/assets/icons";
+import { ContextData, ContextTypes } from "@/shared/types/ContextTypes";
+import { deleteMsg, formatDateWithoutTimezone, pluralize } from "@/shared/util";
 import { Edit, TrashCan } from "@carbon/icons-react";
 //ANCHOR - Constants
 import {
@@ -44,16 +38,16 @@ import {
   TOAST_NOTIFICATION_KINDS,
   TOAST_NOTIFICATION_TITLES,
 } from "@/core/constants";
+import { errorMessages } from "@/shared/errorText";
 import {
+  clearModal,
   clearTabs,
   institutionStudentsHLC,
 } from "@/shared/outlet-context/outletContext";
-import { ITableDefaults } from "@/shared/types";
-import { forGettingTableData } from "@/shared/query-setup/forGettingTableData";
 import { forDeletingTableData } from "@/shared/query-setup/forDeletingTableData";
-import { clearModal } from "@/shared/outlet-context/outletContext";
-import { errorMessages } from "@/shared/errorText";
+import { forGettingTableData } from "@/shared/query-setup/forGettingTableData";
 import { successMessages } from "@/shared/successText";
+import { ITableDefaults } from "@/shared/types";
 //!SECTION
 
 const InstitutionStudents: FunctionComponent = (): ReactElement => {

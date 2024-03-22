@@ -71,6 +71,7 @@ const CustomForm = ({
     ) {
       append({ value: "" });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [watch(`customField.${indexOfField}.attributeType`)]);
 
   return (

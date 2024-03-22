@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import FormLabel from "../ui/FormLabel/FormLabel";
 import "./CustomFieldModal.scss";
 import ListItems from "./ListItems";
+import { CustomItem, ListOfCustomItem } from "@/shared/types/IForm";
 
 const ModalForCustomField = ({
   open,
@@ -19,18 +20,18 @@ const ModalForCustomField = ({
   heading: string;
   primaryButtonText: string;
   secondaryButtonText: string;
-  onSubmit: (item: any) => any;
+  onSubmit: (item: CustomItem) => any;
 }) => {
   const [value, setValue] = useState<string>("");
   const [search, setSearch] = useState<string>("");
   const [showDropdown, setShowDropdown] = useState<boolean>(false);
   const [showDropdownNew, setShowDropdownNew] = useState<boolean>(false);
-  const [selected, setSelected] = useState<any>(null);
-  const [listData, setListData] = useState<any>([]);
+  const [selected, setSelected] = useState<CustomItem | null>(null);
+  const [listData, setListData] = useState<CustomItem[]>([]);
 
   useQuery(["fields", { term: search }], fetchFields, {
     enabled: showDropdownNew && search?.length > 0,
-    onSuccess: (data) => {
+    onSuccess: (data: ListOfCustomItem) => {
       setListData(data?.data || []);
     },
   });
@@ -64,7 +65,7 @@ const ModalForCustomField = ({
         setOpen(false);
       }}
       onRequestSubmit={() => {
-        onSubmit(selected);
+        selected && onSubmit(selected);
       }}
       className="Modal__wrapper"
     >
@@ -83,7 +84,7 @@ const ModalForCustomField = ({
         label=""
       >
         {listData.length > 0 ? (
-          listData.map((item) => (
+          listData.map((item: CustomItem) => (
             <ListItems
               key={item?.id}
               name={item?.name}

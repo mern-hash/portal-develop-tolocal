@@ -62,3 +62,11 @@ export interface ITableDefaults {
   completionDateFrom?: string;
   completionDateTo?: string;
 }
+
+export interface ITemplateTableData {
+  id: string;
+  name: string;
+  description: string;
+  createdAt: number;
+  credential_count: number;
+}

@@ -23,7 +23,7 @@ import FormTextField from "./form-fields/FormTextField";
 import FormFileField from "./form-fields/FormFileField";
 import FormSelectField from "./form-fields/FormSelectField";
 import FormPasswordField from "./form-fields/FormPasswordField";
-import ListItems from "@/components/newComponets/ListItems";
+import ListItems from "@/components/newComponents/ListItems";
 import {
   IFormMultiSelect,
   IFormSearchInput,

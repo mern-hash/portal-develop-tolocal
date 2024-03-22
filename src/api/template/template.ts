@@ -11,7 +11,6 @@ export const createTemplate = async (templateData: FormData) => {
 
 export const fetchTemplate = async ({ queryKey }) => {
   const [, { page, pageSize, orderBy, order, term, from, to }] = queryKey;
-  console.log(orderBy);
   const { data } = await httpService.get(`/admin/user-schemas`, {
     params: {
       ...(orderBy === "credential_count"
@@ -25,6 +24,7 @@ export const fetchTemplate = async ({ queryKey }) => {
       to,
     },
   });
+  console.log(data);
   return data;
 };
 
@@ -60,7 +60,7 @@ export const getSingleTemplateFields = async ({ queryKey }) => {
 
 export const editTemplate = async (id: string | undefined, templateData) => {
   const { data } = await httpService.patch(
-    `/data/user-schema/${id}`,
+    `/admin/user-schemas/${id}`,
     templateData
   );
   return data;

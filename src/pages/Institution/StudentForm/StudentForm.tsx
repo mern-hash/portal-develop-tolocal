@@ -40,8 +40,6 @@ const StudentForm: FunctionComponent = () => {
     updateContext: (state: string, data: ContextData) => void;
   }>();
 
-  const [defaultEditData, setDefaultEditData] = useState<IStudentForm>();
-  const [reqCredentialData, setReqCredentialData] = useState<any[]>();
   const [toastErrorMessage, setToastErrorMessage] = useState<string>();
 
   const { id } = useParams();
@@ -93,7 +91,7 @@ const StudentForm: FunctionComponent = () => {
 
   //ANCHOR - setFormDefaultValues
   const setFormDefaultValues = (data: any) => {
-    setDefaultEditData(data);
+    // setDefaultEditData(data);
     // Maps over data entries and set each of them as form's defaultValue
     Object.entries(data).forEach(([name, value]: any) => {
       if (name === "fields") {
@@ -226,20 +224,20 @@ const StudentForm: FunctionComponent = () => {
     // Array of previously submitted values for those ids
     let defaultFieldValues: string[] = [];
 
-    reqCredentialData?.map((i) => {
-      fieldIds.push(i.id);
+    // reqCredentialData?.map((i) => {
+    //   fieldIds.push(i.id);
 
-      // We go by either-or, since there are fields that are like "id" and fields like "fields.studentId"
-      const defaultValue =
-        defaultEditData?.[i.id] ||
-        defaultEditData?.[i.id.split(".")[0]][i.id.split(".")[1]];
+    //   // We go by either-or, since there are fields that are like "id" and fields like "fields.studentId"
+    //   const defaultValue =
+    //     defaultEditData?.[i.id] ||
+    //     defaultEditData?.[i.id.split(".")[0]][i.id.split(".")[1]];
 
-      return defaultFieldValues.push(
-        i.type === "timestamp"
-          ? format(defaultValue, "yyyy-MM-dd")
-          : defaultValue
-      );
-    });
+    //   return defaultFieldValues.push(
+    //     i.type === "timestamp"
+    //       ? format(defaultValue, "yyyy-MM-dd")
+    //       : defaultValue
+    //   );
+    // });
 
     // If both arrays are the same, no change has been done to required fields for credential, therefore
     // double confirmation is not required. Updating "irrelevant" fields such as photo will not trigger double

@@ -7,7 +7,6 @@ import { useNavigate, useOutletContext } from "react-router-dom";
 import { Edit, TrashCan } from "@carbon/icons-react";
 import { Loading, Pagination } from "carbon-components-react";
 //ANCHOR - Api
-import { deleteInstitutions } from "@/api";
 import {
   useInfiniteQuery,
   useMutation,
@@ -27,7 +26,7 @@ import {
 //ANCHOR - Util
 import { Sponge } from "@/assets/icons";
 import { templatesListHLC } from "@/shared/outlet-context/outletContext";
-import { IInstitutionTableData, ITableDefaults } from "@/shared/types";
+import { ITableDefaults } from "@/shared/types";
 import { ContextData, ContextTypes } from "@/shared/types/ContextTypes";
 import { deleteMsg, pluralize } from "@/shared/util";
 //ANCHOR - Constants
@@ -41,6 +40,7 @@ import {
 } from "@/core/constants";
 import { forDeletingTableData } from "@/shared/query-setup/forDeletingTableData";
 import { forGettingTableData } from "@/shared/query-setup/forGettingTableData";
+import { ITemplateTableData } from "@/shared/types/ITable";
 //!SECTION
 
 /**
@@ -60,7 +60,7 @@ const TemplateList: FunctionComponent = (): ReactElement => {
   });
   const [itemCount, setItemCount] = useState<number>();
   // Used to keep displaying current page while fetching next one
-  const [itemsFetched, setItemsFetched] = useState<IInstitutionTableData[]>([]);
+  const [itemsFetched, setItemsFetched] = useState<ITemplateTableData[]>([]);
   const [initialFetch, setInitialFetch] = useState<boolean>(true);
   const [deletedItemsCount, setDeletedItemsCount] = useState<number>(0);
 
@@ -111,7 +111,7 @@ const TemplateList: FunctionComponent = (): ReactElement => {
    * and refetch all institutions to live update the view
    */
   const deleteTemplateEntry = useMutation(
-    (data: any[]) => deleteTemplates(data),
+    (data: ITemplateTableData[]) => deleteTemplates(data),
     {
       ...forDeletingTableData({
         refetch: () =>
@@ -135,9 +135,7 @@ const TemplateList: FunctionComponent = (): ReactElement => {
    * ANCHOR batch action
    * Modal pop-up for batch selected items, to delete multiple table rows at once
    */
-  const batchSelectionAction = (
-    data: { id: string; name: string; credential_count: number }[]
-  ) => {
+  const batchSelectionAction = (data: ITemplateTableData[]) => {
     for (const { credential_count, name } of data) {
       if (credential_count > 0) {
         toastNotification({
@@ -239,7 +237,7 @@ const TemplateList: FunctionComponent = (): ReactElement => {
    * ANCHOR error
    * Render page
    */
-  if (allTemplates.isError) return <ErrorPage title="Institutions" />;
+  if (allTemplates.isError) return <ErrorPage title="Templates" />;
 
   //ANCHOR - loading
   if (initialFetch && allTemplates.isLoading)
@@ -251,7 +249,7 @@ const TemplateList: FunctionComponent = (): ReactElement => {
     return (
       <>
         <Helmet>
-          <title>Institutions</title>
+          <title>Templates</title>
         </Helmet>
         <EmptyPage
           icon={<Sponge />}
@@ -259,7 +257,7 @@ const TemplateList: FunctionComponent = (): ReactElement => {
           desc="You can build a template for credentials that issuers and verifiers use. A credential template allows you to define the structure and the attributes included in the credentials."
           button={
             <Button
-              label="Build a temnplate"
+              label="Build a template"
               type="button"
               clickFn={() => navigate("create")}
               icon="add"
@@ -275,7 +273,7 @@ const TemplateList: FunctionComponent = (): ReactElement => {
   return (
     <>
       <Helmet>
-        <title>Institutions</title>
+        <title>Templates</title>
       </Helmet>
       <Table
         batchSelectionAction={batchSelectionAction}

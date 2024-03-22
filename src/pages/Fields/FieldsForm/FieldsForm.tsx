@@ -155,6 +155,7 @@ const FieldsForm: FunctionComponent = (): ReactElement => {
       const newValue = [value];
       valueList.map(({ value }) => {
         newValue.push(value);
+        return null;
       });
       newObj.value = newValue;
     }

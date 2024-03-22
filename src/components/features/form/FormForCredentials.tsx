@@ -6,7 +6,7 @@ import { FunctionComponent } from "react";
 import { IFormCredentialsComponent } from "@/shared/types/IForm";
 import FormLabel from "@/components/ui/FormLabel/FormLabel";
 import { Search } from "@carbon/react";
-import ListItems from "@/components/newComponets/ListItems";
+import ListItems from "@/components/newComponents/ListItems";
 
 const FormForCredentials: FunctionComponent<IFormCredentialsComponent> = ({
   trigger,

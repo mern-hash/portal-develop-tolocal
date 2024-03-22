@@ -2,6 +2,7 @@
 import {
   FunctionComponent,
   ReactElement,
+  useCallback,
   useEffect,
   useMemo,
   useState,
@@ -10,7 +11,8 @@ import { Helmet } from "react-helmet-async";
 import { useFieldArray, useForm } from "react-hook-form";
 import { useNavigate, useOutletContext, useParams } from "react-router-dom";
 // Components
-import { Button } from "@/components/ui";
+import { Button, ToastNotification } from "@/components/ui";
+
 // Util
 import { getInstitutions } from "@/api";
 import {
@@ -20,41 +22,33 @@ import {
 } from "@/api/template/template";
 import FormTextAreaField from "@/components/features/form/form-fields/FormTextAreaField";
 import FormTextField from "@/components/features/form/form-fields/FormTextField";
-import ListItems from "@/components/newComponets/ListItems";
+import ListItems from "@/components/newComponents/ListItems";
+import ModalForCustomField from "@/components/newComponents/ModalForCustomField";
 import FormLabel from "@/components/ui/FormLabel/FormLabel";
 import CustomForm from "@/components/ui/customForm/CustomForm";
 import { ADMIN_HEADING_LINKS, ADMIN_HEADING_LOGOLINK } from "@/core/constants";
+import { blankCustomTemplate } from "@/shared/blankFieldData";
+import { errorMessages } from "@/shared/errorText";
 import { templateFormFields } from "@/shared/form-fields/formFields";
 import { forCreatingEntry } from "@/shared/query-setup/forCreatingEntry";
+import { forEditingEntry } from "@/shared/query-setup/forEditingEntry";
 import { IButton, IFormTextInput } from "@/shared/types";
 import { ContextData, ContextTypes } from "@/shared/types/ContextTypes";
-import { TemplateForm } from "@/shared/types/IForm";
+import {
+  CustomItem,
+  TemplateForm,
+  TemplateFormEdit,
+} from "@/shared/types/IForm";
 import { debounceEvent } from "@/shared/util";
 import { Search } from "@carbon/react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   Form as CForm,
   ContainedList,
-  Stack,
   Loading,
+  Stack,
 } from "carbon-components-react";
 import "./templateform.scss";
-import { forEditingEntry } from "@/shared/query-setup/forEditingEntry";
-import ModalForCustomField from "@/components/newComponets/ModalForCustomField";
-
-const blankCustomTemplate = {
-  attributeType: "",
-  name: "",
-  placeholder: "",
-  label: "",
-  require: false,
-  isClaim: false,
-  isSearchable: false,
-  isSortable: false,
-  isFilterable: false,
-  inTable: false,
-  isCustom: false,
-};
 
 const TemplatesForm: FunctionComponent = (): ReactElement => {
   // Fetched data, used to compare freshly edited input fields to see which
@@ -63,14 +57,14 @@ const TemplatesForm: FunctionComponent = (): ReactElement => {
   const navigate = useNavigate();
   const { id } = useParams();
   const [institution, setInstitution] = useState<string | null>(null);
-  const [showDropdown, setShowDropdown] = useState(false);
-  const [showDropdownNew, setShowDropdownNew] = useState(false);
+  const [showDropdown, setShowDropdown] = useState<boolean>(false);
+  const [showDropdownNew, setShowDropdownNew] = useState<boolean>(false);
 
   const [open, setOpen] = useState(false);
   const {
     register,
     handleSubmit,
-    formState: { errors, isValid },
+    formState: { errors, isValid, isSubmitted },
     setError,
     watch,
     trigger,
@@ -80,7 +74,7 @@ const TemplatesForm: FunctionComponent = (): ReactElement => {
     mode: "onBlur",
     defaultValues: {},
   });
-  // setError("attributeType");
+
   const { fields, append, remove } = useFieldArray({
     control, // control props comes from useForm (optional: if you are using FormContext)
     name: "customField", // unique name for your Field Array
@@ -91,15 +85,6 @@ const TemplatesForm: FunctionComponent = (): ReactElement => {
     updateContext: (state: string, data: ContextData) => void;
   }>();
 
-  const singleTemplate = useQuery(
-    ["singleTemplate ", { id }],
-    getSingleTemplate,
-    {
-      enabled: !!id,
-      refetchOnWindowFocus: false,
-    }
-  );
-
   // Initial heading setup
   const updateHeadingContext = (title: string) => {
     updateContext(ContextTypes.HLC, {
@@ -109,9 +94,14 @@ const TemplatesForm: FunctionComponent = (): ReactElement => {
     });
   };
 
-  const onSearchChange = debounceEvent((e) => {
-    setValue("institute", e.target.value);
-  }, 500);
+  const singleTemplate = useQuery(
+    ["singleTemplate ", { id }],
+    getSingleTemplate,
+    {
+      enabled: !!id,
+      refetchOnWindowFocus: false,
+    }
+  );
 
   const searchInstitution = useQuery(
     ["fields", { term: watch("institute") }],
@@ -120,19 +110,6 @@ const TemplatesForm: FunctionComponent = (): ReactElement => {
       enabled: showDropdownNew && watch("institute")?.length > 0,
     }
   );
-
-  const editTemplateEntry = useMutation((data) => editTemplate(id, data), {
-    ...forEditingEntry({
-      updateContext,
-      navigate: () => {
-        // navigate("/admin/templates");
-      },
-      entity: "Templates",
-      setError,
-      invalidate: () =>
-        queryClient.invalidateQueries(["singleTemplate ", { id }]),
-    }),
-  });
 
   const createTemplateEntry = useMutation(
     (data: FormData) => createTemplate(data),
@@ -147,19 +124,63 @@ const TemplatesForm: FunctionComponent = (): ReactElement => {
     }
   );
 
+  const editTemplateEntry = useMutation(
+    (data: TemplateFormEdit) => editTemplate(id, data),
+    {
+      ...forEditingEntry({
+        updateContext,
+        navigate: () => {
+          navigate("/admin/templates");
+        },
+        entity: "Templates",
+        setError,
+        invalidate: () =>
+          queryClient.invalidateQueries(["singleTemplate ", { id }]),
+      }),
+    }
+  );
+
+  const renderErrorNotification = useCallback(() => {
+    if (!(isSubmitted && !!Object.keys(errors).length)) return null;
+
+    if (
+      isSubmitted &&
+      createTemplateEntry.status === "idle" &&
+      editTemplateEntry.status === "idle"
+    )
+      return (
+        <ToastNotification
+          title="Error"
+          type="inline"
+          kind="error"
+          subtitle={
+            errors["message"]?.message || errorMessages.required_notification
+          }
+          full
+        />
+      );
+
+    return null;
+  }, [
+    isSubmitted,
+    errors,
+    createTemplateEntry.status,
+    editTemplateEntry.status,
+  ]);
+
+  const onSearchChange = debounceEvent((e) => {
+    setValue("institute", e.target.value);
+  }, 500);
+
   const loading = useMemo(
     () => createTemplateEntry.isLoading || editTemplateEntry.isLoading,
     [createTemplateEntry, editTemplateEntry]
   );
 
-  const setFormDefaultValues = (data: any) => {
+  const setFormDefaultValues = (data: TemplateFormEdit) => {
     // Maps over data entries and set each of them as form's defaultValue
     Object.entries(data).forEach(([name, value]: any) => {
-      if (name === "institutions") {
-        setValue("institute", value?.[0].name);
-      } else {
-        setValue(name, value);
-      }
+      setValue(name, value);
     });
     updateHeadingContext(`Edit ${data.name}`);
   };
@@ -173,7 +194,7 @@ const TemplatesForm: FunctionComponent = (): ReactElement => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [singleTemplate.data, id]);
 
-  const onSubmit = async (data) => {
+  const onSubmit = async (data: TemplateForm) => {
     if (!institution) {
       setError("institute", {
         message: "Please select valid institution from suggested option!",
@@ -184,32 +205,33 @@ const TemplatesForm: FunctionComponent = (): ReactElement => {
     if (loading || !isValid) return;
     const formData = new FormData();
     formData.append("name", data.name);
-    formData.append("description", data.description);
+    data?.description && formData.append("description", data.description);
     formData.append("instituteId", institution);
-    data.customField.map((field, index) => {
-      for (let key in field) {
-        if (field.hasOwnProperty(key)) {
-          if (key === "value") {
-            // const value = field[key].map((obj) => obj.value).join(",");
-            field[key].map((obj, i) => {
-              formData.append(`fields[${index}][${key}][${i}]`, obj.value);
-            });
-          } else {
-            formData.append(`fields[${index}][${key}]`, field[key]);
+    data.customField &&
+      data.customField.map((field, index) => {
+        for (let key in field) {
+          if (field.hasOwnProperty(key)) {
+            if (key === "value") {
+              field[key]?.map((obj, i) => {
+                formData.append(`fields[${index}][${key}][${i}]`, obj.value);
+                return null;
+              });
+            } else {
+              formData.append(`fields[${index}][${key}]`, field[key]);
+            }
           }
         }
-      }
-      return null;
-    });
+        return null;
+      });
 
     const createTemplate = createTemplateEntry.mutate(formData);
 
     return createTemplate;
   };
 
-  const onUpdate = async (data) => {
+  const onUpdate = async (data: TemplateForm) => {
     if (loading || !isValid) return;
-    editTemplateEntry.mutate(data);
+    editTemplateEntry.mutate(data as unknown as TemplateFormEdit);
   };
 
   const formButtons: IButton[] = [
@@ -235,9 +257,9 @@ const TemplatesForm: FunctionComponent = (): ReactElement => {
       : trigger(id);
   };
 
-  const onChangeInstitute = (item: any) => {
-    setInstitution(item?.id);
-    setValue("institute", item?.name);
+  const onChangeInstitute = (item: { id: string; name: string }) => {
+    setInstitution(item.id);
+    setValue("institute", item.name);
   };
 
   const onBlur = () => {
@@ -247,7 +269,7 @@ const TemplatesForm: FunctionComponent = (): ReactElement => {
     }, 400);
   };
 
-  const addCustomField = (item) => {
+  const addCustomField = (item: CustomItem) => {
     if (!item) return;
     setOpen(false);
     let value;
@@ -271,6 +293,7 @@ const TemplatesForm: FunctionComponent = (): ReactElement => {
       </Helmet>
       {loading && <Loading />}
       <CForm onSubmit={handleSubmit(id ? onUpdate : onSubmit)} className="form">
+        {renderErrorNotification()}
         <div className="template-form__wrapper">
           <div className="template-form__left-content">
             <h6>Template name</h6>
@@ -381,7 +404,7 @@ const TemplatesForm: FunctionComponent = (): ReactElement => {
                 watch={watch}
                 errors={errors?.customField && errors?.customField[i]}
                 id={!!id}
-                isCustom={item.isCustom}
+                isCustom={!!item.isCustom}
                 control={control}
               />
             ))}

@@ -138,25 +138,42 @@ export interface IInstitutionForm {
   template: string;
 }
 
+export interface CustomFieldValue {
+  value: string;
+}
+
+export interface CustomField {
+  id?: string;
+  name: string;
+  label: string;
+  value?: CustomFieldValue[];
+  placeholder: string;
+  isClaim: boolean;
+  isSearchable: boolean;
+  isSortable: boolean;
+  isFilterable: boolean;
+  inTable: boolean;
+  validations?: any; // Change the type based on validations structure
+  attributeType: string; // Change the type based on attributeType structure
+  require: boolean;
+  selectOption?: string | null;
+  isCustom?: boolean;
+}
+
+export interface TemplateFormEdit {
+  id: string;
+  name: string;
+  description: string;
+  createdAt: string; // Change the type based on createdAt structure
+  institute: string;
+  customField: CustomField[];
+}
+
 export interface TemplateForm {
   description: string | null;
   name: string;
   institute: string;
-  customField?: {
-    attributeType: string;
-    name: string;
-    placeholder: string;
-    label: string;
-    require: boolean;
-    selectOption?: string;
-    isClaim: boolean;
-    isSearchable: boolean;
-    isSortable: boolean;
-    isFilterable: boolean;
-    inTable: boolean;
-    isCustom: boolean;
-    value?: { value: string }[];
-  }[];
+  customField?: CustomField[];
 }
 
 export interface FieldForm {
@@ -208,3 +225,16 @@ export interface ICredentialForm {
 }
 
 export type TFieldID = keyof IInstitutionForm | keyof IStudentForm;
+
+export interface CustomItem {
+  id: string;
+  name: string;
+  value?: string | null;
+  type: string;
+  createdAt: number;
+  updatedAt: number;
+}
+
+export interface ListOfCustomItem {
+  data: CustomItem[];
+}
