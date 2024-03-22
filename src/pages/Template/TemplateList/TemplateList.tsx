@@ -30,7 +30,7 @@ import { IInstitutionTableData, ITableDefaults } from "@/shared/types";
 import { ContextData, ContextTypes } from "@/shared/types/ContextTypes";
 import { deleteMsg, pluralize } from "@/shared/util";
 //ANCHOR - Constants
-import { fetchTemplate } from "@/api/template/template";
+import {deleteTemplates, fetchTemplate} from "@/api/template/template";
 import {
   TABLE_ORDER,
   TABLE_ORDER_BY,
@@ -102,7 +102,7 @@ const TemplateList: FunctionComponent = (): ReactElement => {
    * and refetch all institutions to live update the view
    */
   const deleteInstitutionEntry = useMutation(
-    (data: IInstitutionTableData[]) => deleteInstitutions(data),
+    (data: IInstitutionTableData[]) => deleteTemplates(data),
     {
       ...forDeletingTableData({
         refetch: () =>
@@ -115,7 +115,7 @@ const TemplateList: FunctionComponent = (): ReactElement => {
             ],
           }),
         updateContext,
-        entity: deleteMsg(deletedItemsCount, "Institution"),
+        entity: deleteMsg(deletedItemsCount, "Template"),
         setCount: setDeletedItemsCount,
       }),
     }
