@@ -221,7 +221,7 @@ const TemplatesForm: FunctionComponent = (): ReactElement => {
       label: "Cancel",
       type: "button",
       kind: "secondary",
-      clickFn: () => navigate("/admin/template"),
+      clickFn: () => navigate("/admin/templates"),
       aria_label: "cancel",
     },
     {
