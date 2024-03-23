@@ -107,7 +107,7 @@ const FieldsForm: FunctionComponent = (): ReactElement => {
     // Set the form's default values for attributeType and name.
     setValue("attributeType", data.type);
     setValue("name", data.name);
-
+    fields.map((_, i) => remove(i));
     // Handle the specific logic for 'dropdown' and 'list' types.
     if (data.type === "dropdown" || data.type === "list") {
       // Split the value by comma and iterate over the items.
