@@ -8,7 +8,7 @@ import {
 import { isValidPhoneNumber } from "react-phone-number-input";
 import { errorMessages } from "../errorText";
 import { UseFormRegister } from "react-hook-form";
-import { FieldForm, IFormSearchInput } from "../types/IForm";
+import { FieldForm, IFormSearchInput, TemplateForm } from "../types/IForm";
 
 type FormFieldsData =
   | IFormImageFile
@@ -19,16 +19,7 @@ type FormFieldsData =
 export const institutionFormFields = (
   register,
   errors,
-  watchers,
-  searchFields: {
-    onBlur: () => void;
-    onFocus: () => void;
-    list: any[];
-    showDropdown: boolean;
-    onClick: (item: any) => void;
-    onSearchChange: (e: { target: HTMLInputElement }) => void;
-    disabled: boolean;
-  }
+  watchers
 ): FormFieldsData[] => {
   return [
     {
@@ -186,17 +177,6 @@ export const institutionFormFields = (
       placeholder: "Drag and drop files here or click to upload",
       previewFile: watchers.logo,
     },
-    {
-      type: "search",
-      id: `template`,
-      label: "Connected templates",
-      placeholder: "Search for template name",
-      description:
-        "Here you can find all connected templates for this institution.",
-      validations: {},
-      errors: invalidInput(errors, "template"),
-      ...searchFields,
-    },
   ];
 };
 
@@ -299,8 +279,8 @@ export const fieldFormFields = (
       validations: {
         required: "Required field",
         minLength: {
-          value: 2,
-          message: errorMessages.min_length(2),
+          value: 1,
+          message: errorMessages.min_length(1),
         },
         maxLength: {
           value: 500,
@@ -317,8 +297,8 @@ export const fieldFormFields = (
       validations: {
         required: "Required field",
         minLength: {
-          value: 2,
-          message: errorMessages.min_length(2),
+          value: 1,
+          message: errorMessages.min_length(1),
         },
         maxLength: {
           value: 500,
@@ -348,10 +328,10 @@ export const valueListField = ({ parentIndex, index, errors }) => {
 };
 
 export const customFormFields = (
-  register,
-  errors,
+  register: UseFormRegister<TemplateForm>,
+  errors: any,
   watchers,
-  index
+  index: number
 ): FormFieldsData[] => {
   return [
     {

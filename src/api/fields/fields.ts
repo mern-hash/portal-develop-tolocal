@@ -1,4 +1,4 @@
-import { FieldFormForRequest } from "@/shared/types/IForm";
+import { FieldFormForRequest, CustomItem } from "@/shared/types/IForm";
 import { httpService } from "../http";
 
 export const createFields = async (fieldsData: FieldFormForRequest) => {
@@ -26,9 +26,9 @@ export const fetchFields = async ({ queryKey }) => {
   return data;
 };
 
-export const deleteFields = async (data: any) => {
+export const deleteFields = async (data: CustomItem[]) => {
   const resp = await httpService.delete("/custom-field", {
-    data: { ids: data.map((i: any) => i.id) },
+    data: { ids: data.map((i: CustomItem) => i.id) },
   });
   return resp;
 };

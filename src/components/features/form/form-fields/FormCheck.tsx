@@ -1,4 +1,5 @@
 import { Checkbox } from "@carbon/react";
+import { UseFormRegister } from "react-hook-form";
 
 function FormCheck({
   data,
@@ -7,8 +8,8 @@ function FormCheck({
   disabled,
 }: {
   data: any;
-  register: any;
-  classNameCustom?: any;
+  register: UseFormRegister<any>;
+  classNameCustom?: string;
   disabled?: boolean;
 }) {
   const { id, label } = data;

@@ -1,5 +1,4 @@
 import { httpService } from "../http";
-import {IInstitutionTableData} from "@/shared/types";
 
 export const createTemplate = async (templateData: FormData) => {
   const { data } = await httpService.post(`/admin/user-schemas`, templateData, {
@@ -14,7 +13,9 @@ export const fetchTemplate = async ({ queryKey }) => {
   const [, { page, pageSize, orderBy, order, term, from, to }] = queryKey;
   const { data } = await httpService.get(`/admin/user-schemas`, {
     params: {
-      orderBy,
+      ...(orderBy === "credential_count"
+        ? { orderByCustom: orderBy }
+        : { orderBy }),
       order,
       page,
       pageSize,
@@ -23,6 +24,7 @@ export const fetchTemplate = async ({ queryKey }) => {
       to,
     },
   });
+  console.log(data);
   return data;
 };
 
@@ -51,7 +53,7 @@ export const getSingleTemplate = async ({ queryKey }) => {
 export const getSingleTemplateFields = async ({ queryKey }) => {
   const [, { id }] = queryKey;
   const { data } = await httpService.get(
-    `/institution/schemas/${id}/schema-fields`
+    `http://localhost:3002/institution/schemas/${id}/schema-fields`
   );
   return data;
 };
@@ -64,9 +66,9 @@ export const editTemplate = async (id: string | undefined, templateData) => {
   return data;
 };
 
-export const deleteTemplates = async (data: IInstitutionTableData[]) => {
+export const deleteTemplates = async (data: any[]) => {
   const resp = await httpService.delete("/admin/user-schemas", {
-    data: { ids: data.map((i: IInstitutionTableData) => i.id) },
+    data: { ids: data.map((i: any) => i.id) },
   });
   return resp;
 };

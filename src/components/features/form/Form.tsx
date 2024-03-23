@@ -1,5 +1,6 @@
 // Core
 import { FunctionComponent, SyntheticEvent } from "react";
+import { useNavigate } from "react-router-dom";
 import "./form.scss";
 // Carbon
 import {
@@ -8,6 +9,7 @@ import {
   FormItem,
   ContainedList,
 } from "carbon-components-react";
+import { Search } from "@carbon/react";
 import { Button } from "@/components/ui";
 // Util
 import {
@@ -23,18 +25,17 @@ import FormTextField from "./form-fields/FormTextField";
 import FormFileField from "./form-fields/FormFileField";
 import FormSelectField from "./form-fields/FormSelectField";
 import FormPasswordField from "./form-fields/FormPasswordField";
-import ListItems from "@/components/newComponets/ListItems";
+import ListItems from "@/components/ui/list/ListItems";
 import {
   IFormMultiSelect,
   IFormSearchInput,
   IListCredentials,
 } from "@/shared/types/IForm";
-import { Search } from "@carbon/react";
+
 import FormLabel from "@/components/ui/FormLabel/FormLabel";
 import FormMultiSelect from "./form-fields/FormMultiSelect";
 import FormCheck from "./form-fields/FormCheck";
 import FormNumberField from "./form-fields/FormNumberField";
-import { useNavigate } from "react-router-dom";
 
 /**
  * @description Form component that renders passed array of fields (objects)
@@ -147,16 +148,8 @@ const Form: FunctionComponent<IFormComponent> = ({
     evt.preventDefault();
     return onSubmit();
   };
-  //
-  const cancelForm = (
-    evt: {
-      relatedTarget: {
-        getAttribute: (arg0: string) => string;
-        click: () => any;
-      };
-    },
-    id: string | string[] | readonly string[] | undefined
-  ) => {
+
+  const cancelForm = (evt, id) => {
     evt.relatedTarget?.getAttribute("aria-label") === "cancel"
       ? evt.relatedTarget.click()
       : trigger(id);
@@ -173,12 +166,14 @@ const Form: FunctionComponent<IFormComponent> = ({
         {formFields.map((row: IFormFieldsData, i: number) => {
           switch (row.type) {
             case "text":
+              const { classNameCustom } = row as IFormTextInput;
               return (
                 <FormTextField
                   key={i}
                   register={register}
                   data={row as IFormTextInput}
                   cancelForm={cancelForm}
+                  classNameCustom={classNameCustom || ""}
                 />
               );
             case "number":
@@ -310,9 +305,8 @@ const Form: FunctionComponent<IFormComponent> = ({
                 showDropdown,
                 onFocus,
                 disabled,
+                errors,
               } = row as unknown as IFormSearchInput;
-              if (id === "templateName") {
-              }
               return (
                 <div
                   className="CredentialForm__search-wrapper form__search-wrapper"
@@ -340,6 +334,9 @@ const Form: FunctionComponent<IFormComponent> = ({
                       }}
                       disabled={disabled}
                     />
+                    {errors?.invalid && (
+                      <p className="error_msg">{errors.invalidText}</p>
+                    )}
                     {showDropdown && list && (
                       <ContainedList className="search-list-wrapper">
                         {showDropdown && list.length > 0 ? (

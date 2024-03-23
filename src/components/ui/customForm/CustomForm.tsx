@@ -54,16 +54,6 @@ const CustomForm = ({
     remove(indexOfField);
   };
 
-  useEffect(() => {
-    if (
-      (watch(`customField.${indexOfField}.attributeType`) === "list" ||
-        watch(`customField.${indexOfField}.attributeType`) === "dropdown") &&
-      fields.length < 1
-    ) {
-      append({ value: "" });
-    }
-  }, [watch(`customField.${indexOfField}.attributeType`)]);
-
   const formField = customFormFields(
     register,
     errors,
@@ -72,6 +62,18 @@ const CustomForm = ({
     },
     indexOfField
   );
+
+  useEffect(() => {
+    if (
+      (watch(`customField.${indexOfField}.attributeType`) === "list" ||
+        watch(`customField.${indexOfField}.attributeType`) === "dropdown") &&
+      fields.length < 1
+    ) {
+      append({ value: "" });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [watch(`customField.${indexOfField}.attributeType`)]);
+
   return (
     <>
       <div className="template-form__form-outer-wrapper">
@@ -144,7 +146,8 @@ const CustomForm = ({
               </div>
             </>
           )}
-          {Array.from({ length: 6 }, (_, index) => index + 4).map((item) => (
+          {/* Code for showing additional checkbox. */}
+          {/* {Array.from({ length: 6 }, (_, index) => index + 4).map((item) => (
             <FormCheck
               register={register}
               data={formField[item]}
@@ -152,7 +155,16 @@ const CustomForm = ({
               key={item}
               disabled={id}
             />
-          ))}
+          ))} */}
+          {watch(`customField.${indexOfField}.attributeType`) !==
+            "checkbox" && (
+            <FormCheck
+              register={register}
+              data={formField[4]}
+              classNameCustom="template-form__Requird-check"
+              disabled={id}
+            />
+          )}
         </div>
         {!id && (
           <Delete

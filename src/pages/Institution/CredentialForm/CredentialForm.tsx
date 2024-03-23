@@ -6,9 +6,10 @@ import { useForm } from "react-hook-form";
 import { useNavigate, useOutletContext, useParams } from "react-router-dom";
 
 //ANCHOR - Api
-import { createCredential, getStudents } from "@/api";
+import { createCredential, fetchTemplateForCredential, getSingleTemplateFields, getStudents } from "@/api";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 //ANCHOR - Components
+import { Loading } from "carbon-components-react";
 //ANCHOR - Util
 
 import { studentFormHLC } from "@/shared/outlet-context/outletContext";
@@ -18,14 +19,11 @@ import { IButton } from "@/shared/types";
 import { ContextData, ContextTypes } from "@/shared/types/ContextTypes";
 
 import {
+  ADD_CREDENTIALS_BUTTON_TEXT,
   ADD_CREDENTIALS_DROPDOWN_TEXT,
-  ADD_STUDENT_BUTTON_TEXT,
 } from "@/core/constants";
 
-import {
-  fetchTemplateForCredential,
-  getSingleTemplateFields,
-} from "@/api/template/template";
+
 import { Form } from "@/components/features";
 import { credentialFormField } from "@/shared/form-fields/credentialField";
 import { formatSchema } from "@/shared/form-fields/formSchemaFormat";
@@ -120,7 +118,7 @@ const CredentialForm: FunctionComponent = () => {
   );
   //ANCHOR - Submit
   const onSubmit = (submitData) => {
-    if (!selected.studentName?.id) {
+        if (!selected.studentName?.id) {
       setError("studentName", {
         type: "custom",
         message: "Please select valid student from list!",
@@ -146,7 +144,7 @@ const CredentialForm: FunctionComponent = () => {
       templateId: selected.templateName?.id,
       formValue: submittedFields,
     };
-    const createTemplate = createCredentialEntry.mutate(data);
+        const createTemplate = createCredentialEntry.mutate(data);
 
     return createTemplate;
   };
@@ -184,7 +182,7 @@ const CredentialForm: FunctionComponent = () => {
       aria_label: "cancel",
     },
     {
-      label: ADD_STUDENT_BUTTON_TEXT,
+      label: ADD_CREDENTIALS_BUTTON_TEXT,
       type: "submit",
       kind: "primary",
       icon: "add",
@@ -240,13 +238,14 @@ const CredentialForm: FunctionComponent = () => {
 
     return [...basicFields, ...templateFields];
   };
-
   return (
     <>
       <Helmet>
         <title>{"Add Credential"}</title>
       </Helmet>
-      {/* {loading && <Loading />} */}
+      {(createCredentialEntry.isLoading || searchTemplateFields.isFetching) && (
+        <Loading />
+      )}
 
       <Form
         errorNotification={null}

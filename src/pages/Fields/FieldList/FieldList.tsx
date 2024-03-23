@@ -24,11 +24,10 @@ import {
 //ANCHOR - Util
 import { Sponge } from "@/assets/icons";
 import { fieldsListHLC } from "@/shared/outlet-context/outletContext";
-import { IInstitutionTableData, ITableDefaults } from "@/shared/types";
+import { ITableDefaults } from "@/shared/types";
 import { ContextData, ContextTypes } from "@/shared/types/ContextTypes";
 import { deleteMsg, pluralize } from "@/shared/util";
 //ANCHOR - Constants
-import { deleteFields, fetchFields } from "@/api/fields/fields";
 import {
   TABLE_ORDER,
   TABLE_ORDER_BY,
@@ -37,6 +36,8 @@ import {
 import { forDeletingTableData } from "@/shared/query-setup/forDeletingTableData";
 import { forGettingTableData } from "@/shared/query-setup/forGettingTableData";
 import { Edit, TrashCan } from "@carbon/icons-react";
+import { CustomItem } from "@/shared/types/IForm";
+import { deleteFields, fetchFields } from "@/api";
 
 //!SECTION
 
@@ -46,24 +47,23 @@ import { Edit, TrashCan } from "@carbon/icons-react";
  */
 const FieldList: FunctionComponent = (): ReactElement => {
   // <Outlet /> context to update HeaderLayout data
-  const { updateContext } = useOutletContext<{
+  const { updateContext } = useOutletContext < {
     updateContext: (state: string, data: ContextData) => void;
-  }>();
-  const [tableInfo, setTableInfo] = useState<ITableDefaults>({
+  } > ();
+  const [tableInfo, setTableInfo] = useState < ITableDefaults > ({
     page: 1,
     pageSize: 10,
     orderBy: TABLE_ORDER_BY.CREATEDAT,
     order: TABLE_ORDER.DEFAULT,
   });
-  const [itemCount, setItemCount] = useState<number>();
+  const [itemCount, setItemCount] = useState < number > ();
   // Used to keep displaying current page while fetching next one
-  const [itemsFetched, setItemsFetched] = useState<IInstitutionTableData[]>([]);
-  const [initialFetch, setInitialFetch] = useState<boolean>(true);
-  const [deletedItemsCount, setDeletedItemsCount] = useState<number>(0);
+  const [itemsFetched, setItemsFetched] = useState < CustomItem[] > ([]);
+  const [initialFetch, setInitialFetch] = useState < boolean > (true);
+  const [deletedItemsCount, setDeletedItemsCount] = useState < number > (0);
 
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-
   //ANCHOR - useEffect outlet
   useEffect(() => {
     updateContext(ContextTypes.HLC, fieldsListHLC(navigate));
@@ -92,6 +92,9 @@ const FieldList: FunctionComponent = (): ReactElement => {
         itemCount,
         setItemCount,
       }),
+      onSuccess: ({ pages }) => {
+        setItemsFetched(pages?.[0]?.data || [])
+      }
     }
   );
 
@@ -101,7 +104,8 @@ const FieldList: FunctionComponent = (): ReactElement => {
    * or by selecting a batch of items and clicking button in toolbar
    * and refetch all institutions to live update the view
    */
-  const deleteFieldEntry = useMutation((data: any) => deleteFields(data), {
+  const deleteFieldEntry = useMutation((data: CustomItem[]) => deleteFields(data), {
+
     ...forDeletingTableData({
       refetch: () =>
         queryClient.invalidateQueries({
@@ -123,7 +127,7 @@ const FieldList: FunctionComponent = (): ReactElement => {
    * ANCHOR batch action
    * Modal pop-up for batch selected items, to delete multiple table rows at once
    */
-  const batchSelectionAction = (data: IInstitutionTableData[]) => {
+  const batchSelectionAction = (data: CustomItem[]) => {
     setDeletedItemsCount(data?.length);
     deleteModal(
       updateContext,
@@ -177,13 +181,16 @@ const FieldList: FunctionComponent = (): ReactElement => {
   //ANCHOR - items list
   const renderFetchedInstitutions = () => {
     // if loading and some items already fetched (visible), display them
-    return allFields.isLoading
+    const data = allFields.isLoading
       ? itemsFetched?.length
         ? itemsFetched
         : []
       : // else, display new ones
-        allFields.data?.pages[0]?.data;
+      (allFields.data?.pages[0]?.data || []);
+
+    return data
   };
+
   //ANCHOR - isEmptyPage
   const isEmptyPage = (): boolean =>
     // If there is no new fetched data
@@ -212,7 +219,7 @@ const FieldList: FunctionComponent = (): ReactElement => {
     return (
       <>
         <Helmet>
-          <title>Institutions</title>
+          <title>Fields</title>
         </Helmet>
         <EmptyPage
           icon={<Sponge />}
@@ -236,7 +243,7 @@ const FieldList: FunctionComponent = (): ReactElement => {
   return (
     <>
       <Helmet>
-        <title>Institutions</title>
+        <title>Fields</title>
       </Helmet>
       <Table
         batchSelectionAction={batchSelectionAction}

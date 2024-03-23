@@ -1,6 +1,6 @@
 //SECTION - Imports
 //ANCHOR - Core
-import { FunctionComponent, useEffect } from "react";
+import { FunctionComponent } from "react";
 import "../auth.scss";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";

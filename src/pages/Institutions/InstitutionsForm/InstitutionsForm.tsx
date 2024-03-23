@@ -21,7 +21,6 @@ import { Form } from "@/components/features";
 import { ToastNotification } from "@/components/ui";
 import { Loading } from "carbon-components-react";
 // Util
-import { fetchTemplate } from "@/api/template/template";
 import {
   ADMIN_HEADING_LINKS,
   ADMIN_HEADING_LOGOLINK,
@@ -36,14 +35,11 @@ import { forCreatingEntry } from "@/shared/query-setup/forCreatingEntry";
 import { forEditingEntry } from "@/shared/query-setup/forEditingEntry";
 import { IButton, IInstitutionForm } from "@/shared/types";
 import { ContextData, ContextTypes } from "@/shared/types/ContextTypes";
-import { debounceEvent } from "@/shared/util";
 
 const InstitutionsForm: FunctionComponent = (): ReactElement => {
   // Fetched data, used to compare freshly edited input fields to see which
   // one needs to get patched
   const [defaultEditData, setDefaultEditData] = useState<IInstitutionForm>();
-  const [showDropdown, setShowDropdown] = useState<boolean>(false);
-  const [selectedTemplate, setSelectedTemplate] = useState<any>(null);
 
   const navigate = useNavigate();
   const { id } = useParams();
@@ -113,13 +109,7 @@ const InstitutionsForm: FunctionComponent = (): ReactElement => {
       refetchOnWindowFocus: false,
     }
   );
-  const searchTemplate = useQuery(
-    ["templates", { term: watch("template") }],
-    fetchTemplate,
-    {
-      enabled: watch("template")?.length > 0,
-    }
-  );
+
   const createInstitutionEntry = useMutation(
     (data: FormData) => createInstitution(data),
     {
@@ -205,7 +195,6 @@ const InstitutionsForm: FunctionComponent = (): ReactElement => {
           formData.append(key, data[key]);
         }
       }
-      selectedTemplate && formData.append("templateId", selectedTemplate.id);
 
       return editInstitutionEntry.mutate(formData);
     }
@@ -214,7 +203,6 @@ const InstitutionsForm: FunctionComponent = (): ReactElement => {
       // same story as above
       if (data[key]) formData.append(key, data[key]);
     }
-    selectedTemplate && formData.append("templateId", selectedTemplate.id);
     return createInstitutionEntry.mutate(formData);
   };
 
@@ -235,26 +223,6 @@ const InstitutionsForm: FunctionComponent = (): ReactElement => {
     },
   ];
 
-  const handleBlur = () => {
-    // Hides the dropdown when the user stops interacting with the input
-    setTimeout(() => {
-      setShowDropdown(false);
-    }, 400);
-  };
-
-  const handleSet = (item) => {
-    setSelectedTemplate(item);
-    setValue("template", item?.name);
-  };
-
-  const onSearchChange = debounceEvent((e) => {
-    setValue("template", e.target.value);
-  }, 500);
-
-  const onFocus = () => {
-    setShowDropdown(true);
-  };
-
   return (
     <>
       <Helmet>
@@ -264,24 +232,11 @@ const InstitutionsForm: FunctionComponent = (): ReactElement => {
       <Form
         errorNotification={renderErrorNotification()}
         formButtons={formButtons}
-        formFields={institutionFormFields(
-          register,
-          errors,
-          {
-            country: watch(country),
-            city: watch(city),
-            logo: watch(logo),
-          },
-          {
-            onBlur: handleBlur,
-            onClick: handleSet,
-            list: searchTemplate?.data?.data,
-            onSearchChange,
-            showDropdown,
-            onFocus,
-            disabled: false,
-          }
-        )}
+        formFields={institutionFormFields(register, errors, {
+          country: watch(country),
+          city: watch(city),
+          logo: watch(logo),
+        })}
         onSubmit={handleSubmit(onSubmit)}
         register={register}
         setValue={setValue}

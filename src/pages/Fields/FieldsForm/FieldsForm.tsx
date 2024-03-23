@@ -3,10 +3,10 @@ import { FunctionComponent, ReactElement, useEffect, useMemo } from "react";
 import { Helmet } from "react-helmet-async";
 import { useFieldArray, useForm } from "react-hook-form";
 import { useNavigate, useOutletContext, useParams } from "react-router-dom";
+import "./fieldsform.scss";
 // Components
 import { Button } from "@/components/ui";
 // Util
-import { createFields, editField, getSingleField } from "@/api/fields/fields";
 import Delete from "@/assets/icons/Delete";
 import FormSelectField from "@/components/features/form/form-fields/FormSelectField";
 import FormTextField from "@/components/features/form/form-fields/FormTextField";
@@ -23,7 +23,7 @@ import {
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Form as CForm, Stack, Loading } from "carbon-components-react";
 import { forEditingEntry } from "@/shared/query-setup/forEditingEntry";
-import "./fieldsform.scss";
+import { createFields, editField, getSingleField } from "@/api";
 
 const FieldsForm: FunctionComponent = (): ReactElement => {
   // Fetched data, used to compare freshly edited input fields to see which
@@ -155,6 +155,7 @@ const FieldsForm: FunctionComponent = (): ReactElement => {
       const newValue = [value];
       valueList.map(({ value }) => {
         newValue.push(value);
+        return null;
       });
       newObj.value = newValue;
     }
@@ -184,7 +185,9 @@ const FieldsForm: FunctionComponent = (): ReactElement => {
       ? evt.relatedTarget.click()
       : trigger(id);
   };
-
+  const formField = fieldFormFields(errors, register, {
+    attributeType: watch(`attributeType`),
+  });
   return (
     <>
       <Helmet>
@@ -197,44 +200,41 @@ const FieldsForm: FunctionComponent = (): ReactElement => {
             <Stack gap={7} className="form__stack field-form__stack">
               <FormTextField
                 register={register}
-                data={fieldFormFields(errors)[0] as IFormTextInput}
+                data={formField[0] as IFormTextInput}
                 cancelForm={cancelForm}
               />
               <FormSelectField
                 register={register}
-                data={
-                  fieldFormFields(errors, register, {
-                    attributeType: watch(`attributeType`),
-                  })[1] as IFormSelectInput
-                }
+                data={formField[1] as IFormSelectInput}
                 classNameCustom="field-form__select-secound-half"
               />
             </Stack>
           </div>
           <div className="field-form__divider-hr"></div>
-          <div className="field-form__wrapper">
-            <Stack gap={7} className="form__stack field-form__stack">
-              <FormTextField
-                register={register}
-                data={
-                  {
-                    ...fieldFormFields(errors)[2],
-                    validations: {
-                      required:
-                        watch("attributeType") === "list" ||
-                        watch("attributeType") === "dropdown"
-                          ? "Required field"
-                          : false,
-                    },
-                  } as IFormTextInput
-                }
-                cancelForm={cancelForm}
-              />
-            </Stack>
-          </div>
+
           {(watch("attributeType") === "list" ||
             watch("attributeType") === "dropdown") && (
             <>
+              <div className="field-form__wrapper">
+                <Stack gap={7} className="form__stack field-form__stack">
+                  <FormTextField
+                    register={register}
+                    data={
+                      {
+                        ...formField[2],
+                        validations: {
+                          required:
+                            watch("attributeType") === "list" ||
+                            watch("attributeType") === "dropdown"
+                              ? "Required field"
+                              : false,
+                        },
+                      } as IFormTextInput
+                    }
+                    cancelForm={cancelForm}
+                  />
+                </Stack>
+              </div>
               {fields.length > 0 && (
                 <div className="field-form__wrapper field-form__wrapper-list">
                   {fields.map((field, i) => (

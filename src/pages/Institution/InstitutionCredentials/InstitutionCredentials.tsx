@@ -14,6 +14,10 @@ import { Square } from "@/assets/icons";
 import { ContextData, ContextTypes } from "@/shared/types/ContextTypes";
 //ANCHOR - Constants
 import {
+  deleteCredentials,
+  getCredentials,
+} from "@/api/credentials/credential";
+import {
   ADD_CREDENTIALS_DROPDOWN_TEXT,
   TABLE_ORDER,
   TABLE_ORDER_BY,
@@ -23,24 +27,22 @@ import {
   clearTabs,
   institutionCredentialsHLC,
 } from "@/shared/outlet-context/outletContext";
-import {
-  useInfiniteQuery,
-  useMutation,
-  useQueryClient,
-} from "@tanstack/react-query";
-import { ITableDefaults, ITableHeaderItem } from "@/shared/types";
-import { deleteInstitutions, getStudents } from "@/api";
+import { forDeletingTableData } from "@/shared/query-setup/forDeletingTableData";
 import { forGettingTableData } from "@/shared/query-setup/forGettingTableData";
-import { Edit, TrashCan } from "@carbon/icons-react";
 import {
   configDateForFilter,
   deleteModal,
   onSortTable,
 } from "@/shared/table-data/tableMethods";
-import { forDeletingTableData } from "@/shared/query-setup/forDeletingTableData";
+import { ITableDefaults, ITableHeaderItem } from "@/shared/types";
 import { deleteMsg, pluralize } from "@/shared/util";
+import { TrashCan } from "@carbon/icons-react";
+import {
+  useInfiniteQuery,
+  useMutation,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { Loading, Pagination } from "carbon-components-react";
-import {deleteCredentials, getCredentials} from "@/api/credentials/credential";
 
 //!SECTION
 
@@ -101,21 +103,13 @@ const InstitutionCredentials: FunctionComponent = (): ReactElement => {
     }
   );
 
-  const deleteCredentialsEntry = useMutation(
+  const deleteCredentialEntry = useMutation(
     (data: any) => deleteCredentials(data),
     {
       ...forDeletingTableData({
-        refetch: () =>
-          queryClient.invalidateQueries({
-            queryKey: [
-              "credentials",
-              {
-                ...tableInfo,
-              },
-            ],
-          }),
+        refetch: () => queryClient.invalidateQueries(["allCredential"]),
         updateContext,
-        entity: deleteMsg(deletedItemsCount, "Credentials"),
+        entity: deleteMsg(deletedItemsCount, "Credential"),
         setCount: setDeletedItemsCount,
       }),
     }
@@ -130,36 +124,31 @@ const InstitutionCredentials: FunctionComponent = (): ReactElement => {
 
   const tableCTA = [
     {
-      icon: Edit,
-      iconDescription: "Edit",
-      onClick: (cellData) => navigate(`edit/${cellData.id}`),
-    },
-    {
       icon: TrashCan,
       iconDescription: "Delete",
       onClick: (cellData) =>
         deleteModal(
           updateContext,
-          `Delete ${cellData.firstName} ${cellData.lastName}`,
-          `Are you sure you want to delete ${cellData.firstName} ${cellData.lastName}?`,
+          `Delete ${cellData.name}`,
+          `Are you sure you want to delete ${cellData.name}?`,
           () => {
-            // deleteStudentEntry.mutate([cellData])
+            deleteCredentialEntry.mutate([cellData]);
           }
         ),
     },
   ];
   //SECTION - render()
   //ANCHOR - error
-  // if (allStudents.isError) return <ErrorPage title="Institutions" />;
+  if (allCredentials.isError) return <ErrorPage title="Institutions" />;
 
-  //ANCHOR - loading
-  // if (initialFetch && allStudents.isLoading) {
-  //   return (
-  //     <div className="institution-students__loader">
-  //       <Loading withOverlay={false} />
-  //     </div>
-  //   );
-  // }
+  // ANCHOR - loading
+  if (initialFetch && allCredentials.isLoading) {
+    return (
+      <div className="institution-students__loader">
+        <Loading withOverlay={false} />
+      </div>
+    );
+  }
 
   const batchSelectionAction = (data: any) => {
     setDeletedItemsCount(data.length);
@@ -170,7 +159,7 @@ const InstitutionCredentials: FunctionComponent = (): ReactElement => {
         data,
         `Are you sure you want to delete ${data.length} item`
       )}?`,
-      () => deleteCredentialsEntry.mutate(data)
+      () => deleteCredentialEntry.mutate(data)
     );
   };
 
@@ -194,10 +183,20 @@ const InstitutionCredentials: FunctionComponent = (): ReactElement => {
     // if loading and some items already fetched (visible), display them
     return allCredentials.isLoading
       ? itemsFetched.length
-        ? itemsFetched
+        ? itemsFetched.map((item) => ({
+            ...item,
+            studentName: item?.user?.name,
+            studentEmail: item?.user?.email,
+            user: null,
+          }))
         : []
       : // else, display new ones
-        allCredentials.data?.pages[0].data;
+        allCredentials.data?.pages[0].data.map((item) => ({
+          ...item,
+          studentName: item?.user?.name,
+          studentEmail: item?.user?.email,
+          user: null,
+        }));
   };
 
   const isEmptyPage = (): boolean =>
@@ -226,7 +225,7 @@ const InstitutionCredentials: FunctionComponent = (): ReactElement => {
     return (
       <>
         <Helmet>
-          <title>Credentials list</title>
+          <title>Credentials</title>
         </Helmet>
         <EmptyPage
           icon={<Square />}
@@ -250,7 +249,7 @@ const InstitutionCredentials: FunctionComponent = (): ReactElement => {
   return (
     <>
       <Helmet>
-        <title>Credentials list</title>
+        <title>Credentials</title>
       </Helmet>
 
       <Table
@@ -277,7 +276,6 @@ const InstitutionCredentials: FunctionComponent = (): ReactElement => {
           onSortTable({ term, direction, tableInfo, setTableInfo })
         }
         tableColumnActions={tableCTA}
-        nameNavigate={(val) => navigate(`edit/${val}`)}
         // onResendEmail={(val) => onResendEmail(val)}
       />
 

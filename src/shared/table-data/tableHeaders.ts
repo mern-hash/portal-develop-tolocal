@@ -54,11 +54,11 @@ const templateHeaderData: ITableHeaderItem[] = [
     key: "description",
     isSortable: false,
   },
-  // {
-  //   header: "No of issuance",
-  //   key: "credentialCount",
-  //   isSortable: true,
-  // },
+  {
+    header: "No of issuance",
+    key: "credential_count",
+    isSortable: true,
+  },
   // {
   //   header: "# of verifications",
   //   key: "verificationCount",

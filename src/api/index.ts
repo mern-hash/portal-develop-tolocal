@@ -15,7 +15,7 @@ import {
   getCredential,
   getQrCode,
   resendCredentialEmail,
-  createCredential
+  createCredential,
 } from "./credentials/credential";
 
 // Institution
@@ -48,6 +48,24 @@ import {
   getStudentsSchema,
   postBulkTemplate,
 } from "./students/students";
+
+import {
+  createTemplate,
+  fetchTemplate,
+  fetchTemplateForCredential,
+  getSingleTemplate,
+  getSingleTemplateFields,
+  editTemplate,
+  deleteTemplates,
+} from "./template/template";
+
+import {
+  createFields,
+  fetchFields,
+  deleteFields,
+  getSingleField,
+  editField,
+} from "./fields/fields";
 
 export {
   // Auth
@@ -88,4 +106,18 @@ export {
   getStudents,
   getStudentsSchema,
   postBulkTemplate,
+  // Templates
+  createTemplate,
+  fetchTemplate,
+  fetchTemplateForCredential,
+  getSingleTemplate,
+  getSingleTemplateFields,
+  editTemplate,
+  deleteTemplates,
+  // Fields
+  createFields,
+  fetchFields,
+  deleteFields,
+  getSingleField,
+  editField,
 };
