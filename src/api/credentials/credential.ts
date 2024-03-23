@@ -1,4 +1,5 @@
 import { httpService } from "../../api/http";
+import {IInstitutionTableData} from "@/shared/types";
 
 //TODO - getCredential implement
 export const getCredential = async ({ queryKey }) => {
@@ -51,4 +52,12 @@ export const getCredentials = async ({ queryKey }) => {
     params: queryKey[1],
   });
   return data;
+};
+
+
+export const deleteCredentials = async (data: IInstitutionTableData[]) => {
+  const resp = await httpService.delete("/credentials", {
+    data: { ids: data.map((i: IInstitutionTableData) => i.id) },
+  });
+  return resp;
 };

@@ -40,7 +40,7 @@ import {
 import { forDeletingTableData } from "@/shared/query-setup/forDeletingTableData";
 import { deleteMsg, pluralize } from "@/shared/util";
 import { Loading, Pagination } from "carbon-components-react";
-import { getCredentials } from "@/api/credentials/credential";
+import {deleteCredentials, getCredentials} from "@/api/credentials/credential";
 
 //!SECTION
 
@@ -101,21 +101,21 @@ const InstitutionCredentials: FunctionComponent = (): ReactElement => {
     }
   );
 
-  const deleteInstitutionEntry = useMutation(
-    (data: any) => deleteInstitutions(data),
+  const deleteCredentialsEntry = useMutation(
+    (data: any) => deleteCredentials(data),
     {
       ...forDeletingTableData({
         refetch: () =>
           queryClient.invalidateQueries({
             queryKey: [
-              "institutions",
+              "credentials",
               {
                 ...tableInfo,
               },
             ],
           }),
         updateContext,
-        entity: deleteMsg(deletedItemsCount, "Institution"),
+        entity: deleteMsg(deletedItemsCount, "Credentials"),
         setCount: setDeletedItemsCount,
       }),
     }
@@ -170,7 +170,7 @@ const InstitutionCredentials: FunctionComponent = (): ReactElement => {
         data,
         `Are you sure you want to delete ${data.length} item`
       )}?`,
-      () => deleteInstitutionEntry.mutate(data)
+      () => deleteCredentialsEntry.mutate(data)
     );
   };
 
