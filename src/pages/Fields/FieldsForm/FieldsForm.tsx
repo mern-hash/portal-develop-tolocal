@@ -42,7 +42,7 @@ const FieldsForm: FunctionComponent = (): ReactElement => {
     watch,
     trigger,
     control,
-  } = useForm<FieldForm>({
+  } = useForm < FieldForm > ({
     mode: "onBlur",
     defaultValues: {},
   });
@@ -52,9 +52,9 @@ const FieldsForm: FunctionComponent = (): ReactElement => {
     name: "valueList", // unique name for your Field Array
   });
   // <Outlet /> context to update HeaderLayout data
-  const { updateContext } = useOutletContext<{
+  const { updateContext } = useOutletContext < {
     updateContext: (state: string, data: ContextData) => void;
-  }>();
+  } > ();
 
   const createFieldEntry = useMutation(
     (data: FieldFormForRequest) => createFields(data),
@@ -107,7 +107,9 @@ const FieldsForm: FunctionComponent = (): ReactElement => {
     // Set the form's default values for attributeType and name.
     setValue("attributeType", data.type);
     setValue("name", data.name);
-    fields.map((_, i) => remove(i));
+
+    const indexesArray = [...fields.keys()]
+    remove(indexesArray)
     // Handle the specific logic for 'dropdown' and 'list' types.
     if (data.type === "dropdown" || data.type === "list") {
       // Split the value by comma and iterate over the items.
@@ -214,70 +216,70 @@ const FieldsForm: FunctionComponent = (): ReactElement => {
 
           {(watch("attributeType") === "list" ||
             watch("attributeType") === "dropdown") && (
-            <>
-              <div className="field-form__wrapper">
-                <Stack gap={7} className="form__stack field-form__stack">
-                  <FormTextField
-                    register={register}
-                    data={
-                      {
-                        ...formField[2],
-                        validations: {
-                          required:
-                            watch("attributeType") === "list" ||
-                            watch("attributeType") === "dropdown"
-                              ? "Required field"
-                              : false,
-                        },
-                      } as IFormTextInput
-                    }
-                    cancelForm={cancelForm}
-                  />
-                </Stack>
-              </div>
-              {fields.length > 0 && (
-                <div className="field-form__wrapper field-form__wrapper-list">
-                  {fields.map((field, i) => (
-                    <div className="field-form__inner-input-list-warpper">
-                      <Stack gap={7} className="form__stack field-form__stack">
-                        <FormTextField
-                          register={register}
-                          data={
-                            fieldFormFields(
-                              errors,
-                              register,
-                              watch,
-                              i
-                            )[3] as IFormTextInput
-                          }
-                          cancelForm={cancelForm}
-                          key={field.id}
-                        />
-                      </Stack>
-                      <Delete
-                        classNameCustom="field-form__DeleteSvg"
-                        clickFunc={() => {
-                          remove(i);
-                        }}
-                      />
-                    </div>
-                  ))}
+              <>
+                <div className="field-form__wrapper">
+                  <Stack gap={7} className="form__stack field-form__stack">
+                    <FormTextField
+                      register={register}
+                      data={
+                        {
+                          ...formField[2],
+                          validations: {
+                            required:
+                              watch("attributeType") === "list" ||
+                                watch("attributeType") === "dropdown"
+                                ? "Required field"
+                                : false,
+                          },
+                        } as IFormTextInput
+                      }
+                      cancelForm={cancelForm}
+                    />
+                  </Stack>
                 </div>
-              )}
-              <div className="field-form__divider-hr"></div>
-              <div className="field-form__Addfield-btnwrapper">
-                <Button
-                  clickFn={() => {
-                    append({ value: "" });
-                  }}
-                  label="Add Field"
-                  type="button"
-                  aria_label="add-button"
-                  kind="secondary"
-                />
-              </div>
-            </>
-          )}
+                {fields.length > 0 && (
+                  <div className="field-form__wrapper field-form__wrapper-list">
+                    {fields.map((field, i) => (
+                      <div className="field-form__inner-input-list-warpper">
+                        <Stack gap={7} className="form__stack field-form__stack">
+                          <FormTextField
+                            register={register}
+                            data={
+                              fieldFormFields(
+                                errors,
+                                register,
+                                watch,
+                                i
+                              )[3] as IFormTextInput
+                            }
+                            cancelForm={cancelForm}
+                            key={field.id}
+                          />
+                        </Stack>
+                        <Delete
+                          classNameCustom="field-form__DeleteSvg"
+                          clickFunc={() => {
+                            remove(i);
+                          }}
+                        />
+                      </div>
+                    ))}
+                  </div>
+                )}
+                <div className="field-form__divider-hr"></div>
+                <div className="field-form__Addfield-btnwrapper">
+                  <Button
+                    clickFn={() => {
+                      append({ value: "" });
+                    }}
+                    label="Add Field"
+                    type="button"
+                    aria_label="add-button"
+                    kind="secondary"
+                  />
+                </div>
+              </>
+            )}
         </div>
         <div className="form__row form__row__buttons field-form__build-cancel-btn-wrapper">
           {formButtons.map((button: IButton, i: number) => (
