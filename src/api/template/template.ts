@@ -53,7 +53,7 @@ export const getSingleTemplate = async ({ queryKey }) => {
 export const getSingleTemplateFields = async ({ queryKey }) => {
   const [, { id }] = queryKey;
   const { data } = await httpService.get(
-    `http://localhost:3002/institution/schemas/${id}/schema-fields`
+    `/institution/schemas/${id}/schema-fields`
   );
   return data;
 };
