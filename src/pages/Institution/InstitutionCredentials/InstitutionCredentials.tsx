@@ -14,25 +14,26 @@ import { Square } from "@/assets/icons";
 import { ContextData, ContextTypes } from "@/shared/types/ContextTypes";
 //ANCHOR - Constants
 import {
-  deleteCredentials,
-  getCredentials,
+    deleteCredentials,
+    getCredentials, resendCredentialEmail,
 } from "@/api/credentials/credential";
 import {
-  ADD_CREDENTIALS_DROPDOWN_TEXT,
-  TABLE_ORDER,
-  TABLE_ORDER_BY,
-  TABLE_PAGE_SIZES,
+    ADD_CREDENTIALS_DROPDOWN_TEXT,
+    TABLE_ORDER,
+    TABLE_ORDER_BY,
+    TABLE_PAGE_SIZES, TOAST_NOTIFICATION_KINDS, TOAST_NOTIFICATION_TITLES,
 } from "@/core/constants";
 import {
-  clearTabs,
-  institutionCredentialsHLC,
+    clearModal,
+    clearTabs,
+    institutionCredentialsHLC,
 } from "@/shared/outlet-context/outletContext";
 import { forDeletingTableData } from "@/shared/query-setup/forDeletingTableData";
 import { forGettingTableData } from "@/shared/query-setup/forGettingTableData";
 import {
-  configDateForFilter,
-  deleteModal,
-  onSortTable,
+    configDateForFilter, confirmModal,
+    deleteModal,
+    onSortTable, toastNotification,
 } from "@/shared/table-data/tableMethods";
 import { ITableDefaults, ITableHeaderItem } from "@/shared/types";
 import { deleteMsg, pluralize } from "@/shared/util";
@@ -43,6 +44,8 @@ import {
   useQueryClient,
 } from "@tanstack/react-query";
 import { Loading, Pagination } from "carbon-components-react";
+import {successMessages} from "@/shared/successText";
+import {errorMessages} from "@/shared/errorText";
 
 //!SECTION
 
@@ -67,6 +70,11 @@ const templateHeaderData: ITableHeaderItem[] = [
     key: "studentEmail",
     isSortable: false,
   },
+    {
+        header: "Resend email",
+        key: "resend_email",
+        isSortable: false,
+    },
 ];
 
 const InstitutionCredentials: FunctionComponent = (): ReactElement => {
@@ -115,6 +123,32 @@ const InstitutionCredentials: FunctionComponent = (): ReactElement => {
     }
   );
 
+  const resendCredential = useMutation(
+        (data: string) => resendCredentialEmail(data),
+        {
+            onSuccess: () => {
+                toastNotification({
+                    updateContext,
+                    title: TOAST_NOTIFICATION_TITLES.SUCCESS,
+                    kind: TOAST_NOTIFICATION_KINDS.SUCCESS,
+                    subtitle: successMessages.email_sent,
+                });
+            },
+            onError: () => {
+                toastNotification({
+                    updateContext,
+                    title: TOAST_NOTIFICATION_TITLES.ERROR,
+                    kind: TOAST_NOTIFICATION_KINDS.ERROR,
+                    subtitle: errorMessages.try_again,
+                });
+            },
+            onSettled: () => {
+                //@ts-ignore
+                updateContext(ContextTypes.MODAL, clearModal);
+            },
+        }
+    );
+
   //ANCHOR - useEffect outlet
   useEffect(() => {
     updateContext(ContextTypes.HLC, institutionCredentialsHLC(navigate));
@@ -160,6 +194,18 @@ const InstitutionCredentials: FunctionComponent = (): ReactElement => {
         `Are you sure you want to delete ${data.length} item`
       )}?`,
       () => deleteCredentialEntry.mutate(data)
+    );
+  };
+
+
+  const onResendEmail = (data) => {
+    confirmModal(
+        updateContext,
+        "Resend email?",
+        "Are you sure you want to resend the email?",
+        () => {
+            resendCredential.mutate(data);
+        }
     );
   };
 
@@ -276,7 +322,7 @@ const InstitutionCredentials: FunctionComponent = (): ReactElement => {
           onSortTable({ term, direction, tableInfo, setTableInfo })
         }
         tableColumnActions={tableCTA}
-        // onResendEmail={(val) => onResendEmail(val)}
+        onResendEmail={(val) => onResendEmail(val)}
       />
 
       <Pagination

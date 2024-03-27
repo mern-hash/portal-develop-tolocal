@@ -34,7 +34,7 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "vite",
+    "start": "vite --port 3001",
     "build": "tsc && vite build",
     "serve": "vite preview",
     "svgr": "npx @svgr/cli --out-dir src/assets/icons --ignore-existing -- src/assets/icons",

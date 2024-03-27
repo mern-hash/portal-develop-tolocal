@@ -32,7 +32,7 @@ export const getQrCode = async ({ token, isNew = false }) => {
 };
 
 export const resendCredentialEmail = async (id) => {
-  const { data } = await httpService.put(`/users/${id}/credential`);
+  const { data } = await httpService.put(`/credentials/${id}/resendEmail`);
 
   return data;
 };
