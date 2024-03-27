@@ -177,7 +177,7 @@ const Credential: FunctionComponent = (): ReactElement => {
           <>
             {/* <CredentialList credentialData={credential.data} /> */}
             <CredentialList
-              credential={credential.data}
+              credential={{ ...credential.data, ...credential.data.user }}
               fields={credential.data?.fields}
               institution={{
                 label: "Institution",

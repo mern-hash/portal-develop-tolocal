@@ -256,11 +256,6 @@ const InstitutionStudents: FunctionComponent = (): ReactElement => {
       key: "email",
       isSortable: false,
     },
-    {
-      header: "Resend email",
-      key: "resend_email",
-      isSortable: false,
-    },
   ];
   //ANCHOR - isEmptyPage
   const isEmptyPage = () => {
