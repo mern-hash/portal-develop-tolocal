@@ -160,7 +160,6 @@ const InstitutionCredentials: FunctionComponent = (): ReactElement => {
       "Resend email?",
       "Are you sure you want to resend the email?",
       () => {
-        console.log(data);
         //@ts-ignore
         updateContext(ContextTypes.MODAL, clearModal);
         resendCredential.mutate(data);

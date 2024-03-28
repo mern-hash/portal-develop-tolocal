@@ -6,7 +6,12 @@ import { useForm } from "react-hook-form";
 import { useNavigate, useOutletContext, useParams } from "react-router-dom";
 
 //ANCHOR - Api
-import { createCredential, fetchTemplateForCredential, getSingleTemplateFields, getStudents } from "@/api";
+import {
+  createCredential,
+  fetchTemplateForCredential,
+  getSingleTemplateFields,
+  getStudents,
+} from "@/api";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 //ANCHOR - Components
 import { Loading } from "carbon-components-react";
@@ -22,7 +27,6 @@ import {
   ADD_CREDENTIALS_BUTTON_TEXT,
   ADD_CREDENTIALS_DROPDOWN_TEXT,
 } from "@/core/constants";
-
 
 import { Form } from "@/components/features";
 import { credentialFormField } from "@/shared/form-fields/credentialField";
@@ -118,7 +122,7 @@ const CredentialForm: FunctionComponent = () => {
   );
   //ANCHOR - Submit
   const onSubmit = (submitData) => {
-        if (!selected.studentName?.id) {
+    if (!selected.studentName?.id) {
       setError("studentName", {
         type: "custom",
         message: "Please select valid student from list!",
@@ -144,7 +148,7 @@ const CredentialForm: FunctionComponent = () => {
       templateId: selected.templateName?.id,
       formValue: submittedFields,
     };
-        const createTemplate = createCredentialEntry.mutate(data);
+    const createTemplate = createCredentialEntry.mutate(data);
 
     return createTemplate;
   };

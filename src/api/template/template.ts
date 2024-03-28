@@ -24,7 +24,6 @@ export const fetchTemplate = async ({ queryKey }) => {
       to,
     },
   });
-  console.log(data);
   return data;
 };
 
