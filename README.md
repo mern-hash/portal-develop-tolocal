@@ -23,6 +23,8 @@ React version used is 17.0.2 and should **not** be updated to v18+ since [Carbon
 
 ## Installation
 
+/
+
 1. Install NPM dependencies `$ npm i`
 
 2. Create `.env` file based on `.env.example`
