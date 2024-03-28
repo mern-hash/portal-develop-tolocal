@@ -183,6 +183,7 @@ const Form: FunctionComponent<IFormComponent> = ({
                   register={register}
                   data={row as IFormTextInput}
                   cancelForm={cancelForm}
+                  setValue={setValue}
                 />
               );
             case "file-image":

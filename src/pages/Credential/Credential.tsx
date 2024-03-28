@@ -141,7 +141,6 @@ const Credential: FunctionComponent = (): ReactElement => {
         return <NotFound />;
     }
   };
-
   return (
     <div className="credential">
       <Helmet>
@@ -177,7 +176,11 @@ const Credential: FunctionComponent = (): ReactElement => {
           <>
             {/* <CredentialList credentialData={credential.data} /> */}
             <CredentialList
-              credential={{ ...credential.data, ...credential.data.user }}
+              credential={{
+                ...credential.data,
+                ...credential.data.user,
+                fields: credential.data.values,
+              }}
               fields={credential.data?.fields}
               institution={{
                 label: "Institution",

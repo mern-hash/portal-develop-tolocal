@@ -41,7 +41,6 @@ const CredentialList: FunctionComponent<{
       }) || []
     );
   };
-
   return (
     <>
       <Heading className="credential__heading">Personal information</Heading>
@@ -56,7 +55,11 @@ const CredentialList: FunctionComponent<{
                 {item.label === "Photo" ? (
                   <a href={`${item.value}`}>{item.value}</a>
                 ) : (
-                  <p>{item.value || "-"}</p>
+                  <p>
+                    {item.value === null || item.value === undefined
+                      ? "-"
+                      : item.value.toString()}
+                  </p>
                 )}
               </StructuredListCell>
             </StructuredListRow>
