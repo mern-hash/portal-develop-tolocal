@@ -48,6 +48,7 @@ const FormDateField: FunctionComponent<{
       {...register(id, {
         ...validations,
         validate: (i) => {
+          if (i === "") return true;
           if (+new Date(i) <= +new Date()) return true;
           return errorMessages.max_date;
         },
